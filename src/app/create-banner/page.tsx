@@ -28,7 +28,7 @@ function BannerGeneratorContent() {
   const [rent, setRent] = useState(searchParams.get('rent') || '3,500');
   const [rentType, setRentType] = useState('Fixed');
   const [gender, setGender] = useState(searchParams.get('gender') || 'Male');
-  const [month, setMonth] = useState(searchParams.get('month') || 'Immediate');
+  const [month, setMonth] = useState(searchParams.get('month') || MONTHS_LIST[0]);
   const [seats, setSeats] = useState(searchParams.get('seats') || '1 Seat');
   const [phone, setPhone] = useState(searchParams.get('phone') || '017XXXXXXXX');
   const [billsIncluded, setBillsIncluded] = useState(true);
@@ -613,6 +613,9 @@ function BannerGeneratorContent() {
                 onChange={(e) => setMonth(e.target.value)}
                 className="select select-sm select-bordered w-full rounded-xl bg-slate-50 text-xs text-slate-800"
               >
+                {!MONTHS_LIST.includes(month) && Boolean(month) && (
+                  <option value={month}>{month}</option>
+                )}
                 {MONTHS_LIST.map((m) => (
                   <option key={m} value={m}>
                     {m}

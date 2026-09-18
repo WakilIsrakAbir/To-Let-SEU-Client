@@ -715,6 +715,11 @@ export default function MyPostsPage() {
                       onChange={handleEditInputChange}
                       className="select select-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100"
                     >
+                      {!MONTHS_LIST.includes(editForm.availableFromMonth) && Boolean(editForm.availableFromMonth) && (
+                        <option value={editForm.availableFromMonth}>
+                          {editForm.availableFromMonth}
+                        </option>
+                      )}
                       {MONTHS_LIST.map((m) => (
                         <option key={m} value={m}>
                           {m}

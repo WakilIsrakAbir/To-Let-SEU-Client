@@ -59,21 +59,23 @@ export const formatAreaValue = (baseArea: string, customArea?: string) => {
   return `Other (${trimmedCustom})`;
 };
 
-export const MONTHS_LIST = [
-  'Immediate',
-  'November 2026',
-  'December 2026',
-  'January 2027',
-  'February 2027',
-  'March 2027',
-  'April 2027',
-  'May 2027',
-  'June 2027',
-  'July 2027',
-  'August 2027',
-  'September 2027',
-  'October 2027',
-] as const;
+export const getAvailableMonths = (count = 4): string[] => {
+  const months: string[] = [];
+  const now = new Date();
+
+  for (let i = 0; i < count; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+    const monthName = d.toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric',
+    });
+    months.push(monthName);
+  }
+
+  return months;
+};
+
+export const MONTHS_LIST: string[] = getAvailableMonths(4);
 
 export const AMENITIES_LIST = [
   { id: 'khalaMaid', label: 'Khala / Cook Service', icon: 'ChefHat' },
