@@ -13,7 +13,6 @@ import {
   MapPin,
   Calendar,
   Users,
-  ShieldCheck,
   Share2,
   Sparkles,
   ExternalLink,
@@ -115,12 +114,6 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
               <span className="font-bold text-slate-900 dark:text-white text-base sm:text-lg leading-tight truncate max-w-full">
                 {post.author?.name || 'SEU Student'}
               </span>
-              {post.author?.isVerifiedStudent && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 text-xs font-bold border border-blue-200 dark:border-blue-800 shrink-0 whitespace-nowrap">
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Verified SEU</span>
-                </span>
-              )}
             </div>
 
             {/* Clean Professional Meta: Department & Relative Time */}
