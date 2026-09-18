@@ -38,7 +38,7 @@ export default function CreatePostPage() {
     whatsappNumber: user?.phone || '',
     area: DHAKA_AREAS[0] as string,
     addressDetails: '',
-    distanceFromCampus: '5 mins walking distance from SEU campus',
+    distanceFromCampus: '',
     rentType: 'fixed' as 'fixed' | 'negotiable',
     rentAmount: 3500,
     serviceChargeIncluded: false,
