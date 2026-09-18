@@ -38,7 +38,7 @@ export default function CreatePostPage() {
     whatsappNumber: user?.phone || '',
     area: DHAKA_AREAS[0] as string,
     addressDetails: '',
-    distanceFromCampus: '5 mins walking',
+    distanceFromCampus: '5 mins walking distance from SEU campus',
     rentType: 'fixed' as 'fixed' | 'negotiable',
     rentAmount: 3500,
     serviceChargeIncluded: false,
@@ -308,7 +308,7 @@ export default function CreatePostPage() {
                 <input
                   type="text"
                   name="distanceFromCampus"
-                  placeholder="e.g. 5 min walk / 10 min rickshaw"
+                  placeholder="e.g. 5 mins walking distance from SEU campus"
                   value={formData.distanceFromCampus}
                   onChange={handleInputChange}
                   className="input input-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900"

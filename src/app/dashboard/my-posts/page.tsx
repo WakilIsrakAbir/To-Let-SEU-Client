@@ -592,7 +592,7 @@ export default function MyPostsPage() {
                     <input
                       type="text"
                       name="distanceFromCampus"
-                      placeholder="e.g. 5 min walk"
+                      placeholder="e.g. 5 mins walking distance from SEU campus"
                       value={editForm.distanceFromCampus}
                       onChange={handleEditInputChange}
                       className="input input-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100"
