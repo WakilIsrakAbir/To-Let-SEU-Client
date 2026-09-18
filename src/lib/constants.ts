@@ -87,3 +87,12 @@ export const AMENITIES_LIST = [
   { id: 'lift', label: 'Lift / Elevator', icon: 'ArrowUpDown' },
   { id: 'filterWater', label: 'Pure Filter Drinking Water', icon: 'Droplets' },
 ] as const;
+
+export const ROOM_TYPES = [
+  '2 Person Room',
+  '3 Person Room',
+  'Single Room',
+  'Sublet',
+] as const;
+
+export type RoomType = (typeof ROOM_TYPES)[number];

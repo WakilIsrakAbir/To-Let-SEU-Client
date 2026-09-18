@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/api';
 import { IPost, IAmenities, IMediaItem } from '@/types/post';
-import { DHAKA_AREAS, MONTHS_LIST, SEU_DEPARTMENTS, parseAreaValue, formatAreaValue } from '@/lib/constants';
+import { DHAKA_AREAS, MONTHS_LIST, ROOM_TYPES, SEU_DEPARTMENTS, parseAreaValue, formatAreaValue } from '@/lib/constants';
 import CloudinaryUploader from '@/components/upload/CloudinaryUploader';
 import {
   Building2,
@@ -58,7 +58,7 @@ export default function MyPostsPage() {
     gender: 'Male' as 'Male' | 'Female',
     availableFromMonth: MONTHS_LIST[0] as string,
     seatCount: 1,
-    roomType: 'Shared Seat' as string,
+    roomType: ROOM_TYPES[0] as string,
     description: '',
     status: 'active' as 'active' | 'booked' | 'archived',
   });
@@ -753,10 +753,14 @@ export default function MyPostsPage() {
                       onChange={handleEditInputChange}
                       className="select select-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100"
                     >
-                      <option value="Single Room">Single Room</option>
-                      <option value="Shared Seat">Shared Seat</option>
-                      <option value="Sublet">Sublet</option>
-                      <option value="Master Bed">Master Bed</option>
+                      {!ROOM_TYPES.includes(editForm.roomType as any) && Boolean(editForm.roomType) && (
+                        <option value={editForm.roomType}>{editForm.roomType}</option>
+                      )}
+                      {ROOM_TYPES.map((rt) => (
+                        <option key={rt} value={rt}>
+                          {rt}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>

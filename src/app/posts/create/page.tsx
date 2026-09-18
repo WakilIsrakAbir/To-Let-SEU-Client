@@ -7,7 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/api';
 import CloudinaryUploader from '@/components/upload/CloudinaryUploader';
 import LocationPicker from '@/components/maps/LocationPicker';
-import { DHAKA_AREAS, MONTHS_LIST, SEU_DEPARTMENTS, AMENITIES_LIST, formatAreaValue } from '@/lib/constants';
+import { DHAKA_AREAS, MONTHS_LIST, ROOM_TYPES, SEU_DEPARTMENTS, AMENITIES_LIST, formatAreaValue } from '@/lib/constants';
 import { IMediaItem, ILocation, IAmenities } from '@/types/post';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -45,7 +45,7 @@ export default function CreatePostPage() {
     gender: 'Male' as 'Male' | 'Female',
     availableFromMonth: MONTHS_LIST[0],
     seatCount: 1,
-    roomType: 'Shared Seat' as 'Single Room' | 'Shared Seat' | 'Sublet' | 'Master Bed',
+    roomType: ROOM_TYPES[0] as string,
     description: '',
   });
 
@@ -433,10 +433,11 @@ export default function CreatePostPage() {
                   onChange={handleInputChange}
                   className="select select-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900"
                 >
-                  <option value="Shared Seat">Shared Seat</option>
-                  <option value="Single Room">Single Room</option>
-                  <option value="Sublet">Sublet</option>
-                  <option value="Master Bed">Master Bed</option>
+                  {ROOM_TYPES.map((rt) => (
+                    <option key={rt} value={rt}>
+                      {rt}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

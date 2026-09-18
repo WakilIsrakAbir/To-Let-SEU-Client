@@ -1,6 +1,13 @@
 export type RentType = 'fixed' | 'negotiable';
 export type GenderPreference = 'Male' | 'Female' | 'Any';
-export type RoomType = 'Single Room' | 'Shared Seat' | 'Sublet' | 'Master Bed';
+export type RoomType =
+  | '2 Person Room'
+  | '3 Person Room'
+  | 'Single Room'
+  | 'Sublet'
+  | 'Shared Seat'
+  | 'Master Bed'
+  | string;
 
 export interface IAmenities {
   khalaMaid: boolean;
