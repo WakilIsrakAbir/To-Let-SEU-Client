@@ -101,7 +101,7 @@ export default function Home() {
               {/* Clean 1-Line Search Capsule - Original on laptop, scaled only on PC displays >= 1680px */}
               <form
                 onSubmit={handleHeroSearch}
-                className="bg-white dark:bg-slate-900 p-2 min-[1680px]:p-2.5 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-lg flex flex-col sm:flex-row items-center gap-2 max-w-xl min-[1680px]:max-w-2xl mx-auto lg:mx-0"
+                className="hidden sm:flex flex-col sm:flex-row bg-white dark:bg-slate-900 p-2 min-[1680px]:p-2.5 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-lg items-center gap-2 max-w-xl min-[1680px]:max-w-2xl mx-auto lg:mx-0"
               >
                 {/* Location Select */}
                 <div className="flex-1 flex items-center gap-2 px-3 py-1.5 w-full">
@@ -148,7 +148,7 @@ export default function Home() {
               </form>
 
               {/* Clean Action Buttons - Original on laptop, scaled only on PC displays >= 1680px */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 min-[1680px]:gap-4 pt-1">
+              <div className="hidden sm:flex flex-wrap items-center justify-center lg:justify-start gap-3 min-[1680px]:gap-4 pt-1">
                 <Link
                   href="/posts"
                   style={{ backgroundColor: currentTheme.hex }}

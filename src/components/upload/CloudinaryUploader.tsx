@@ -34,10 +34,13 @@ export default function CloudinaryUploader({
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<string | null>(null);
 
   const uploadFileToCloudinary = async (file: File, isVideo: boolean = false): Promise<IMediaItem> => {
     // 1. Request signed signature from our Express backend
-    const signRes = await api.get('/media/sign-upload');
+    const signRes = await api.get('/media/sign-upload', {
+      params: { type: isVideo ? 'video' : 'image' },
+    });
     const { timestamp, signature, apiKey, cloudName, folder } = signRes.data.data;
 
     // 2. Prepare FormData for Cloudinary
@@ -57,13 +60,11 @@ export default function CloudinaryUploader({
     });
 
     if (!res.ok) {
-      // Fallback to local object URL if offline/demo keys
-      const objectUrl = URL.createObjectURL(file);
-      return {
-        url: objectUrl,
-        publicId: `local-${Date.now()}-${file.name}`,
-        sizeBytes: file.size,
-      };
+      const errJson = await res.json().catch(() => null);
+      const errMsg =
+        errJson?.error?.message ||
+        `Cloudinary upload failed with status code ${res.status}`;
+      throw new Error(errMsg);
     }
 
     const data = await res.json();
@@ -95,15 +96,22 @@ export default function CloudinaryUploader({
     setUploadingImage(true);
     try {
       const uploadedList: IMediaItem[] = [];
-      for (const file of files) {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        setUploadProgress(`Uploading photo ${i + 1} of ${files.length} to Cloudinary...`);
         const item = await uploadFileToCloudinary(file, false);
         uploadedList.push(item);
       }
       onImagesChange([...images, ...uploadedList]);
     } catch (err: any) {
-      setErrorMessage(err.message || 'Error uploading images. Check connection.');
+      const msg =
+        err.response?.data?.message ||
+        err.message ||
+        'Error uploading images to Cloudinary. Check connection.';
+      setErrorMessage(msg);
     } finally {
       setUploadingImage(false);
+      setUploadProgress(null);
       e.target.value = ''; // reset
     }
   };
@@ -125,13 +133,19 @@ export default function CloudinaryUploader({
     }
 
     setUploadingVideo(true);
+    setUploadProgress('Uploading walkthrough video to Cloudinary...');
     try {
       const videoItem = await uploadFileToCloudinary(file, true);
       onVideoChange(videoItem);
     } catch (err: any) {
-      setErrorMessage(err.message || 'Error uploading video.');
+      const msg =
+        err.response?.data?.message ||
+        err.message ||
+        'Error uploading video to Cloudinary.';
+      setErrorMessage(msg);
     } finally {
       setUploadingVideo(false);
+      setUploadProgress(null);
       e.target.value = '';
     }
   };
@@ -175,6 +189,10 @@ export default function CloudinaryUploader({
                   alt={`Upload ${idx + 1}`}
                   className="w-full h-full object-cover"
                 />
+                <div className="absolute bottom-1.5 left-1.5 bg-black/70 backdrop-blur-xs text-[10px] text-emerald-400 font-bold px-1.5 py-0.5 rounded-md flex items-center gap-1 pointer-events-none">
+                  <CheckCircle className="w-3 h-3" />
+                  <span>Cloud</span>
+                </div>
                 <button
                   type="button"
                   onClick={() => removeImage(idx)}
@@ -199,7 +217,7 @@ export default function CloudinaryUploader({
             {uploadingImage ? (
               <div className="flex flex-col items-center gap-2" style={{ color: currentTheme.hex }}>
                 <Loader2 className="w-7 h-7 animate-spin" />
-                <span className="text-xs font-bold">Uploading images to Cloudinary...</span>
+                <span className="text-xs font-bold">{uploadProgress || 'Uploading photos to Cloudinary...'}</span>
               </div>
             ) : (
               <>
@@ -236,6 +254,10 @@ export default function CloudinaryUploader({
         {video?.url ? (
           <div className="relative rounded-2xl overflow-hidden border border-slate-200 bg-black aspect-video max-h-56">
             <video src={video.url} controls className="w-full h-full object-contain" />
+            <div className="absolute bottom-2.5 left-2.5 bg-black/70 backdrop-blur-xs text-[11px] text-emerald-400 font-bold px-2 py-0.5 rounded-lg flex items-center gap-1 pointer-events-none">
+              <CheckCircle className="w-3.5 h-3.5" />
+              <span>Cloudinary Video</span>
+            </div>
             <button
               type="button"
               onClick={removeVideo}
@@ -255,7 +277,7 @@ export default function CloudinaryUploader({
             {uploadingVideo ? (
               <div className="flex flex-col items-center gap-2" style={{ color: currentTheme.hex }}>
                 <Loader2 className="w-7 h-7 animate-spin" />
-                <span className="text-xs font-bold">Uploading video to Cloudinary...</span>
+                <span className="text-xs font-bold">{uploadProgress || 'Uploading video to Cloudinary...'}</span>
               </div>
             ) : (
               <>

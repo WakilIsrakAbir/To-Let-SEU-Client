@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/api';
 import CloudinaryUploader from '@/components/upload/CloudinaryUploader';
 import LocationPicker from '@/components/maps/LocationPicker';
-import { DHAKA_AREAS, MONTHS_LIST, SEU_DEPARTMENTS, AMENITIES_LIST } from '@/lib/constants';
+import { DHAKA_AREAS, MONTHS_LIST, SEU_DEPARTMENTS, AMENITIES_LIST, formatAreaValue } from '@/lib/constants';
 import { IMediaItem, ILocation, IAmenities } from '@/types/post';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   PlusCircle,
   Building,
@@ -21,6 +22,7 @@ import {
   ArrowRight,
   LogIn,
   CheckCircle,
+  X,
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -34,7 +36,7 @@ export default function CreatePostPage() {
     department: user?.department || 'CSE',
     contactNumber: user?.phone || '',
     whatsappNumber: user?.phone || '',
-    area: DHAKA_AREAS[0],
+    area: DHAKA_AREAS[0] as string,
     addressDetails: '',
     distanceFromCampus: '5 mins walking',
     rentType: 'fixed' as 'fixed' | 'negotiable',
@@ -46,6 +48,8 @@ export default function CreatePostPage() {
     roomType: 'Shared Seat' as 'Single Room' | 'Shared Seat' | 'Sublet' | 'Master Bed',
     description: '',
   });
+
+  const [customArea, setCustomArea] = useState('');
 
   const [amenities, setAmenities] = useState<IAmenities>({
     khalaMaid: true,
@@ -69,6 +73,16 @@ export default function CreatePostPage() {
 
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Auto-dismiss error toast after 5 seconds
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -95,22 +109,19 @@ export default function CreatePostPage() {
       return;
     }
 
-    if (!formData.title || formData.title.length < 5) {
-      setErrorMessage('Please enter a descriptive title of at least 5 characters.');
-      return;
-    }
-
-    if (!formData.description || formData.description.length < 10) {
-      setErrorMessage('Please write a helpful description (at least 10 characters).');
-      return;
-    }
-
     setSubmitting(true);
     try {
+      const finalArea = formatAreaValue(formData.area, customArea);
       const payload = {
         ...formData,
-        rentAmount: Number(formData.rentAmount),
-        seatCount: Number(formData.seatCount),
+        area: finalArea,
+        title: formData.title.trim() || 'Bachelor Seat / Room',
+        department: formData.department || user.department || 'General',
+        contactNumber: formData.contactNumber || user.phone || 'N/A',
+        addressDetails: formData.addressDetails.trim() || 'Near Campus Area',
+        description: formData.description.trim() || '',
+        rentAmount: Number(formData.rentAmount) || 0,
+        seatCount: Number(formData.seatCount) || 1,
         amenities,
         location,
         media: {
@@ -170,7 +181,42 @@ export default function CreatePostPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 relative">
+      {/* Floating Error Toast Notification */}
+      <AnimatePresence>
+        {errorMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="fixed top-20 right-4 sm:right-8 z-50 max-w-md w-[calc(100vw-2rem)]"
+          >
+            <div className="bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-900/60 rounded-2xl shadow-2xl p-4 flex items-start gap-3 text-slate-800 dark:text-slate-100 ring-1 ring-rose-500/15">
+              <div className="w-9 h-9 rounded-xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 mt-0.5">
+                <AlertCircle className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0 pr-1">
+                <p className="text-xs font-extrabold uppercase tracking-wider text-rose-600 dark:text-rose-400">
+                  Submission Error
+                </p>
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 mt-0.5 break-words">
+                  {errorMessage}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setErrorMessage(null)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0"
+                aria-label="Close error toast"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-10 space-y-8">
         {/* Header */}
         <div className="border-b border-slate-100 dark:border-slate-800 pb-6">
@@ -192,13 +238,6 @@ export default function CreatePostPage() {
             Fill in the details below. You can upload up to 5 photos and 1 video walkthrough.
           </p>
         </div>
-
-        {errorMessage && (
-          <div className="alert alert-error bg-red-50 border border-red-200 text-red-700 text-sm rounded-2xl p-4 flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 shrink-0" />
-            <span>{errorMessage}</span>
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Section 1: Basic Info */}
@@ -228,7 +267,7 @@ export default function CreatePostPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Area *
+                  Area
                 </label>
                 <select
                   name="area"
@@ -242,6 +281,24 @@ export default function CreatePostPage() {
                     </option>
                   ))}
                 </select>
+
+                {formData.area === 'Other' && (
+                  <div className="mt-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
+                    <label className="label text-[11px] font-bold text-slate-600 uppercase tracking-wider py-0.5">
+                      Specify Area Name
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Badda, Rampura, Dhanmondi, Uttara"
+                      value={customArea}
+                      onChange={(e) => setCustomArea(e.target.value)}
+                      className="input input-bordered input-sm w-full rounded-xl bg-white border-slate-300 text-slate-900 font-medium"
+                    />
+                    <span className="text-[10px] text-slate-500 mt-1 block">
+                      Will be saved and displayed as &ldquo;Other ({customArea.trim() || 'Custom Area'})&rdquo;
+                    </span>
+                  </div>
+                )}
               </div>
 
               <div>
@@ -261,12 +318,11 @@ export default function CreatePostPage() {
 
             <div>
               <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Full Address / Landmark Details *
+                Full Address / Landmark Details
               </label>
               <input
                 type="text"
                 name="addressDetails"
-                required
                 placeholder="e.g. House #14, Road #3, Behind South Breeze, Tejgaon"
                 value={formData.addressDetails}
                 onChange={handleInputChange}

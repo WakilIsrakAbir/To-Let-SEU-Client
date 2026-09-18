@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Users, ShieldCheck, HeartHandshake, Sparkles, ArrowRight } from 'lucide-react';
+import { Users, ShieldCheck, HeartHandshake, ArrowRight } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
 export default function AboutUsPage() {
@@ -12,17 +12,6 @@ export default function AboutUsPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
       {/* Header Banner */}
       <div className="text-center max-w-2xl mx-auto mb-16">
-        <div
-          style={{
-            backgroundColor: isDark ? `${currentTheme.hex}20` : currentTheme.lightHex,
-            color: isDark ? currentTheme.hex : currentTheme.textHex,
-            borderColor: isDark ? `${currentTheme.hex}40` : currentTheme.borderHex,
-          }}
-          className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-bold mb-4 border transition-colors"
-        >
-          <Sparkles className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
-          <span>Made Exclusively for Southeast University</span>
-        </div>
         <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           Connecting <span style={{ color: currentTheme.hex }}>SEU Students</span> with Safe, Affordable Bachelor Homes
         </h1>

@@ -75,223 +75,408 @@ function BannerGeneratorContent() {
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // 1. Background Fill
-    if (theme === 'seu-emerald') {
-      const grad = ctx.createLinearGradient(0, 0, width, height);
-      grad.addColorStop(0, '#064e3b'); // emerald-900
-      grad.addColorStop(0.5, '#047857'); // emerald-700
-      grad.addColorStop(1, '#0f172a'); // slate-900
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, width, height);
-    } else if (theme === 'dark-slate') {
-      const grad = ctx.createLinearGradient(0, 0, width, height);
-      grad.addColorStop(0, '#0f172a');
-      grad.addColorStop(1, '#020617');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, width, height);
-    } else {
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, width, height);
-    }
-
-    // Border decorative frame
-    ctx.strokeStyle = theme === 'clean-white' ? '#0d9488' : '#34d399';
-    ctx.lineWidth = 14;
-    ctx.strokeRect(30, 30, width - 60, height - 60);
-
-    // 2. Top Header Brand Bar
-    ctx.fillStyle = theme === 'clean-white' ? '#f0fdf4' : 'rgba(255, 255, 255, 0.08)';
-    ctx.roundRect(60, 60, width - 120, 140, 24);
-    ctx.fill();
-
-    // Brand Logo & Title
-    ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#ffffff';
-    ctx.font = 'bold 44px Arial, sans-serif';
-    ctx.fillText('TO LET SEU • Bachelor Housing', 90, 130);
-
-    ctx.fillStyle = theme === 'clean-white' ? '#047857' : '#34d399';
-    ctx.font = 'bold 22px Arial, sans-serif';
-    ctx.fillText('SOUTHEAST UNIVERSITY STUDENT HOUSING', 90, 168);
-
-    // Gender Tag Top Right
-    ctx.fillStyle = gender === 'Male' ? '#2563eb' : '#e11d48';
-    ctx.roundRect(width - 320, 95, 220, 70, 18);
-    ctx.fill();
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 30px Arial, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(`${gender.toUpperCase()} ONLY`, width - 210, 142);
-    ctx.textAlign = 'left';
-
-    // 3. Main Headline
-    ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#ffffff';
-    ctx.font = 'bold 52px Arial, sans-serif';
-
-    // Word wrap headline
-    const words = headline.split(' ');
-    let line = '';
-    let y = 280;
-    for (let n = 0; n < words.length; n++) {
-      const testLine = line + words[n] + ' ';
-      const metrics = ctx.measureText(testLine);
-      if (metrics.width > width - 180 && n > 0) {
-        ctx.fillText(line, 90, y);
-        line = words[n] + ' ';
-        y += 64;
-      } else {
-        line = testLine;
-      }
-    }
-    ctx.fillText(line, 90, y);
-
-    // 4. Rent Highlight Box
-    const rentBoxY = Math.max(y + 40, 420);
-    ctx.fillStyle = theme === 'clean-white' ? '#047857' : '#f59e0b';
-    ctx.roundRect(90, rentBoxY, width - 180, 160, 24);
-    ctx.fill();
-
-    ctx.fillStyle = theme === 'clean-white' ? '#ffffff' : '#0f172a';
-    ctx.font = 'bold 30px Arial, sans-serif';
-    ctx.fillText('MONTHLY RENT', 130, rentBoxY + 55);
-
-    ctx.font = 'black 66px Arial, sans-serif';
-    ctx.fillText(`BDT ${rent} / mo`, 130, rentBoxY + 125);
-
-    ctx.font = 'bold 26px Arial, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText(
-      billsIncluded ? '⚡ Bills Included' : '+ Utility Bills',
-      width - 130,
-      rentBoxY + 125
-    );
-    ctx.textAlign = 'left';
-
-    // 5. Specs Grid (Area, Available Month, Seats)
-    const specsY = rentBoxY + 200;
-    const specCards = [
-      { label: 'AREA / LOCATION', val: area },
-      { label: 'AVAILABLE FROM', val: month },
-      { label: 'ROOM / CAPACITY', val: `${seats} Available` },
-    ];
-
-    specCards.forEach((spec, i) => {
-      const cardX = 90 + i * ((width - 180 - 40) / 3 + 20);
-      const cardW = (width - 180 - 40) / 3;
-
-      ctx.fillStyle =
-        theme === 'clean-white' ? '#f8fafc' : 'rgba(255, 255, 255, 0.07)';
-      ctx.roundRect(cardX, specsY, cardW, 130, 20);
-      ctx.fill();
-
-      ctx.fillStyle = theme === 'clean-white' ? '#64748b' : '#94a3b8';
-      ctx.font = 'bold 20px Arial, sans-serif';
-      ctx.fillText(spec.label, cardX + 24, specsY + 45);
-
-      ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#ffffff';
-      ctx.font = 'bold 28px Arial, sans-serif';
-      ctx.fillText(spec.val.substring(0, 18), cardX + 24, specsY + 95);
-    });
-
-    // 6. Amenities Badges Row
-    const amenY = specsY + 175;
-    ctx.fillStyle = theme === 'clean-white' ? '#334155' : '#e2e8f0';
-    ctx.font = 'bold 28px Arial, sans-serif';
-    ctx.fillText('PERKS & AMENITIES INCLUDED:', 90, amenY);
-
-    const activePerkLabels = Object.entries(perks)
-      .filter(([_, active]) => active)
-      .map(([k]) => {
-        if (k === 'khalaMaid') return '🍳 Khala / Cook';
-        if (k === 'wifi') return '📶 High-Speed WiFi';
-        if (k === 'fridge') return '🧊 Refrigerator';
-        if (k === 'attachedBath') return '🚿 Attached Bath';
-        if (k === 'balcony') return '🌿 Balcony';
-        if (k === 'generator') return '⚡ Generator Backup';
-        return k;
-      });
-
-    let perkX = 90;
-    let perkY = amenY + 40;
-    activePerkLabels.forEach((label) => {
-      ctx.font = 'bold 24px Arial, sans-serif';
-      const textW = ctx.measureText(label).width;
-
-      if (perkX + textW + 50 > width - 90) {
-        perkX = 90;
-        perkY += 60;
-      }
-
-      ctx.fillStyle =
-        theme === 'clean-white' ? '#ecfdf5' : 'rgba(16, 185, 129, 0.2)';
-      ctx.roundRect(perkX, perkY - 32, textW + 36, 48, 14);
-      ctx.fill();
-
-      ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#34d399';
-      ctx.fillText(label, perkX + 18, perkY);
-      perkX += textW + 50;
-    });
-
-    // 7. Contact & QR Code Footer Box
-    const footerY = 1060;
-    ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#03251e';
-    ctx.roundRect(90, footerY, width - 180, 210, 26);
-    ctx.fill();
-
-    ctx.fillStyle = '#34d399';
-    ctx.font = 'bold 26px Arial, sans-serif';
-    ctx.fillText('FOR DETAILS & VISITING ROOM, CALL:', 130, footerY + 60);
-
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'black 54px Arial, sans-serif';
-    ctx.fillText(`📞 ${phone}`, 130, footerY + 130);
-
-    ctx.fillStyle = '#94a3b8';
-    ctx.font = 'bold 22px Arial, sans-serif';
-    ctx.fillText('Southeast University Verified Bachelor Mess', 130, footerY + 175);
-
-    // Draw QR Code onto Canvas
-    if (qrCodeUrl) {
-      const qrImg = new Image();
-      qrImg.src = qrCodeUrl;
-      qrImg.onload = () => {
-        ctx.fillStyle = '#ffffff';
-        ctx.roundRect(width - 270, footerY + 30, 150, 150, 16);
-        ctx.fill();
-        ctx.drawImage(qrImg, width - 260, footerY + 40, 130, 130);
-
-        // Finish and download
-        const mime = format === 'png' ? 'image/png' : 'image/jpeg';
-        const fileExt = format === 'png' ? 'png' : 'jpg';
-        const dataUrl = canvas.toDataURL(mime, 0.95);
-        const a = document.createElement('a');
-        a.href = dataUrl;
-        a.download = `SEU_Basa_Rent_Poster_${area.replace(/[^a-zA-Z0-9]/g, '_')}.${fileExt}`;
-        a.click();
-        setDownloading(false);
-      };
+    if (!ctx) {
+      setDownloading(false);
       return;
     }
 
-    // Fallback if no QR
-    const mime = format === 'png' ? 'image/png' : 'image/jpeg';
-    const dataUrl = canvas.toDataURL(mime, 0.95);
-    const a = document.createElement('a');
-    a.href = dataUrl;
-    a.download = `SEU_Basa_Rent_Poster.${format}`;
-    a.click();
-    setDownloading(false);
+    // Helper: Safely draw rounded rectangle without path pollution
+    const fillRoundedRect = (
+      x: number,
+      y: number,
+      w: number,
+      h: number,
+      r: number,
+      fillStyle: string,
+      strokeStyle?: string,
+      strokeWidth?: number
+    ) => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, r);
+      ctx.fillStyle = fillStyle;
+      ctx.fill();
+      if (strokeStyle && strokeWidth) {
+        ctx.strokeStyle = strokeStyle;
+        ctx.lineWidth = strokeWidth;
+        ctx.stroke();
+      }
+      ctx.restore();
+    };
+
+    // Vector Icon Drawers (Crisp Canvas Drawing)
+    const drawPinIcon = (cx: number, cy: number, color: string) => {
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy - 5, 9, Math.PI * 0.75, Math.PI * 2.25, false);
+      ctx.lineTo(cx, cy + 12);
+      ctx.closePath();
+      ctx.fill();
+      // Inner dot
+      ctx.beginPath();
+      ctx.fillStyle = theme === 'clean-white' ? '#f1f5f9' : '#042f2e';
+      ctx.arc(cx, cy - 5, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const drawCalendarIcon = (cx: number, cy: number, color: string) => {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.roundRect(cx - 12, cy - 10, 24, 22, 4);
+      ctx.stroke();
+      // Top header bar
+      ctx.beginPath();
+      ctx.moveTo(cx - 12, cy - 2);
+      ctx.lineTo(cx + 12, cy - 2);
+      ctx.stroke();
+      // Binder loops
+      ctx.beginPath();
+      ctx.moveTo(cx - 6, cy - 14);
+      ctx.lineTo(cx - 6, cy - 9);
+      ctx.moveTo(cx + 6, cy - 14);
+      ctx.lineTo(cx + 6, cy - 9);
+      ctx.stroke();
+      // Inner dot
+      ctx.beginPath();
+      ctx.arc(cx, cy + 4, 2.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const drawUsersIcon = (cx: number, cy: number, color: string) => {
+      ctx.save();
+      ctx.fillStyle = color;
+      // Main user head
+      ctx.beginPath();
+      ctx.arc(cx - 5, cy - 5, 5.5, 0, Math.PI * 2);
+      ctx.fill();
+      // Main user shoulder
+      ctx.beginPath();
+      ctx.arc(cx - 5, cy + 11, 9, Math.PI * 1.15, Math.PI * 1.85);
+      ctx.fill();
+      // Second user head
+      ctx.beginPath();
+      ctx.arc(cx + 7, cy - 3, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+      // Second user shoulder
+      ctx.beginPath();
+      ctx.arc(cx + 7, cy + 11, 7, Math.PI * 1.2, Math.PI * 1.8);
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const drawPhoneIcon = (cx: number, cy: number, color: string) => {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(cx - 9, cy - 16, 18, 32, 5);
+      ctx.stroke();
+      // Speaker line
+      ctx.beginPath();
+      ctx.moveTo(cx - 4, cy - 11);
+      ctx.lineTo(cx + 4, cy - 11);
+      ctx.stroke();
+      // Home dot
+      ctx.beginPath();
+      ctx.arc(cx, cy + 10, 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    };
+
+    const renderPoster = (qrImg?: HTMLImageElement) => {
+      // 1. Poster Background & Outer Rounded Frame
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(14, 14, width - 28, height - 28, 48);
+      ctx.clip();
+
+      if (theme === 'seu-emerald') {
+        const grad = ctx.createLinearGradient(0, 0, width, height);
+        grad.addColorStop(0, '#064e3b'); // emerald-900
+        grad.addColorStop(0.45, '#065f46'); // emerald-800
+        grad.addColorStop(1, '#020617'); // slate-950
+        ctx.fillStyle = grad;
+      } else if (theme === 'dark-slate') {
+        const grad = ctx.createLinearGradient(0, 0, width, height);
+        grad.addColorStop(0, '#0f172a');
+        grad.addColorStop(0.5, '#020617');
+        grad.addColorStop(1, '#000000');
+        ctx.fillStyle = grad;
+      } else {
+        ctx.fillStyle = '#ffffff';
+      }
+      ctx.fillRect(0, 0, width, height);
+
+      // Outer border stroke
+      ctx.beginPath();
+      ctx.roundRect(14, 14, width - 28, height - 28, 48);
+      ctx.strokeStyle =
+        theme === 'clean-white'
+          ? '#059669'
+          : theme === 'dark-slate'
+          ? '#334155'
+          : 'rgba(52, 211, 153, 0.4)';
+      ctx.lineWidth = 8;
+      ctx.stroke();
+      ctx.restore();
+
+      const contentX = 72;
+      const contentW = width - 2 * contentX;
+
+      // 2. Top Header Brand Bar
+      const headerY = 68;
+
+      // Brand Title "TO LET SEU"
+      ctx.font = '900 42px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#ffffff';
+      ctx.fillText('TO LET ', contentX, headerY + 42);
+      const toLetWidth = ctx.measureText('TO LET ').width;
+
+      ctx.fillStyle = theme === 'clean-white' ? '#059669' : '#34d399';
+      ctx.fillText('SEU', contentX + toLetWidth, headerY + 42);
+
+      // Subtitle
+      ctx.font = 'bold 18px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#047857' : '#94a3b8';
+      ctx.fillText('SOUTHEAST UNIVERSITY STUDENT MESS', contentX, headerY + 76);
+
+      // Gender Badge Pill
+      const badgeW = 210;
+      const badgeH = 50;
+      const badgeX = contentX + contentW - badgeW;
+      const badgeY = headerY + 22;
+      const badgeBg = gender === 'Male' ? '#2563eb' : '#e11d48';
+      fillRoundedRect(badgeX, badgeY, badgeW, badgeH, 16, badgeBg);
+
+      ctx.font = '900 22px Arial, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${gender.toUpperCase()} ONLY`, badgeX + badgeW / 2, badgeY + 33);
+      ctx.textAlign = 'left';
+
+      // Header bottom divider line
+      const dividerY = headerY + 104;
+      ctx.beginPath();
+      ctx.moveTo(contentX, dividerY);
+      ctx.lineTo(contentX + contentW, dividerY);
+      ctx.strokeStyle =
+        theme === 'clean-white' ? '#e2e8f0' : 'rgba(255, 255, 255, 0.12)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // 3. Main Headline
+      const headlineY = dividerY + 54;
+      ctx.font = '900 46px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#ffffff';
+
+      const words = headline.split(' ');
+      let currentLine = '';
+      const lines: string[] = [];
+      for (let n = 0; n < words.length; n++) {
+        const testLine = currentLine ? `${currentLine} ${words[n]}` : words[n];
+        if (ctx.measureText(testLine).width > contentW && currentLine) {
+          lines.push(currentLine);
+          currentLine = words[n];
+        } else {
+          currentLine = testLine;
+        }
+      }
+      if (currentLine) lines.push(currentLine);
+
+      const headlineLines = lines.slice(0, 3);
+      headlineLines.forEach((l, idx) => {
+        ctx.fillText(l, contentX, headlineY + idx * 56);
+      });
+      const endHeadlineY = headlineY + (headlineLines.length - 1) * 56;
+
+      // 4. Rent Highlight Card
+      const rentY = Math.max(endHeadlineY + 44, 385);
+      const rentH = 150;
+      const rentBg = theme === 'clean-white' ? '#047857' : '#f59e0b';
+      fillRoundedRect(contentX, rentY, contentW, rentH, 24, rentBg);
+
+      // Rent Left Text
+      ctx.font = 'bold 20px Arial, sans-serif';
+      ctx.fillStyle =
+        theme === 'clean-white'
+          ? 'rgba(255, 255, 255, 0.85)'
+          : 'rgba(15, 23, 42, 0.75)';
+      ctx.fillText('MONTHLY RENT', contentX + 36, rentY + 50);
+
+      ctx.font = '900 58px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#ffffff' : '#0f172a';
+      ctx.fillText(`BDT ${rent}`, contentX + 36, rentY + 118);
+
+      // Rent Right Pill (Bills Included)
+      const pillText = billsIncluded ? '⚡ Bills Included' : '+ Utility Bills';
+      ctx.font = 'bold 23px Arial, sans-serif';
+      const pillW = ctx.measureText(pillText).width + 44;
+      const pillH = 48;
+      const pillX = contentX + contentW - 36 - pillW;
+      const pillY = rentY + (rentH - pillH) / 2;
+      const pillBg =
+        theme === 'clean-white'
+          ? 'rgba(255, 255, 255, 0.22)'
+          : 'rgba(0, 0, 0, 0.15)';
+      fillRoundedRect(pillX, pillY, pillW, pillH, 14, pillBg);
+
+      ctx.fillStyle = theme === 'clean-white' ? '#ffffff' : '#0f172a';
+      ctx.fillText(pillText, pillX + 22, pillY + 33);
+
+      // 5. Specs Grid (Area, Month, Capacity)
+      const specsY = rentY + rentH + 26;
+      const specsH = 125;
+      const gap = 18;
+      const cardW = (contentW - 2 * gap) / 3;
+
+      const specCardsData = [
+        { val: area, icon: drawPinIcon },
+        { val: month, icon: drawCalendarIcon },
+        { val: seats, icon: drawUsersIcon },
+      ];
+
+      specCardsData.forEach((spec, i) => {
+        const cardX = contentX + i * (cardW + gap);
+        const cardBg =
+          theme === 'clean-white' ? '#f1f5f9' : 'rgba(255, 255, 255, 0.10)';
+        const cardBorder =
+          theme === 'clean-white' ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)';
+
+        fillRoundedRect(cardX, specsY, cardW, specsH, 20, cardBg, cardBorder, 1.5);
+
+        // Centered Icon
+        spec.icon(cardX + cardW / 2, specsY + 42, '#34d399');
+
+        // Truncated value to fit neatly
+        let displayVal = spec.val;
+        ctx.font = 'bold 23px Arial, sans-serif';
+        if (ctx.measureText(displayVal).width > cardW - 28) {
+          while (ctx.measureText(displayVal + '...').width > cardW - 28 && displayVal.length > 3) {
+            displayVal = displayVal.slice(0, -1);
+          }
+          displayVal += '...';
+        }
+
+        ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.fillText(displayVal, cardX + cardW / 2, specsY + 98);
+        ctx.textAlign = 'left';
+      });
+
+      // 6. Perks Included Section
+      const perksLabelY = specsY + specsH + 34;
+      ctx.font = 'bold 19px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#64748b' : '#94a3b8';
+      ctx.fillText('PERKS INCLUDED:', contentX, perksLabelY);
+
+      const activePerksList: string[] = [];
+      if (perks.khalaMaid) activePerksList.push('🍳 Khala / Cook');
+      if (perks.wifi) activePerksList.push('📶 WiFi');
+      if (perks.fridge) activePerksList.push('🧊 Fridge');
+      if (perks.attachedBath) activePerksList.push('🚿 Attached Bath');
+      if (perks.balcony) activePerksList.push('🌿 Balcony');
+      if (perks.generator) activePerksList.push('⚡ Generator');
+
+      let perkX = contentX;
+      let perkY = perksLabelY + 16;
+      ctx.font = 'bold 21px Arial, sans-serif';
+
+      activePerksList.forEach((perk) => {
+        const textWidth = ctx.measureText(perk).width;
+        const pillWidth = textWidth + 36;
+        const pillHeight = 44;
+
+        if (perkX + pillWidth > contentX + contentW) {
+          perkX = contentX;
+          perkY += 54;
+        }
+
+        const pBg =
+          theme === 'clean-white' ? '#ecfdf5' : 'rgba(16, 185, 129, 0.20)';
+        const pBorder =
+          theme === 'clean-white' ? '#a7f3d0' : 'rgba(52, 211, 153, 0.35)';
+
+        fillRoundedRect(perkX, perkY, pillWidth, pillHeight, 12, pBg, pBorder, 1.5);
+
+        ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#6ee7b7';
+        ctx.fillText(perk, perkX + 18, perkY + 30);
+
+        perkX += pillWidth + 12;
+      });
+
+      // 7. Contact / Visiting Box (Footer)
+      const footerH = 190;
+      const footerY = height - 60 - footerH;
+      const footerBg =
+        theme === 'clean-white' ? '#0f172a' : 'rgba(0, 0, 0, 0.45)';
+      const footerBorder =
+        theme === 'clean-white' ? '#1e293b' : 'rgba(255, 255, 255, 0.12)';
+
+      fillRoundedRect(contentX, footerY, contentW, footerH, 24, footerBg, footerBorder, 1.5);
+
+      // Contact texts
+      ctx.font = 'bold 18px Arial, sans-serif';
+      ctx.fillStyle = '#34d399';
+      ctx.fillText('CONTACT / ROOM VISIT:', contentX + 36, footerY + 48);
+
+      // Phone icon and number
+      drawPhoneIcon(contentX + 50, footerY + 102, '#34d399');
+
+      ctx.font = '900 44px Arial, sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(phone, contentX + 78, footerY + 114);
+
+      ctx.font = 'bold 18px Arial, sans-serif';
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText('Scan QR code for online listing', contentX + 36, footerY + 158);
+
+      // QR Code Container
+      const qrBoxSize = 150;
+      const qrBoxX = contentX + contentW - 24 - qrBoxSize;
+      const qrBoxY = footerY + (footerH - qrBoxSize) / 2;
+
+      fillRoundedRect(qrBoxX, qrBoxY, qrBoxSize, qrBoxSize, 18, '#ffffff');
+
+      if (qrImg) {
+        ctx.drawImage(qrImg, qrBoxX + 10, qrBoxY + 10, qrBoxSize - 20, qrBoxSize - 20);
+      }
+
+      // 8. Trigger Download
+      const mime = format === 'png' ? 'image/png' : 'image/jpeg';
+      const fileExt = format === 'png' ? 'png' : 'jpg';
+      const dataUrl = canvas.toDataURL(mime, 0.95);
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = `SEU_Rent_Banner_${area.replace(/[^a-zA-Z0-9]/g, '_')}.${fileExt}`;
+      a.click();
+      setDownloading(false);
+    };
+
+    // Load QR Code before triggering export
+    if (qrCodeUrl) {
+      const qrImg = new Image();
+      qrImg.crossOrigin = 'anonymous';
+      qrImg.onload = () => renderPoster(qrImg);
+      qrImg.onerror = () => renderPoster();
+      qrImg.src = qrCodeUrl;
+    } else {
+      renderPoster();
+    }
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Top Banner */}
       <div className="text-center max-w-2xl mx-auto mb-10">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold mb-3 border border-amber-200">
-          <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-          <span>Auto Rent Poster & Flyer Generator</span>
-        </div>
         <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
           Create & Download Rent Banner
         </h1>
@@ -552,17 +737,6 @@ function BannerGeneratorContent() {
 
         {/* Right Preview Card (7 cols) */}
         <div className="lg:col-span-7 flex flex-col items-center">
-          <div className="w-full flex items-center justify-between mb-3 px-2">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-amber-500" />
-              <span>Live Flyer Preview (Auto-Synced)</span>
-            </span>
-
-            <span className="text-xs text-slate-500 font-semibold">
-              300 DPI Export Ready
-            </span>
-          </div>
-
           {/* Dynamic HTML Poster Preview that matches export */}
           <div
             className={`w-full max-w-lg aspect-[4/5] rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-2xl transition-all duration-300 relative overflow-hidden border-4 ${

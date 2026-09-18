@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   FileText,
+  ChevronDown,
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -22,6 +23,11 @@ export default function Navbar() {
   const { user, isAdmin, logout } = useAuth();
   const { currentTheme, isDark } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Framer Motion scroll progress for seamless reading depth indicator
   const { scrollYProgress } = useScroll();
@@ -36,6 +42,8 @@ export default function Navbar() {
     href: string;
     badge?: string;
   }
+
+  const isDashboardActive = pathname.startsWith('/dashboard');
 
   const navLinks: NavItem[] = [
     { name: 'Home', href: '/' },
@@ -116,7 +124,7 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Right: Actions & User Authentication (No duplicate theme toggle here) */}
+          {/* Right: Actions & User Authentication */}
           <div className="hidden md:flex items-center gap-3">
             {/* Post Ad Button */}
             <Link
@@ -128,21 +136,58 @@ export default function Navbar() {
               <span>Post Ad</span>
             </Link>
 
-            {user ? (
-              /* User Dropdown */
+            {!mounted ? (
+              <div className="w-28 h-9 rounded-full bg-slate-100 dark:bg-slate-800/60 animate-pulse" />
+            ) : user ? (
+              /* User Dropdown with Dashboard Text & Active State Indicator */
               <div className="dropdown dropdown-end">
                 <div
                   tabIndex={0}
                   role="button"
-                  className="btn btn-ghost btn-circle avatar border border-slate-200 dark:border-slate-700 hover:border-slate-300"
+                  style={{
+                    backgroundColor: isDashboardActive
+                      ? isDark
+                        ? `${currentTheme.hex}22`
+                        : currentTheme.lightHex
+                      : undefined,
+                    color: isDashboardActive
+                      ? isDark
+                        ? '#ffffff'
+                        : currentTheme.textHex
+                      : undefined,
+                    borderColor: isDashboardActive
+                      ? currentTheme.hex
+                      : undefined,
+                    boxShadow: isDashboardActive
+                      ? `0 0 0 1.5px ${currentTheme.hex}40`
+                      : undefined,
+                  }}
+                  className={`flex items-center gap-2.5 pl-3.5 pr-2 py-1 rounded-full border transition-all duration-200 cursor-pointer select-none group ${
+                    isDashboardActive
+                      ? 'font-bold shadow-xs'
+                      : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-white/60 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200'
+                  }`}
                 >
-                  <div className="w-9 rounded-full">
+                  <span className="text-xs sm:text-sm font-bold tracking-tight">Dashboard</span>
+                  <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-700">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={user.avatarUrl || 'https://res.cloudinary.com/demo/image/upload/v1689246197/cld-sample.jpg'}
                       alt={user.name}
+                      className="w-full h-full object-cover"
                     />
+                    {isDashboardActive && (
+                      <span
+                        style={{ backgroundColor: currentTheme.hex }}
+                        className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ring-1.5 ring-white dark:ring-slate-900 animate-pulse"
+                      />
+                    )}
                   </div>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-200 opacity-60 group-hover:opacity-100 ${
+                      isDashboardActive ? 'text-current' : 'text-slate-400'
+                    }`}
+                  />
                 </div>
                 <ul
                   tabIndex={0}
@@ -158,22 +203,70 @@ export default function Navbar() {
                     </span>
                   </li>
                   <li>
-                    <Link href="/dashboard" className="py-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl">
-                      <User className="w-4 h-4 text-slate-500" />
-                      <span>My Dashboard</span>
+                    <Link
+                      href="/dashboard"
+                      style={{
+                        backgroundColor: pathname === '/dashboard' ? (isDark ? `${currentTheme.hex}22` : currentTheme.lightHex) : undefined,
+                        color: pathname === '/dashboard' ? (isDark ? '#ffffff' : currentTheme.textHex) : undefined,
+                        fontWeight: pathname === '/dashboard' ? 'bold' : undefined,
+                      }}
+                      className="py-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-slate-500" />
+                        <span>My Dashboard</span>
+                      </div>
+                      {pathname === '/dashboard' && (
+                        <span
+                          style={{ backgroundColor: currentTheme.hex }}
+                          className="w-2 h-2 rounded-full"
+                        />
+                      )}
                     </Link>
                   </li>
                   <li>
-                    <Link href="/dashboard/my-posts" className="py-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl">
-                      <FileText className="w-4 h-4 text-slate-500" />
-                      <span>My Rent Posts</span>
+                    <Link
+                      href="/dashboard/my-posts"
+                      style={{
+                        backgroundColor: pathname === '/dashboard/my-posts' ? (isDark ? `${currentTheme.hex}22` : currentTheme.lightHex) : undefined,
+                        color: pathname === '/dashboard/my-posts' ? (isDark ? '#ffffff' : currentTheme.textHex) : undefined,
+                        fontWeight: pathname === '/dashboard/my-posts' ? 'bold' : undefined,
+                      }}
+                      className="py-2.5 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-slate-500" />
+                        <span>My Rent Posts</span>
+                      </div>
+                      {pathname === '/dashboard/my-posts' && (
+                        <span
+                          style={{ backgroundColor: currentTheme.hex }}
+                          className="w-2 h-2 rounded-full"
+                        />
+                      )}
                     </Link>
                   </li>
                   {isAdmin && (
                     <li>
-                      <Link href="/admin" className="py-2.5 text-indigo-600 dark:text-indigo-400 font-semibold hover:bg-indigo-50 dark:hover:bg-indigo-950/40 rounded-xl">
-                        <Shield className="w-4 h-4" />
-                        <span>Admin Moderation</span>
+                      <Link
+                        href="/admin"
+                        style={{
+                          backgroundColor: pathname.startsWith('/admin') ? (isDark ? `${currentTheme.hex}22` : currentTheme.lightHex) : undefined,
+                          color: pathname.startsWith('/admin') ? (isDark ? '#ffffff' : currentTheme.textHex) : undefined,
+                          fontWeight: pathname.startsWith('/admin') ? 'bold' : undefined,
+                        }}
+                        className="py-2.5 text-indigo-600 dark:text-indigo-400 font-semibold hover:bg-indigo-50 dark:hover:bg-indigo-950/40 rounded-xl flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Shield className="w-4 h-4" />
+                          <span>Admin Moderation</span>
+                        </div>
+                        {pathname.startsWith('/admin') && (
+                          <span
+                            style={{ backgroundColor: currentTheme.hex }}
+                            className="w-2 h-2 rounded-full"
+                          />
+                        )}
                       </Link>
                     </li>
                   )}
@@ -268,7 +361,9 @@ export default function Navbar() {
 
           <div className="divider my-2 border-slate-200 dark:border-slate-800"></div>
 
-          {user ? (
+          {!mounted ? (
+            <div className="h-10 rounded-lg bg-slate-100 dark:bg-slate-800/60 animate-pulse" />
+          ) : user ? (
             <div className="space-y-1.5">
               <div className="px-3.5 py-2 bg-slate-50 dark:bg-slate-900 rounded-lg">
                 <p className="font-bold text-slate-900 dark:text-white text-sm">{user.name}</p>
@@ -280,12 +375,46 @@ export default function Navbar() {
                 </p>
               </div>
               <Link
+                href="/dashboard"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  backgroundColor: pathname === '/dashboard' ? (isDark ? `${currentTheme.hex}22` : currentTheme.lightHex) : undefined,
+                  color: pathname === '/dashboard' ? (isDark ? '#ffffff' : currentTheme.textHex) : undefined,
+                  fontWeight: pathname === '/dashboard' ? 'bold' : undefined,
+                }}
+                className="flex items-center justify-between px-3.5 py-2 text-sm font-medium rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900"
+              >
+                <div className="flex items-center gap-2.5">
+                  <User className="w-4 h-4 text-slate-400" />
+                  <span>My Dashboard</span>
+                </div>
+                {pathname === '/dashboard' && (
+                  <span
+                    style={{ backgroundColor: currentTheme.hex }}
+                    className="w-2 h-2 rounded-full"
+                  />
+                )}
+              </Link>
+              <Link
                 href="/dashboard/my-posts"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 px-3.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-lg"
+                style={{
+                  backgroundColor: pathname === '/dashboard/my-posts' ? (isDark ? `${currentTheme.hex}22` : currentTheme.lightHex) : undefined,
+                  color: pathname === '/dashboard/my-posts' ? (isDark ? '#ffffff' : currentTheme.textHex) : undefined,
+                  fontWeight: pathname === '/dashboard/my-posts' ? 'bold' : undefined,
+                }}
+                className="flex items-center justify-between px-3.5 py-2 text-sm font-medium rounded-lg hover:bg-slate-100 dark:hover:bg-slate-900"
               >
-                <FileText className="w-4 h-4 text-slate-400" />
-                <span>My Rent Posts</span>
+                <div className="flex items-center gap-2.5">
+                  <FileText className="w-4 h-4 text-slate-400" />
+                  <span>My Rent Posts</span>
+                </div>
+                {pathname === '/dashboard/my-posts' && (
+                  <span
+                    style={{ backgroundColor: currentTheme.hex }}
+                    className="w-2 h-2 rounded-full"
+                  />
+                )}
               </Link>
               {isAdmin && (
                 <Link

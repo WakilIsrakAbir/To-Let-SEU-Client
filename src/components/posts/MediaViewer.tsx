@@ -25,26 +25,30 @@ export default function MediaViewer({ images = [], video, title }: MediaViewerPr
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  const hasImages = images.length > 0;
-  const hasVideo = !!video && !!video.url;
+  // Filter out any stale/temporary local blob URLs from legacy posts
+  const validImages = (images || []).filter(
+    (img) => img && img.url && !img.url.startsWith('blob:')
+  );
+  const hasImages = validImages.length > 0;
+  const hasVideo = !!video && !!video.url && !video.url.startsWith('blob:');
 
   const nextImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (images.length > 1) {
-      setCurrentImgIndex((prev) => (prev + 1) % images.length);
+    if (validImages.length > 1) {
+      setCurrentImgIndex((prev) => (prev + 1) % validImages.length);
     }
   };
 
   const prevImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
-    if (images.length > 1) {
-      setCurrentImgIndex((prev) => (prev - 1 + images.length) % images.length);
+    if (validImages.length > 1) {
+      setCurrentImgIndex((prev) => (prev - 1 + validImages.length) % validImages.length);
     }
   };
 
   if (!hasImages && !hasVideo) {
     return (
-      <div className="w-full h-64 sm:h-80 bg-slate-100 rounded-2xl flex flex-col items-center justify-center text-slate-400 border border-slate-200">
+      <div className="w-full h-64 sm:h-80 bg-slate-100 dark:bg-slate-800/60 rounded-2xl flex flex-col items-center justify-center text-slate-400 border border-slate-200 dark:border-slate-700">
         <ImageIcon className="w-12 h-12 mb-2 stroke-1" />
         <span className="text-sm font-medium">No photos or video uploaded for this room</span>
       </div>
@@ -52,7 +56,7 @@ export default function MediaViewer({ images = [], video, title }: MediaViewerPr
   }
 
   return (
-    <div className="w-full rounded-2xl overflow-hidden border border-slate-200 bg-slate-950 text-white">
+    <div className="w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950 text-white">
       {/* Media Type Tabs (if both photos and video exist) */}
       {hasImages && hasVideo && (
         <div className="flex items-center justify-center gap-2 p-2 bg-slate-900 border-b border-slate-800">
@@ -68,7 +72,7 @@ export default function MediaViewer({ images = [], video, title }: MediaViewerPr
             }`}
           >
             <ImageIcon className="w-4 h-4" />
-            <span>Photos ({images.length})</span>
+            <span>Photos ({validImages.length})</span>
           </button>
           <button
             onClick={() => setActiveTab('video')}
@@ -93,17 +97,20 @@ export default function MediaViewer({ images = [], video, title }: MediaViewerPr
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src={images[currentImgIndex]?.url}
+              src={validImages[currentImgIndex]?.url}
               alt={`${title} - Photo ${currentImgIndex + 1}`}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02] cursor-pointer"
               onClick={() => setLightboxOpen(true)}
+              onError={(e) => {
+                (e.target as HTMLElement).style.display = 'none';
+              }}
             />
 
             {/* Photo Counter Pill */}
             <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-xs font-bold border border-white/10 flex items-center gap-1.5">
               <ImageIcon className="w-3.5 h-3.5" />
               <span>
-                {currentImgIndex + 1} / {images.length}
+                {currentImgIndex + 1} / {validImages.length}
               </span>
             </div>
 
@@ -117,7 +124,7 @@ export default function MediaViewer({ images = [], video, title }: MediaViewerPr
             </button>
 
             {/* Next / Prev Buttons */}
-            {images.length > 1 && (
+            {validImages.length > 1 && (
               <>
                 <button
                   onClick={prevImage}
@@ -158,9 +165,9 @@ export default function MediaViewer({ images = [], video, title }: MediaViewerPr
       </div>
 
       {/* Thumbnail Bar (if multiple photos) */}
-      {activeTab === 'photos' && images.length > 1 && (
+      {activeTab === 'photos' && validImages.length > 1 && (
         <div className="flex items-center gap-2 p-2.5 bg-slate-900/90 overflow-x-auto border-t border-slate-800">
-          {images.map((img, idx) => (
+          {validImages.map((img, idx) => (
             <button
               key={img.publicId || idx}
               onClick={() => setCurrentImgIndex(idx)}
@@ -178,6 +185,9 @@ export default function MediaViewer({ images = [], video, title }: MediaViewerPr
                 src={img.url}
                 alt={`Thumb ${idx + 1}`}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLElement).style.opacity = '0.3';
+                }}
               />
             </button>
           ))}
@@ -196,12 +206,12 @@ export default function MediaViewer({ images = [], video, title }: MediaViewerPr
 
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={images[currentImgIndex]?.url}
+            src={validImages[currentImgIndex]?.url}
             alt={`${title} - Lightbox`}
             className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl"
           />
 
-          {images.length > 1 && (
+          {validImages.length > 1 && (
             <>
               <button
                 onClick={prevImage}
@@ -219,7 +229,7 @@ export default function MediaViewer({ images = [], video, title }: MediaViewerPr
           )}
 
           <div className="absolute bottom-6 text-white text-sm bg-black/60 px-4 py-1.5 rounded-full border border-white/20">
-            {currentImgIndex + 1} of {images.length}
+            {currentImgIndex + 1} of {validImages.length}
           </div>
         </div>
       )}
