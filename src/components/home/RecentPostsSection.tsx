@@ -160,30 +160,92 @@ function PostCardImageSlider({
   );
 }
 
+// Global in-memory cache for instant subsequent mounts (SWR pattern)
+let cachedRecentPosts: Partial<IPost>[] | null = null;
+
+// Skeleton Card matching exact dimensions of the real post card
+function PostCardSkeleton() {
+  return (
+    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-xs flex flex-col animate-pulse select-none">
+      {/* Aspect Ratio 16/10 Image Placeholder with Badges */}
+      <div className="relative aspect-[16/10] bg-slate-200/80 dark:bg-slate-800/80 w-full overflow-hidden">
+        {/* Shimmering Badge Skeletons */}
+        <div className="absolute top-3 left-3 w-28 sm:w-32 h-6 rounded-xl bg-slate-300 dark:bg-slate-700/80" />
+        <div className="absolute top-3 right-3 w-20 sm:w-24 h-6 rounded-xl bg-slate-300 dark:bg-slate-700/80" />
+      </div>
+
+      {/* Content Area Skeleton */}
+      <div className="p-5 flex-1 flex flex-col justify-between">
+        <div>
+          {/* Location row placeholder */}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-3.5 h-3.5 rounded-full bg-slate-300 dark:bg-slate-700 shrink-0" />
+            <div className="w-3/5 h-3.5 rounded-md bg-slate-200 dark:bg-slate-700" />
+          </div>
+
+          {/* Amenities placeholders */}
+          <div className="my-2 min-h-[30px] flex items-center gap-1.5 flex-wrap">
+            <div className="w-16 h-6 rounded-lg bg-slate-200 dark:bg-slate-700/70" />
+            <div className="w-20 h-6 rounded-lg bg-slate-200 dark:bg-slate-700/70" />
+            <div className="w-16 h-6 rounded-lg bg-slate-200 dark:bg-slate-700/70" />
+          </div>
+
+          {/* Call / WhatsApp Buttons row placeholder */}
+          <div className="my-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800 grid grid-cols-2 gap-2">
+            <div className="h-8 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/50 dark:border-slate-700/50" />
+            <div className="h-8 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/50 dark:border-slate-700/50" />
+          </div>
+        </div>
+
+        {/* Price & Month row placeholder */}
+        <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <div className="w-24 h-6 rounded-md bg-slate-200 dark:bg-slate-700" />
+          <div className="w-28 h-7 rounded-xl bg-slate-200/90 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function RecentPostsSection() {
   const router = useRouter();
   const { currentTheme, isDark } = useTheme();
-  const [posts, setPosts] = useState<Partial<IPost>[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<Partial<IPost>[]>(() => cachedRecentPosts || []);
+  const [loading, setLoading] = useState<boolean>(() => !cachedRecentPosts);
 
   useEffect(() => {
+    let isMounted = true;
     const loadRecentPosts = async () => {
-      setLoading(true);
+      // Only set loading true if we have no cached data to avoid flashing
+      if (!cachedRecentPosts) {
+        setLoading(true);
+      }
       try {
         const res = await api.get('/posts', {
           params: { limit: 18, sort: 'newest' },
         });
         const serverPosts = res.data?.data?.posts || [];
-        setPosts(serverPosts);
+        if (isMounted) {
+          cachedRecentPosts = serverPosts;
+          setPosts(serverPosts);
+        }
       } catch (err) {
         console.error('Failed to load recent posts:', err);
-        setPosts([]);
+        if (isMounted && !cachedRecentPosts) {
+          setPosts([]);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     loadRecentPosts();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
@@ -198,8 +260,14 @@ export default function RecentPostsSection() {
         </p>
       </div>
 
-      {/* Real Posts Grid (Up to 18) */}
-      {posts.length === 0 && !loading ? (
+      {/* Loading Skeleton Grid (6 cards) or Empty State or Real Posts Grid */}
+      {loading && posts.length === 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, idx) => (
+            <PostCardSkeleton key={idx} />
+          ))}
+        </div>
+      ) : posts.length === 0 ? (
         <div className="text-center py-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800 p-8">
           <p className="text-slate-500 dark:text-slate-400 font-medium">No recent room posts available right now.</p>
         </div>
