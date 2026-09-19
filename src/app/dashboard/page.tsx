@@ -288,13 +288,6 @@ export default function DashboardPage() {
             <PlusCircle className="w-4 h-4" />
             <span>Post New Ad</span>
           </Link>
-          <Link
-            href="/create-banner"
-            className="btn bg-amber-500 hover:bg-amber-600 text-slate-950 border-none rounded-xl font-bold flex items-center gap-2"
-          >
-            <Sparkles className="w-4 h-4" />
-            <span>Auto Poster</span>
-          </Link>
         </div>
       </div>
 
@@ -352,7 +345,7 @@ export default function DashboardPage() {
         <div>
           <h3 className="text-xl font-bold text-slate-900 dark:text-white">Manage Your Rent Posts</h3>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">
-            Edit pricing, toggle booked status, delete ads, or generate promotional flyers
+            Edit pricing, toggle booked status, or delete your rental ads
           </p>
         </div>
         <Link

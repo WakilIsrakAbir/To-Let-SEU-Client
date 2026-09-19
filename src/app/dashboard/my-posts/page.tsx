@@ -319,7 +319,7 @@ export default function MyPostsPage() {
             My Bachelor Rent Listings
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">
-            Manage your ads, update rent, mark as rented, or export banner flyers
+            Manage your ads, update rent, or mark as rented
           </p>
         </div>
 
@@ -373,16 +373,6 @@ export default function MyPostsPage() {
         /* Posts Table / Cards */
         <div className="space-y-4">
           {posts.map((post) => {
-            const bannerLink = `/create-banner?title=${encodeURIComponent(
-              post.title
-            )}&rent=${post.rentAmount}&area=${encodeURIComponent(
-              post.area
-            )}&gender=${post.gender}&month=${encodeURIComponent(
-              post.availableFromMonth
-            )}&seats=${post.seatCount}&phone=${encodeURIComponent(
-              post.contactNumber
-            )}`;
-
             return (
               <div
                 key={post._id}
@@ -453,15 +443,7 @@ export default function MyPostsPage() {
                     </span>
                   </button>
 
-                  {/* Make Banner */}
-                  <Link
-                    href={bannerLink}
-                    className="btn btn-sm bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl flex items-center gap-1.5 shadow-xs"
-                    title="Generate Facebook banner"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>Make Poster</span>
-                  </Link>
+
 
                   {/* Edit */}
                   <button
