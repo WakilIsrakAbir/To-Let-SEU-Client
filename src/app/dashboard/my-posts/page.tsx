@@ -376,7 +376,7 @@ export default function MyPostsPage() {
             return (
               <div
                 key={post._id}
-                className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-sm hover:shadow transition flex flex-col md:flex-row items-start md:items-center justify-between gap-6"
+                className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-xs hover:shadow transition flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6"
               >
                 {/* Info */}
                 <div className="space-y-2 flex-1">
@@ -423,7 +423,7 @@ export default function MyPostsPage() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-wrap items-center gap-2 self-stretch md:self-center justify-end">
+                <div className="flex items-center justify-between md:justify-end gap-2 w-full md:w-auto pt-3 md:pt-0 border-t md:border-t-0 border-slate-100 dark:border-slate-800">
                   {/* Status Toggle */}
                   <button
                     onClick={() => handleToggleStatus(post)}
@@ -443,25 +443,25 @@ export default function MyPostsPage() {
                     </span>
                   </button>
 
+                  <div className="flex items-center gap-1.5">
+                    {/* Edit */}
+                    <button
+                      onClick={() => handleOpenEdit(post)}
+                      className="btn btn-sm btn-ghost text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
+                      title="Edit post"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
 
-
-                  {/* Edit */}
-                  <button
-                    onClick={() => handleOpenEdit(post)}
-                    className="btn btn-sm btn-ghost text-slate-700 hover:bg-slate-100 rounded-xl"
-                    title="Edit post"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-
-                  {/* Delete */}
-                  <button
-                    onClick={() => setDeletingPostId(post._id)}
-                    className="btn btn-sm btn-ghost text-red-600 hover:bg-red-50 rounded-xl"
-                    title="Delete post"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                    {/* Delete */}
+                    <button
+                      onClick={() => setDeletingPostId(post._id)}
+                      className="btn btn-sm btn-ghost text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl"
+                      title="Delete post"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             );
@@ -674,7 +674,7 @@ export default function MyPostsPage() {
                   <span>3. Room & Tenant Preferences</span>
                 </h4>
 
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                   <div>
                     <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                       Gender

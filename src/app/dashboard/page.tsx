@@ -272,10 +272,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="grid grid-cols-2 gap-2.5 w-full sm:w-auto sm:flex sm:items-center sm:gap-3">
           <button
             onClick={() => setEditProfileOpen(true)}
-            className="btn btn-outline border-white/30 text-white hover:bg-white/20 rounded-xl font-bold flex items-center gap-2"
+            className="btn btn-sm sm:btn-md btn-outline border-white/30 text-white hover:bg-white/20 rounded-xl font-bold flex items-center justify-center gap-2"
           >
             <User className="w-4 h-4" />
             <span>Edit Profile</span>
@@ -283,7 +283,7 @@ export default function DashboardPage() {
           <Link
             href="/posts/create"
             style={{ backgroundColor: currentTheme.hex }}
-            className="btn text-white border-none rounded-xl font-bold flex items-center gap-2 hover:opacity-90 shadow-md"
+            className="btn btn-sm sm:btn-md text-white border-none rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 shadow-md"
           >
             <PlusCircle className="w-4 h-4" />
             <span>Post New Ad</span>
@@ -291,67 +291,67 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Overview Metric Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 mb-10">
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      {/* Overview Metric Stats - 2x2 on mobile, 4 columns on desktop */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
+        <div className="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
           <div
             style={{
               backgroundColor: isDark ? `${currentTheme.hex}25` : currentTheme.lightHex,
               color: currentTheme.hex,
             }}
-            className="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center mb-2.5 sm:mb-3"
           >
-            <Building2 className="w-5 h-5" />
+            <Building2 className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
             Total My Posts
           </span>
-          <p className="text-3xl font-black text-slate-900 dark:text-white mt-1">{posts.length}</p>
+          <p className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-0.5 sm:mt-1">{posts.length}</p>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 flex items-center justify-center mb-3">
-            <Clock className="w-5 h-5" />
+        <div className="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 flex items-center justify-center mb-2.5 sm:mb-3">
+            <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
             Active Listings
           </span>
-          <p className="text-3xl font-black text-blue-700 dark:text-blue-400 mt-1">{activePosts.length}</p>
+          <p className="text-2xl sm:text-3xl font-black text-blue-700 dark:text-blue-400 mt-0.5 sm:mt-1">{activePosts.length}</p>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 flex items-center justify-center mb-3">
-            <CheckCircle className="w-5 h-5" />
+        <div className="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 flex items-center justify-center mb-2.5 sm:mb-3">
+            <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
             Booked / Rented
           </span>
-          <p className="text-3xl font-black text-amber-700 dark:text-amber-400 mt-1">{bookedPosts.length}</p>
+          <p className="text-2xl sm:text-3xl font-black text-amber-700 dark:text-amber-400 mt-0.5 sm:mt-1">{bookedPosts.length}</p>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 flex items-center justify-center mb-3">
-            <Eye className="w-5 h-5" />
+        <div className="bg-white dark:bg-slate-900 p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 flex items-center justify-center mb-2.5 sm:mb-3">
+            <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
             Total Views
           </span>
-          <p className="text-3xl font-black text-purple-700 dark:text-purple-400 mt-1">{totalViews}</p>
+          <p className="text-2xl sm:text-3xl font-black text-purple-700 dark:text-purple-400 mt-0.5 sm:mt-1">{totalViews}</p>
         </div>
       </div>
 
       {/* Quick Navigation to My Posts Management */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm flex items-center justify-between">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-5 sm:p-8 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white">Manage Your Rent Posts</h3>
-          <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">
+          <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">Manage Your Rent Posts</h3>
+          <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-0.5">
             Edit pricing, toggle booked status, or delete your rental ads
           </p>
         </div>
         <Link
           href="/dashboard/my-posts"
           style={{ backgroundColor: currentTheme.hex }}
-          className="btn text-white rounded-xl font-bold flex items-center gap-2 border-none hover:opacity-90 transition"
+          className="btn btn-sm sm:btn-md w-full sm:w-auto text-white rounded-xl font-bold flex items-center justify-center gap-2 border-none hover:opacity-90 transition"
         >
           <span>View All My Posts</span>
           <ArrowRight className="w-4 h-4" />

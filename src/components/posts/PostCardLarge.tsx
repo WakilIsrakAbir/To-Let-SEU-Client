@@ -87,21 +87,33 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
       className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-md transition-all overflow-hidden p-4 sm:p-7 space-y-4 sm:space-y-6 scroll-mt-28"
     >
       {/* 1. Author & Post Header */}
-      <div className="flex items-start justify-between gap-3 sm:gap-4">
-        <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-1">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
+        {/* Left Header Side: Author & Meta */}
+        <div className="flex items-center gap-3 min-w-0 flex-1">
           {/* Avatar */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={post.author?.avatarUrl || 'https://res.cloudinary.com/demo/image/upload/v1689246197/cld-sample.jpg'}
             alt={post.author?.name || 'SEU Student'}
             style={{ borderColor: currentTheme.hex }}
-            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover border-2 shrink-0"
+            className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover border-2 shrink-0 shadow-xs"
           />
 
           <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-              <span className="font-bold text-slate-900 dark:text-white text-base sm:text-lg leading-tight truncate max-w-full">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-bold text-slate-900 dark:text-white text-base sm:text-lg leading-tight truncate">
                 {post.author?.name || 'SEU Student'}
+              </span>
+
+              {/* Mobile Gender Pill (aligned right next to name on mobile) */}
+              <span
+                className={`sm:hidden px-2 py-0.5 rounded-lg text-[11px] font-black uppercase tracking-wide border shadow-2xs shrink-0 ${
+                  post.gender === 'Male'
+                    ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+                    : 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800'
+                }`}
+              >
+                {post.gender} Only
               </span>
             </div>
 
@@ -123,10 +135,10 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
           </div>
         </div>
 
-        {/* Right Header Side: Gender Pill + Rent Badge */}
-        <div className="flex flex-col items-end shrink-0 ml-1 sm:ml-2">
-          {/* Top Row: Gender Pill and Rent Amount aligned side-by-side */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
+        {/* Right Header Side: Rent Badge (and desktop Gender Pill) */}
+        <div className="flex items-center sm:items-end justify-between sm:justify-start sm:flex-col shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800/80">
+          {/* Desktop Gender Pill & Rent Row */}
+          <div className="hidden sm:flex items-center gap-2 sm:gap-2.5">
             <span
               className={`px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide border shadow-2xs shrink-0 ${
                 post.gender === 'Male'
@@ -143,6 +155,16 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
             >
               {formatBDT(post.rentAmount)}
             </div>
+          </div>
+
+          {/* Mobile Rent Amount Display */}
+          <div className="sm:hidden flex items-baseline gap-1.5">
+            <span
+              style={{ color: currentTheme.hex }}
+              className="text-2xl font-black leading-none whitespace-nowrap"
+            >
+              {formatBDT(post.rentAmount)}
+            </span>
           </div>
 
           {/* Sub-row: Negotiable badge + Bills info */}
@@ -233,16 +255,16 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
       />
 
       {/* 6. Action Triggers Bar */}
-      <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2.5">
+      <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="grid grid-cols-2 gap-2.5 sm:flex sm:items-center sm:gap-2.5 w-full sm:w-auto">
           {/* Call button */}
           <a
             href={`tel:${post.contactNumber}`}
             style={{ backgroundColor: currentTheme.hex }}
-            className="h-10 px-4 text-white border-none rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-sm hover:opacity-90 transition"
+            className="h-10 px-3 sm:px-4 text-white border-none rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm hover:opacity-90 transition shrink-0"
           >
-            <Phone className="w-4 h-4" />
-            <span>Call: {post.contactNumber}</span>
+            <Phone className="w-4 h-4 shrink-0" />
+            <span className="truncate">Call: {post.contactNumber}</span>
           </a>
 
           {/* WhatsApp Button */}
@@ -255,18 +277,18 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
               color: currentTheme.textHex,
               borderColor: currentTheme.borderHex,
             }}
-            className="h-10 px-4 border rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 hover:opacity-90 transition"
+            className="h-10 px-3 sm:px-4 border rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 hover:opacity-90 transition shrink-0"
           >
-            <MessageCircle className="w-4 h-4" style={{ color: currentTheme.hex }} />
-            <span>WhatsApp</span>
+            <MessageCircle className="w-4 h-4 shrink-0" style={{ color: currentTheme.hex }} />
+            <span className="truncate">WhatsApp</span>
           </a>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-end gap-2">
           {/* Share Button */}
           <button
             onClick={handleShare}
-            className="h-10 px-3.5 flex items-center justify-center gap-1.5 rounded-xl text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition"
+            className="w-full sm:w-auto h-10 px-3.5 flex items-center justify-center gap-1.5 rounded-xl text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition"
             title="Copy link to this post"
           >
             {copied ? (

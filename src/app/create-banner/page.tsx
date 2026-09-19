@@ -578,10 +578,20 @@ function BannerGeneratorContent() {
     }
   };
 
-  // Primary High-Resolution Export: 100% WYSIWYG DOM capture via html-to-image
+  // Primary High-Resolution Export: Guaranteed standard 1200x675 HD Canvas flyer on mobile & desktop
   const handleDownload = async (format: 'png' | 'jpeg') => {
-    if (!bannerRef.current) return;
     setDownloading(true);
+
+    // On mobile screens (width < 768px), always use the pixel-perfect 1200x675 canvas generator to prevent squished mobile DOM screenshots
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      fallbackCanvasDownload(format);
+      return;
+    }
+
+    if (!bannerRef.current) {
+      fallbackCanvasDownload(format);
+      return;
+    }
 
     try {
       const element = bannerRef.current;
@@ -691,7 +701,7 @@ function BannerGeneratorContent() {
           </div>
 
           {/* Area & Rent */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Area
@@ -723,7 +733,7 @@ function BannerGeneratorContent() {
           </div>
 
           {/* Gender & Available Month */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Gender
@@ -760,7 +770,7 @@ function BannerGeneratorContent() {
           </div>
 
           {/* Seat count & Contact Phone */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Capacity / Seats
@@ -882,9 +892,9 @@ function BannerGeneratorContent() {
           {/* Dynamic HTML Poster Preview that matches export */}
           <div
             ref={bannerRef}
-            className={`w-full aspect-video rounded-3xl p-4 sm:p-6 flex flex-col justify-between shadow-2xl transition-all duration-300 relative overflow-hidden ${
+            className={`w-full aspect-video rounded-2xl sm:rounded-3xl p-2.5 sm:p-6 flex flex-col justify-between shadow-2xl transition-all duration-300 relative overflow-hidden ${
               theme === 'seu-emerald'
-                ? 'bg-gradient-to-br from-emerald-950 via-emerald-900 to-slate-950 text-white border-4 border-emerald-500/40'
+                ? 'bg-gradient-to-br from-emerald-950 via-emerald-900 to-slate-950 text-white border-2 sm:border-4 border-emerald-500/40'
                 : theme === 'dark-slate'
                 ? 'bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 text-white border-2 sm:border-[3px] border-slate-700/80 shadow-2xl ring-1 ring-white/10'
                 : 'bg-white text-slate-900 border-2 sm:border-[3px] border-emerald-600/80 shadow-xl ring-1 ring-slate-900/5'
@@ -902,7 +912,7 @@ function BannerGeneratorContent() {
             )}
 
             {/* Header Brand Bar */}
-            <div className={`flex items-center justify-between pb-2.5 sm:pb-3 border-b relative z-10 ${
+            <div className={`flex items-center justify-between pb-1.5 sm:pb-3 border-b relative z-10 ${
               theme === 'clean-white'
                 ? 'border-slate-200'
                 : theme === 'dark-slate'
@@ -910,11 +920,11 @@ function BannerGeneratorContent() {
                 : 'border-white/10'
             }`}>
               <div>
-                <div className="flex items-center gap-1.5 font-black text-base sm:text-lg">
+                <div className="flex items-center gap-1.5 font-black text-xs sm:text-lg">
                   <span className={theme === 'clean-white' ? 'text-slate-900' : 'text-white'}>TO LET</span>
                   <span className={theme === 'clean-white' ? 'text-emerald-600' : 'text-emerald-400'}>SEU</span>
                 </div>
-                <p className={`text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider ${
+                <p className={`text-[7px] sm:text-[10px] font-semibold uppercase tracking-wider ${
                   theme === 'clean-white' ? 'text-slate-500' : 'text-slate-400'
                 }`}>
                   Southeast University Student Mess
@@ -922,7 +932,7 @@ function BannerGeneratorContent() {
               </div>
 
               <span
-                className={`px-3 py-1 rounded-xl text-xs font-black shadow ${
+                className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg sm:rounded-xl text-[9px] sm:text-xs font-black shadow ${
                   gender === 'Male'
                     ? 'bg-blue-600 text-white'
                     : 'bg-rose-600 text-white'
@@ -933,10 +943,10 @@ function BannerGeneratorContent() {
             </div>
 
             {/* 2-Column Body */}
-            <div className="grid grid-cols-12 gap-3 sm:gap-4 my-auto items-center relative z-10">
+            <div className="grid grid-cols-12 gap-2 sm:gap-4 my-auto items-center relative z-10">
               {/* Left Column (7 cols): Headline, Rent, Specs, Perks */}
-              <div className="col-span-7 space-y-2 sm:space-y-2.5">
-                <h2 className={`text-xs sm:text-sm md:text-base font-black leading-snug line-clamp-2 ${
+              <div className="col-span-7 space-y-1.5 sm:space-y-2.5">
+                <h2 className={`text-[10px] sm:text-sm md:text-base font-black leading-snug line-clamp-2 ${
                   theme === 'clean-white' ? 'text-slate-900' : 'text-white'
                 }`}>
                   {headline}
@@ -944,7 +954,7 @@ function BannerGeneratorContent() {
 
                 {/* Rent Card */}
                 <div
-                  className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl flex items-center justify-between shadow-md ${
+                  className={`p-1.5 sm:p-3 rounded-lg sm:rounded-2xl flex items-center justify-between shadow-md ${
                     theme === 'clean-white'
                       ? 'bg-gradient-to-r from-emerald-800 to-teal-800 text-white'
                       : theme === 'dark-slate'
@@ -953,16 +963,16 @@ function BannerGeneratorContent() {
                   }`}
                 >
                   <div>
-                    <span className={`text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider block leading-none ${
+                    <span className={`text-[7px] sm:text-[9px] font-extrabold uppercase tracking-wider block leading-none ${
                       theme === 'clean-white' ? 'text-emerald-100/90' : 'text-slate-950/80'
                     }`}>
                       Monthly Rent
                     </span>
-                    <span className="text-base sm:text-xl font-black">
+                    <span className="text-xs sm:text-xl font-black leading-tight">
                       BDT {rent}
                     </span>
                   </div>
-                  <span className={`text-[9px] sm:text-[11px] font-bold px-2 py-0.5 rounded-lg ${
+                  <span className={`text-[7.5px] sm:text-[11px] font-bold px-1 sm:px-2 py-0.5 rounded-md sm:rounded-lg ${
                     theme === 'clean-white'
                       ? 'bg-amber-400 text-amber-950 shadow-xs'
                       : theme === 'dark-slate'
@@ -974,9 +984,9 @@ function BannerGeneratorContent() {
                 </div>
 
                 {/* Specs Badges */}
-                <div className="grid grid-cols-3 gap-1.5 text-center">
+                <div className="grid grid-cols-3 gap-1 text-center">
                   <div
-                    className={`p-1.5 rounded-lg text-[10px] font-semibold ${
+                    className={`p-1 sm:p-1.5 rounded-md sm:rounded-lg text-[8px] sm:text-[10px] font-semibold ${
                       theme === 'clean-white'
                         ? 'bg-slate-50 border border-slate-200/90 text-slate-800'
                         : theme === 'dark-slate'
@@ -984,12 +994,12 @@ function BannerGeneratorContent() {
                         : 'bg-white/10 text-white'
                     }`}
                   >
-                    <MapPin className={`w-3 h-3 mx-auto mb-0.5 ${theme === 'clean-white' ? 'text-emerald-700' : 'text-emerald-400'}`} />
+                    <MapPin className={`w-2.5 h-2.5 sm:w-3 sm:h-3 mx-auto mb-0.5 ${theme === 'clean-white' ? 'text-emerald-700' : 'text-emerald-400'}`} />
                     <span className="block font-bold truncate">{area}</span>
                   </div>
 
                   <div
-                    className={`p-1.5 rounded-lg text-[10px] font-semibold ${
+                    className={`p-1 sm:p-1.5 rounded-md sm:rounded-lg text-[8px] sm:text-[10px] font-semibold ${
                       theme === 'clean-white'
                         ? 'bg-slate-50 border border-slate-200/90 text-slate-800'
                         : theme === 'dark-slate'
@@ -997,12 +1007,12 @@ function BannerGeneratorContent() {
                         : 'bg-white/10 text-white'
                     }`}
                   >
-                    <Calendar className={`w-3 h-3 mx-auto mb-0.5 ${theme === 'clean-white' ? 'text-emerald-700' : 'text-emerald-400'}`} />
+                    <Calendar className={`w-2.5 h-2.5 sm:w-3 sm:h-3 mx-auto mb-0.5 ${theme === 'clean-white' ? 'text-emerald-700' : 'text-emerald-400'}`} />
                     <span className="block font-bold truncate">{month}</span>
                   </div>
 
                   <div
-                    className={`p-1.5 rounded-lg text-[10px] font-semibold ${
+                    className={`p-1 sm:p-1.5 rounded-md sm:rounded-lg text-[8px] sm:text-[10px] font-semibold ${
                       theme === 'clean-white'
                         ? 'bg-slate-50 border border-slate-200/90 text-slate-800'
                         : theme === 'dark-slate'
@@ -1010,15 +1020,15 @@ function BannerGeneratorContent() {
                         : 'bg-white/10 text-white'
                     }`}
                   >
-                    <Users className={`w-3 h-3 mx-auto mb-0.5 ${theme === 'clean-white' ? 'text-emerald-700' : 'text-emerald-400'}`} />
+                    <Users className={`w-2.5 h-2.5 sm:w-3 sm:h-3 mx-auto mb-0.5 ${theme === 'clean-white' ? 'text-emerald-700' : 'text-emerald-400'}`} />
                     <span className="block font-bold truncate">{seats}</span>
                   </div>
                 </div>
 
                 {/* Perks Badges */}
-                <div className="flex flex-wrap gap-1">
+                <div className="flex flex-wrap gap-0.5 sm:gap-1">
                   {perks.khalaMaid && (
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold border ${
+                    <span className={`text-[7.5px] sm:text-[9px] px-1 sm:px-1.5 py-0.5 rounded font-bold border ${
                       theme === 'clean-white'
                         ? 'bg-emerald-50 text-emerald-800 border-emerald-200 shadow-2xs'
                         : theme === 'dark-slate'
@@ -1029,7 +1039,7 @@ function BannerGeneratorContent() {
                     </span>
                   )}
                   {perks.wifi && (
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold border ${
+                    <span className={`text-[7.5px] sm:text-[9px] px-1 sm:px-1.5 py-0.5 rounded font-bold border ${
                       theme === 'clean-white'
                         ? 'bg-emerald-50 text-emerald-800 border-emerald-200 shadow-2xs'
                         : theme === 'dark-slate'
@@ -1040,7 +1050,7 @@ function BannerGeneratorContent() {
                     </span>
                   )}
                   {perks.fridge && (
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold border ${
+                    <span className={`text-[7.5px] sm:text-[9px] px-1 sm:px-1.5 py-0.5 rounded font-bold border ${
                       theme === 'clean-white'
                         ? 'bg-emerald-50 text-emerald-800 border-emerald-200 shadow-2xs'
                         : theme === 'dark-slate'
@@ -1051,7 +1061,7 @@ function BannerGeneratorContent() {
                     </span>
                   )}
                   {perks.attachedBath && (
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold border ${
+                    <span className={`text-[7.5px] sm:text-[9px] px-1 sm:px-1.5 py-0.5 rounded font-bold border ${
                       theme === 'clean-white'
                         ? 'bg-emerald-50 text-emerald-800 border-emerald-200 shadow-2xs'
                         : theme === 'dark-slate'
@@ -1062,7 +1072,7 @@ function BannerGeneratorContent() {
                     </span>
                   )}
                   {perks.balcony && (
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold border ${
+                    <span className={`text-[7.5px] sm:text-[9px] px-1 sm:px-1.5 py-0.5 rounded font-bold border ${
                       theme === 'clean-white'
                         ? 'bg-emerald-50 text-emerald-800 border-emerald-200 shadow-2xs'
                         : theme === 'dark-slate'
@@ -1073,7 +1083,7 @@ function BannerGeneratorContent() {
                     </span>
                   )}
                   {perks.generator && (
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold border ${
+                    <span className={`text-[7.5px] sm:text-[9px] px-1 sm:px-1.5 py-0.5 rounded font-bold border ${
                       theme === 'clean-white'
                         ? 'bg-emerald-50 text-emerald-800 border-emerald-200 shadow-2xs'
                         : theme === 'dark-slate'
@@ -1087,46 +1097,46 @@ function BannerGeneratorContent() {
               </div>
 
               {/* Right Column (5 cols): Contact & QR Code */}
-              <div className="col-span-5 space-y-2">
+              <div className="col-span-5 space-y-1 sm:space-y-2">
                 {/* Contact Card */}
-                <div className={`p-2.5 rounded-xl space-y-1 ${
+                <div className={`p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl space-y-0.5 sm:space-y-1 ${
                   theme === 'clean-white'
                     ? 'bg-gradient-to-br from-emerald-50/70 to-slate-50 border border-emerald-200/80 shadow-2xs'
                     : theme === 'dark-slate'
                     ? 'bg-slate-800/90 border border-slate-700/90 shadow-md ring-1 ring-white/5'
                     : 'bg-black/40 backdrop-blur-md border border-white/10'
                 }`}>
-                  <span className={`text-[9px] font-extrabold uppercase tracking-wider block ${
+                  <span className={`text-[7px] sm:text-[9px] font-extrabold uppercase tracking-wider block ${
                     theme === 'clean-white' ? 'text-emerald-800' : 'text-emerald-400'
                   }`}>
                     Contact Host:
                   </span>
-                  <p className={`text-xs sm:text-sm font-black tracking-tight flex items-center gap-1.5 ${
+                  <p className={`text-[10px] sm:text-sm font-black tracking-tight flex items-center gap-1 ${
                     theme === 'clean-white' ? 'text-slate-900' : 'text-white'
                   }`}>
-                    <Phone className={`w-3.5 h-3.5 shrink-0 ${
+                    <Phone className={`w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 shrink-0 ${
                       theme === 'clean-white' ? 'text-emerald-700' : 'text-emerald-400'
                     }`} />
                     <span className="truncate">{phone}</span>
                   </p>
                   <div className="flex items-center justify-between gap-1 pt-0.5">
-                    <p className={`text-[8px] font-medium ${theme === 'clean-white' ? 'text-slate-500' : 'text-slate-400'}`}>
-                      Call or WhatsApp
+                    <p className={`text-[7px] sm:text-[8px] font-medium ${theme === 'clean-white' ? 'text-slate-500' : 'text-slate-400'}`}>
+                      Call / WA
                     </p>
-                    <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded ${
+                    <span className={`text-[7px] sm:text-[8px] font-bold px-1 sm:px-1.5 py-0.5 rounded ${
                       theme === 'clean-white'
                         ? 'bg-emerald-100 text-emerald-800 border border-emerald-200/70'
                         : theme === 'dark-slate'
                         ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/30'
                         : 'bg-emerald-500/20 text-emerald-300'
                     }`}>
-                      ✓ Direct Host
+                      ✓ Direct
                     </span>
                   </div>
                 </div>
 
                 {/* QR Box */}
-                <div className={`p-2 rounded-xl flex items-center gap-2.5 ${
+                <div className={`p-1 sm:p-2 rounded-lg sm:rounded-xl flex items-center gap-1.5 sm:gap-2.5 ${
                   theme === 'clean-white'
                     ? 'bg-slate-50 border border-slate-200/90 shadow-2xs'
                     : theme === 'dark-slate'
@@ -1142,19 +1152,19 @@ function BannerGeneratorContent() {
                         : ''
                     }`}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={qrCodeUrl} alt="QR" className="w-12 h-12" />
+                      <img src={qrCodeUrl} alt="QR" className="w-8 h-8 sm:w-12 sm:h-12" />
                     </div>
                   )}
                   <div className="min-w-0">
-                    <span className={`text-[9px] font-black block leading-tight ${
+                    <span className={`text-[7px] sm:text-[9px] font-black block leading-tight ${
                       theme === 'clean-white' ? 'text-emerald-800' : 'text-emerald-400'
                     }`}>
                       SCAN FOR POST
                     </span>
-                    <p className={`text-[8px] truncate ${theme === 'clean-white' ? 'text-slate-600' : 'text-slate-300'}`}>
-                      Southeast University
+                    <p className={`text-[7px] sm:text-[8px] truncate ${theme === 'clean-white' ? 'text-slate-600' : 'text-slate-300'}`}>
+                      SEU Housing
                     </p>
-                    <p className={`text-[8px] font-bold ${theme === 'clean-white' ? 'text-emerald-700' : 'text-emerald-300'}`}>
+                    <p className={`text-[7px] sm:text-[8px] font-bold truncate ${theme === 'clean-white' ? 'text-emerald-700' : 'text-emerald-300'}`}>
                       toletseu.vercel.app
                     </p>
                   </div>

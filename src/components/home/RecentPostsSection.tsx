@@ -330,18 +330,31 @@ export default function RecentPostsSection() {
                     <div className="my-2 min-h-[30px] flex flex-wrap items-center gap-1.5">
                       {activeFacilities.length > 0 ? (
                         <>
-                          {activeFacilities.slice(0, 3).map((item) => {
+                          {activeFacilities.slice(0, 2).map((item) => {
                             const Icon = item.icon;
                             return (
                               <span
                                 key={item.key}
-                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs"
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs shrink-0"
                               >
                                 <Icon className="w-3 h-3 text-slate-400 dark:text-slate-400 shrink-0" />
                                 <span>{item.label}</span>
                               </span>
                             );
                           })}
+                          {/* 3rd facility shown if there are <= 3 total facilities */}
+                          {activeFacilities.length === 3 && (
+                            <span
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs shrink-0"
+                            >
+                              {(() => {
+                                const Icon = activeFacilities[2].icon;
+                                return <Icon className="w-3 h-3 text-slate-400 dark:text-slate-400 shrink-0" />;
+                              })()}
+                              <span>{activeFacilities[2].label}</span>
+                            </span>
+                          )}
+                          {/* If more than 3 total, show +X more cleanly right next to the 2 items on 1 row */}
                           {activeFacilities.length > 3 && (
                             <span
                               style={{
@@ -349,9 +362,9 @@ export default function RecentPostsSection() {
                                 borderColor: isDark ? `${currentTheme.hex}40` : currentTheme.borderHex,
                                 backgroundColor: isDark ? `${currentTheme.hex}15` : currentTheme.lightHex,
                               }}
-                              className="text-[11px] font-bold px-2 py-0.5 rounded-md border"
+                              className="text-[11px] font-bold px-2 py-1 rounded-lg border shadow-2xs shrink-0 whitespace-nowrap"
                             >
-                              +{activeFacilities.length - 3} more
+                              +{activeFacilities.length - 2} more
                             </span>
                           )}
                         </>
@@ -398,15 +411,15 @@ export default function RecentPostsSection() {
                   onClick={(e) => e.stopPropagation()}
                   className="block pt-3 border-t border-slate-100 dark:border-slate-800"
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-baseline gap-1 shrink-0 whitespace-nowrap">
                       <span
-                        className="text-xl font-black text-slate-900 dark:text-white"
+                        className="text-lg sm:text-xl font-black text-slate-900 dark:text-white"
                         style={{ color: currentTheme.hex }}
                       >
                         Tk {post.rentAmount?.toLocaleString()}
                       </span>
-                      <span className="text-xs text-slate-400 font-medium">/month</span>
+                      <span className="text-xs text-slate-400 font-medium whitespace-nowrap">/month</span>
                     </div>
 
                     {/* Highlighted Availability Month Badge - Dynamically adapted to active Accent Theme */}
@@ -416,10 +429,10 @@ export default function RecentPostsSection() {
                         color: isDark ? currentTheme.hex : currentTheme.textHex,
                         borderColor: isDark ? `${currentTheme.hex}45` : currentTheme.borderHex,
                       }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold border shadow-2xs transition-colors"
+                      className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-extrabold border shadow-2xs transition-colors shrink-0 whitespace-nowrap"
                     >
                       <Calendar className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
-                      <span>From {post.availableFromMonth || 'Immediate'}</span>
+                      <span className="truncate max-w-[130px] sm:max-w-none">From {post.availableFromMonth || 'Immediate'}</span>
                     </div>
                   </div>
                 </Link>

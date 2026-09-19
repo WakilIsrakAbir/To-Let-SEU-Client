@@ -134,10 +134,10 @@ export default function Home() {
                 Direct student-to-student bachelor accommodation for Southeast University. Connect with verified classmates across all departments with walking distance to Tejgaon campus and zero broker fees.
               </p>
 
-              {/* Clean 1-Line Search Capsule - Original on laptop, scaled only on PC displays >= 1680px */}
+              {/* Clean 1-Line Search Capsule - visible on mobile & desktop */}
               <form
                 onSubmit={handleHeroSearch}
-                className="hidden sm:flex flex-col sm:flex-row bg-white dark:bg-slate-900 p-2 min-[1680px]:p-2.5 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-lg items-center gap-2 max-w-xl min-[1680px]:max-w-2xl mx-auto lg:mx-0"
+                className="flex flex-col sm:flex-row bg-white dark:bg-slate-900 p-2 min-[1680px]:p-2.5 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-lg items-center gap-2 max-w-xl min-[1680px]:max-w-2xl mx-auto lg:mx-0"
               >
                 {/* Location Select */}
                 <div className="flex-1 flex items-center gap-2 px-3 py-1.5 w-full">
@@ -156,7 +156,7 @@ export default function Home() {
                   </select>
                 </div>
 
-                <div className="hidden sm:block w-px h-6 bg-slate-200 dark:bg-slate-700" />
+                <div className="w-full sm:w-px h-px sm:h-6 bg-slate-200 dark:bg-slate-700" />
 
                 {/* Gender Select */}
                 <div className="flex-1 flex items-center gap-2 px-3 py-1.5 w-full">
@@ -183,12 +183,12 @@ export default function Home() {
                 </button>
               </form>
 
-              {/* Clean Action Buttons - Original on laptop, scaled only on PC displays >= 1680px */}
-              <div className="hidden sm:flex flex-wrap items-center justify-center lg:justify-start gap-3 min-[1680px]:gap-4 pt-1">
+              {/* Clean Action Buttons - visible on mobile & desktop */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5 sm:gap-3 min-[1680px]:gap-4 pt-1">
                 <Link
                   href="/posts"
                   style={{ backgroundColor: currentTheme.hex }}
-                  className="btn btn-sm sm:btn-md min-[1680px]:btn-lg text-white rounded-xl font-bold shadow-md hover:opacity-90 border-none px-5 min-[1680px]:px-7 transition min-[1680px]:text-base"
+                  className="btn btn-sm sm:btn-md min-[1680px]:btn-lg text-white rounded-xl font-bold shadow-md hover:opacity-90 border-none px-4 sm:px-5 min-[1680px]:px-7 transition min-[1680px]:text-base"
                 >
                   <span>Browse All Posts</span>
                   <ArrowRight className="w-4 h-4" />
@@ -196,7 +196,7 @@ export default function Home() {
 
                 <Link
                   href="/posts/create"
-                  className="btn btn-sm sm:btn-md min-[1680px]:btn-lg btn-outline border-slate-300 dark:border-slate-700 hover:bg-slate-900 hover:text-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl font-bold px-4 min-[1680px]:px-6 min-[1680px]:text-base"
+                  className="btn btn-sm sm:btn-md min-[1680px]:btn-lg btn-outline border-slate-300 dark:border-slate-700 hover:bg-slate-900 hover:text-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl font-bold px-3.5 sm:px-4 min-[1680px]:px-6 min-[1680px]:text-base"
                 >
                   <PlusCircle className="w-4 h-4" style={{ color: currentTheme.hex }} />
                   <span>Post a Room</span>
@@ -204,7 +204,7 @@ export default function Home() {
 
                 <Link
                   href="/create-banner"
-                  className="btn btn-sm sm:btn-md min-[1680px]:btn-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold border-none rounded-xl px-4 min-[1680px]:px-6 shadow-2xs flex items-center gap-1.5 min-[1680px]:text-base"
+                  className="btn btn-sm sm:btn-md min-[1680px]:btn-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold border-none rounded-xl px-3.5 sm:px-4 min-[1680px]:px-6 shadow-2xs flex items-center gap-1.5 min-[1680px]:text-base"
                 >
                   <Download className="w-4 h-4" />
                   <span>Auto Poster</span>

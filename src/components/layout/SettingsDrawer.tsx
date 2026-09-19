@@ -54,8 +54,8 @@ export default function SettingsDrawer() {
 
   return (
     <>
-      {/* Floating Gear Button (Adapts to Active Theme Accent Color) */}
-      <div className="fixed right-0 top-1/2 -translate-y-1/2 z-[9990] pointer-events-auto">
+      {/* Floating Gear Button (Adapts to Active Theme Accent Color; bottom corner on mobile, middle edge on desktop) */}
+      <div className="fixed right-3 bottom-6 sm:right-0 sm:top-1/2 sm:-translate-y-1/2 sm:bottom-auto z-[9990] pointer-events-auto">
         <button
           type="button"
           onClick={(e) => {
@@ -65,7 +65,7 @@ export default function SettingsDrawer() {
           aria-label="Open Theme Settings"
           id="seu-settings-gear-btn"
           style={{ backgroundColor: currentTheme.hex }}
-          className="group relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 active:scale-95 text-white rounded-l-2xl shadow-xl transition-all duration-300 cursor-pointer border-t border-b border-l border-white/25 select-none hover:opacity-95"
+          className="group relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 active:scale-95 text-white rounded-full sm:rounded-l-2xl sm:rounded-r-none shadow-2xl transition-all duration-300 cursor-pointer border border-white/25 sm:border-r-0 select-none hover:opacity-95"
           title="Customize Theme & Colors"
         >
           <Settings className="w-5 h-5 sm:w-6 sm:h-6 animate-gear-spin group-hover:rotate-90 transition-transform duration-500 pointer-events-none" />
