@@ -32,6 +32,7 @@ import {
   Building,
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import LoadingState from '@/components/common/LoadingState';
 
 export default function MyPostsPage() {
   const { user, loading: authLoading } = useAuth();
@@ -236,9 +237,11 @@ export default function MyPostsPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="loading loading-spinner text-emerald-700 loading-lg"></span>
-      </div>
+      <LoadingState
+        message="Loading Your Rent Listings..."
+        subMessage="Fetching your active, booked, and archived posts..."
+        fullscreen={true}
+      />
     );
   }
 

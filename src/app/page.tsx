@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
   PlusCircle,
@@ -24,12 +24,27 @@ import StudentReviewsSection from '@/components/home/StudentReviewsSection';
 import HostCtaBanner from '@/components/home/HostCtaBanner';
 import HeroBackground from '@/components/home/HeroBackground';
 
+const ROTATING_WORDS = [
+  'Bachelor Seat',
+  'Best Seat',
+  'Perfect Room',
+  'Student Flat',
+];
+
 export default function Home() {
   const { currentTheme, isDark } = useTheme();
   const router = useRouter();
 
   const [selectedArea, setSelectedArea] = useState('');
   const [selectedGender, setSelectedGender] = useState('');
+  const [wordIndex, setWordIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setWordIndex((prev) => (prev + 1) % ROTATING_WORDS.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
 
   const handleHeroSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,7 +104,28 @@ export default function Home() {
               {/* Clean, Impactful Headline - Original on laptop, scaled only on PC displays >= 1680px */}
               <h1 className="text-3xl sm:text-4xl lg:text-[46px] min-[1680px]:text-[56px] font-black tracking-tight leading-[1.18] min-[1680px]:leading-[1.14] text-slate-900 dark:text-white">
                 Find Your{' '}
-                <span style={{ color: currentTheme.hex }}>Bachelor Seat</span> <br />
+                <span
+                  className="inline-grid align-baseline relative"
+                  style={{ gridTemplateAreas: "'stack'" }}
+                >
+                  <AnimatePresence mode="popLayout" initial={false}>
+                    <motion.span
+                      key={ROTATING_WORDS[wordIndex]}
+                      style={{ gridArea: 'stack', color: currentTheme.hex }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{
+                        duration: 0.5,
+                        ease: 'easeInOut',
+                      }}
+                      className="inline-block whitespace-nowrap"
+                    >
+                      {ROTATING_WORDS[wordIndex]}
+                    </motion.span>
+                  </AnimatePresence>
+                </span>{' '}
+                <br />
                 Near SEU Campus
               </h1>
 
@@ -174,29 +210,27 @@ export default function Home() {
                   <span>Auto Poster</span>
                 </Link>
               </div>
-            </motion.div>
-
-            {/* Right Column: Clean, Stunning High-Res Image - Original on laptop, scaled on PC >= 1680px */}
+            </motion.div>            {/* Right Column: Clean, Stunning High-Res Image - Positioned in the middle aligned with headline and buttons */}
             <motion.div
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: 0.1 }}
-              className="lg:col-span-5 max-w-lg min-[1680px]:max-w-xl mx-auto w-full relative group"
+              className="lg:col-span-5 max-w-[440px] min-[1680px]:max-w-[500px] mx-auto w-full relative group lg:self-center lg:-translate-y-5 min-[1680px]:-translate-y-7"
             >
-              {/* Radiant, visible floor light bloom beneath the image */}
+              {/* Radiant floor light bloom beneath the image */}
               <div
                 style={{
                   background: `radial-gradient(ellipse at 50% 0%, ${currentTheme.hex}80 0%, #f59e0b60 45%, transparent 80%)`,
                 }}
-                className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[92%] h-24 blur-2xl pointer-events-none -z-10 transition-all duration-500"
+                className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-[88%] h-14 blur-xl pointer-events-none -z-10 transition-all duration-500"
               />
 
               {/* Gentle ambient backlight radiating softly behind the card */}
               <div
                 style={{
-                  background: `radial-gradient(ellipse at 50% 65%, ${currentTheme.hex}40 0%, #f59e0b28 45%, transparent 75%)`,
+                  background: `radial-gradient(ellipse at 50% 65%, ${currentTheme.hex}35 0%, #f59e0b20 45%, transparent 75%)`,
                 }}
-                className="absolute -inset-4 sm:-inset-6 rounded-[36px] blur-2xl sm:blur-3xl pointer-events-none -z-10 transition-all duration-500 group-hover:scale-105"
+                className="absolute -inset-3 sm:-inset-4 rounded-[32px] blur-2xl pointer-events-none -z-10 transition-all duration-500 group-hover:scale-105"
               />
 
               <div className="relative rounded-3xl overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-2xl bg-white dark:bg-slate-900 aspect-[4/3]">

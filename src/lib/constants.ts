@@ -92,7 +92,30 @@ export const ROOM_TYPES = [
   '2 Person Room',
   '3 Person Room',
   'Single Room',
+  'Shared Seat',
+  'Master Bed',
   'Sublet',
 ] as const;
 
 export type RoomType = (typeof ROOM_TYPES)[number];
+
+export const DEFAULT_ROOM_IMAGES = [
+  '/default-room-1.jpg',
+  '/default-room-2.jpg',
+  '/default-room-3.jpg',
+] as const;
+
+export const getDefaultRoomImage = (identifier?: string | number): string => {
+  if (typeof identifier === 'number') {
+    return DEFAULT_ROOM_IMAGES[Math.abs(identifier) % DEFAULT_ROOM_IMAGES.length];
+  }
+  if (typeof identifier === 'string' && identifier.trim().length > 0) {
+    let hash = 0;
+    for (let i = 0; i < identifier.length; i++) {
+      hash = (hash << 5) - hash + identifier.charCodeAt(i);
+      hash |= 0;
+    }
+    return DEFAULT_ROOM_IMAGES[Math.abs(hash) % DEFAULT_ROOM_IMAGES.length];
+  }
+  return DEFAULT_ROOM_IMAGES[0];
+};

@@ -6,9 +6,8 @@ import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/api';
 import CloudinaryUploader from '@/components/upload/CloudinaryUploader';
-import LocationPicker from '@/components/maps/LocationPicker';
 import { DHAKA_AREAS, MONTHS_LIST, ROOM_TYPES, SEU_DEPARTMENTS, AMENITIES_LIST, formatAreaValue } from '@/lib/constants';
-import { IMediaItem, ILocation, IAmenities } from '@/types/post';
+import { IMediaItem, IAmenities } from '@/types/post';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   PlusCircle,
@@ -25,6 +24,7 @@ import {
   X,
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import LoadingState from '@/components/common/LoadingState';
 
 export default function CreatePostPage() {
   const router = useRouter();
@@ -60,12 +60,6 @@ export default function CreatePostPage() {
     generatorIPS: false,
     lift: false,
     filterWater: true,
-  });
-
-  const [location, setLocation] = useState<ILocation>({
-    lat: 23.7639, // SEU Tejgaon
-    lng: 90.3995,
-    formattedAddress: 'SEU Tejgaon Permanent Campus Area',
   });
 
   const [images, setImages] = useState<IMediaItem[]>([]);
@@ -115,7 +109,7 @@ export default function CreatePostPage() {
       const payload = {
         ...formData,
         area: finalArea,
-        title: formData.title.trim() || 'Bachelor Seat / Room',
+        title: `${formData.gender} ${formData.roomType || 'Bachelor Seat'} in ${finalArea}`,
         department: formData.department || user.department || 'General',
         contactNumber: formData.contactNumber || user.phone || 'N/A',
         addressDetails: formData.addressDetails.trim() || 'Near Campus Area',
@@ -123,7 +117,11 @@ export default function CreatePostPage() {
         rentAmount: Number(formData.rentAmount) || 0,
         seatCount: Number(formData.seatCount) || 1,
         amenities,
-        location,
+        location: {
+          lat: 23.7639,
+          lng: 90.3995,
+          formattedAddress: finalArea || 'SEU Campus Area',
+        },
         media: {
           images,
           video,
@@ -145,9 +143,11 @@ export default function CreatePostPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="loading loading-spinner loading-lg" style={{ color: currentTheme.hex }}></span>
-      </div>
+      <LoadingState
+        message="Authenticating Student Session..."
+        subMessage="Checking your Southeast University verified credentials..."
+        fullscreen={true}
+      />
     );
   }
 
@@ -246,22 +246,6 @@ export default function CreatePostPage() {
               <Building className="w-4 h-4" style={{ color: currentTheme.hex }} />
               <span>1. Basic Details</span>
             </h3>
-
-            {/* Title */}
-            <div>
-              <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
-                Listing Title *
-              </label>
-              <input
-                type="text"
-                name="title"
-                required
-                placeholder="e.g. 1 Male Seat Available in Master Bed with Balcony (5 min from SEU)"
-                value={formData.title}
-                onChange={handleInputChange}
-                className="input input-bordered w-full rounded-xl bg-slate-50 border-slate-200 focus:bg-white text-slate-900"
-              />
-            </div>
 
             {/* Area & Address */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -557,13 +541,12 @@ export default function CreatePostPage() {
           <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800">
             <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
               <FileText className="w-4 h-4" style={{ color: currentTheme.hex }} />
-              <span>5. Detailed Description *</span>
+              <span>5. Detailed Description (Optional)</span>
             </label>
             <textarea
               name="description"
-              required
               rows={4}
-              placeholder="Describe the room, sunlight, ventilation, flatmates culture, gate lock time (e.g. 11 PM), smoking rules, etc."
+              placeholder="Describe the room, sunlight, ventilation, flatmates culture, gate lock time (e.g. 11 PM), smoking rules, etc. (optional)"
               value={formData.description}
               onChange={handleInputChange}
               className="textarea textarea-bordered w-full rounded-2xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:bg-white text-sm"
@@ -578,11 +561,6 @@ export default function CreatePostPage() {
               onImagesChange={setImages}
               onVideoChange={setVideo}
             />
-          </div>
-
-          {/* Section 7: Live Location Picker */}
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-            <LocationPicker location={location} onChange={setLocation} />
           </div>
 
           {/* Submit Button */}

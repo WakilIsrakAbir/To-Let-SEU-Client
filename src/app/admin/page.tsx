@@ -21,6 +21,7 @@ import {
   Sparkles,
   Lock,
 } from 'lucide-react';
+import LoadingState from '@/components/common/LoadingState';
 
 export default function AdminPage() {
   const { user, isAdmin, loading: authLoading } = useAuth();
@@ -123,9 +124,11 @@ export default function AdminPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="loading loading-spinner text-emerald-700 loading-lg"></span>
-      </div>
+      <LoadingState
+        message="Loading Administrative Controls..."
+        subMessage="Fetching moderation logs, reported posts, and student records..."
+        fullscreen={true}
+      />
     );
   }
 

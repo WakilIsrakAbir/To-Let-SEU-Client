@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { IAmenities } from '@/types/post';
-import { useTheme } from '@/context/ThemeContext';
 import {
   ChefHat,
   Refrigerator,
@@ -19,8 +18,6 @@ interface AmenitiesBadgesProps {
 }
 
 export default function AmenitiesBadges({ amenities }: AmenitiesBadgesProps) {
-  const { currentTheme, isDark } = useTheme();
-
   if (!amenities) return null;
 
   const items = [
@@ -37,26 +34,19 @@ export default function AmenitiesBadges({ amenities }: AmenitiesBadgesProps) {
   const activeAmenities = items.filter((item) => item.active);
 
   if (activeAmenities.length === 0) {
-    return (
-      <span className="text-xs text-slate-400 italic">No specific amenities listed</span>
-    );
+    return null;
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-1.5">
       {activeAmenities.map((item) => {
         const Icon = item.icon;
         return (
           <span
             key={item.key}
-            style={{
-              backgroundColor: isDark ? `${currentTheme.hex}18` : currentTheme.lightHex,
-              color: isDark ? currentTheme.hex : currentTheme.textHex,
-              borderColor: isDark ? `${currentTheme.hex}40` : currentTheme.borderHex,
-            }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold border shadow-xs transition-colors"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700/80 transition-colors"
           >
-            <Icon className="w-4 h-4 shrink-0" style={{ color: currentTheme.hex }} />
+            <Icon className="w-3.5 h-3.5 shrink-0 text-slate-400 dark:text-slate-500" />
             <span>{item.label}</span>
           </span>
         );

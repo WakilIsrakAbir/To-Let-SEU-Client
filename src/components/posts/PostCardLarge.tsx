@@ -15,7 +15,6 @@ import {
   Users,
   Share2,
   Sparkles,
-  ExternalLink,
   Check,
   Building,
   Clock,
@@ -28,7 +27,7 @@ interface PostCardLargeProps {
 }
 
 export default function PostCardLarge({ post }: PostCardLargeProps) {
-  const { currentTheme } = useTheme();
+  const { currentTheme, isDark } = useTheme();
   const [copied, setCopied] = useState(false);
 
   const formatBDT = (val: number) => {
@@ -40,7 +39,7 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
   };
 
   const handleShare = () => {
-    const postUrl = `${window.location.origin}/posts#${post._id}`;
+    const postUrl = `${window.location.origin}/posts/${post._id}`;
     navigator.clipboard.writeText(postUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -54,13 +53,6 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
       `Salam! I am a student of SEU and saw your room ad "${post.title}" on SEU Basa (${post.area}). Is it still available?`
     );
     return `https://wa.me/${internationalPhone}?text=${text}`;
-  };
-
-  const getMapLink = () => {
-    if (post.location?.lat && post.location?.lng) {
-      return `https://www.google.com/maps/search/?api=1&query=${post.location.lat},${post.location.lng}`;
-    }
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(post.area + ' Dhaka')}`;
   };
 
   const formatTimeAgo = (dateInput: string | Date | undefined) => {
@@ -86,8 +78,6 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
     });
   };
 
-  const bannerLink = `/create-banner?title=${encodeURIComponent(post.title)}&rent=${post.rentAmount}&area=${encodeURIComponent(post.area)}&gender=${post.gender}&month=${encodeURIComponent(post.availableFromMonth)}&seats=${post.seatCount}&phone=${encodeURIComponent(post.contactNumber)}`;
-
   return (
     <motion.article
       id={post._id}
@@ -95,7 +85,7 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
-      className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-md transition-all overflow-hidden p-4 sm:p-7 space-y-4 sm:space-y-6"
+      className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-md transition-all overflow-hidden p-4 sm:p-7 space-y-4 sm:space-y-6 scroll-mt-28"
     >
       {/* 1. Author & Post Header */}
       <div className="flex items-start justify-between gap-3 sm:gap-4">
@@ -134,125 +124,114 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
           </div>
         </div>
 
-        {/* Rent Badge */}
-        <div className="text-right shrink-0 ml-1 sm:ml-2">
-          <div
-            style={{ color: currentTheme.hex }}
-            className="text-xl sm:text-3xl font-black leading-tight whitespace-nowrap"
-          >
-            {post.rentType === 'negotiable' ? (
-              <div className="flex flex-col items-end">
-                <span>{formatBDT(post.rentAmount)}</span>
-                <span className="badge badge-warning badge-xs sm:badge-sm font-bold text-[10px] sm:text-xs mt-0.5">
-                  Negotiable
-                </span>
-              </div>
-            ) : (
-              <span>{formatBDT(post.rentAmount)}</span>
-            )}
+        {/* Right Header Side: Gender Pill + Rent Badge */}
+        <div className="flex flex-col items-end shrink-0 ml-1 sm:ml-2">
+          {/* Top Row: Gender Pill and Rent Amount aligned side-by-side */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <span
+              className={`px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wide border shadow-2xs shrink-0 ${
+                post.gender === 'Male'
+                  ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+                  : 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800'
+              }`}
+            >
+              {post.gender} Only
+            </span>
+
+            <div
+              style={{ color: currentTheme.hex }}
+              className="text-xl sm:text-3xl font-black leading-none whitespace-nowrap"
+            >
+              {formatBDT(post.rentAmount)}
+            </div>
           </div>
-          <span className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap block mt-0.5">
-            {post.serviceChargeIncluded ? 'Bills included' : '+ Utility/Bills'}
-          </span>
+
+          {/* Sub-row: Negotiable badge + Bills info */}
+          <div className="flex items-center gap-1.5 mt-1 sm:mt-1.5">
+            {post.rentType === 'negotiable' && (
+              <span className="badge badge-warning badge-xs font-bold text-[10px] sm:text-xs">
+                Negotiable
+              </span>
+            )}
+            <span className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium whitespace-nowrap">
+              {post.serviceChargeIncluded ? 'Bills included' : '+ Utility/Bills'}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* 2. Title & Key Specs Tag Bar */}
-      <div>
-        <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-snug">
-          {post.title}
-        </h2>
-
-        <div className="flex flex-wrap items-center gap-2 mt-3">
-          {/* Gender */}
-          <span
-            className={`px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border shrink-0 ${
-              post.gender === 'Male'
-                ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800'
-                : 'bg-rose-50 dark:bg-rose-950/50 text-rose-800 dark:text-rose-300 border-rose-200 dark:border-rose-800'
-            }`}
-          >
-            {post.gender} Only
+      {/* 2. Key Room Facts at a Glance (Seat & Month Highlighted; Area & Distance Clean & Neutral) */}
+      <div className="flex flex-wrap items-center gap-2">
+        {/* Seat Count / Room Type (HIGHLIGHTED) */}
+        <span
+          style={{
+            backgroundColor: isDark ? `${currentTheme.hex}22` : currentTheme.lightHex,
+            color: isDark ? currentTheme.hex : currentTheme.textHex,
+            borderColor: isDark ? `${currentTheme.hex}40` : `${currentTheme.hex}35`,
+          }}
+          className="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border flex items-center gap-1.5 shrink-0 shadow-2xs"
+        >
+          <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" style={{ color: currentTheme.hex }} />
+          <span>
+            {post.seatCount} {post.seatCount > 1 ? 'Seats' : 'Seat'} ({post.roomType})
           </span>
+        </span>
 
-          {/* Seat Count / Room Type */}
-          <span className="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 shrink-0">
-            <Users className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" />
-            <span>
-              {post.seatCount} {post.seatCount > 1 ? 'Seats' : 'Seat'} ({post.roomType})
-            </span>
+        {/* Availability Month (HIGHLIGHTED) */}
+        <span
+          style={{
+            backgroundColor: isDark ? `${currentTheme.hex}22` : currentTheme.lightHex,
+            color: isDark ? currentTheme.hex : currentTheme.textHex,
+            borderColor: isDark ? `${currentTheme.hex}40` : `${currentTheme.hex}35`,
+          }}
+          className="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold border flex items-center gap-1.5 shrink-0 shadow-2xs"
+        >
+          <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" style={{ color: currentTheme.hex }} />
+          <span>From {post.availableFromMonth}</span>
+        </span>
+
+        {/* Area (Neutral, Clean) */}
+        <span className="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 shrink-0">
+          <MapPin className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
+          <span>{post.area}</span>
+        </span>
+
+        {/* Distance from Campus (Neutral, Clean) */}
+        {post.distanceFromCampus && (
+          <span className="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 shrink-0">
+            <Footprints className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
+            <span>{post.distanceFromCampus}</span>
           </span>
-
-          {/* Availability Month */}
-          <span className="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 shrink-0">
-            <Calendar className="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" />
-            <span>From {post.availableFromMonth}</span>
-          </span>
-
-          {/* Area */}
-          <span
-            style={{
-              backgroundColor: `${currentTheme.hex}18`,
-              color: currentTheme.hex,
-              borderColor: `${currentTheme.hex}35`,
-            }}
-            className="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold border flex items-center gap-1.5 shrink-0"
-          >
-            <MapPin className="w-4 h-4 shrink-0" style={{ color: currentTheme.hex }} />
-            <span>{post.area}</span>
-          </span>
-
-          {/* Distance from Campus */}
-          {post.distanceFromCampus && (
-            <span className="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1.5 shrink-0">
-              <Footprints className="w-4 h-4 shrink-0" />
-              <span>{post.distanceFromCampus}</span>
-            </span>
-          )}
-        </div>
+        )}
       </div>
 
-      {/* 3. Media Carousel / Video Player */}
+      {/* 3. Address (Clean 1-liner if provided) */}
+      {post.addressDetails && (
+        <div className="flex items-center gap-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+          <Building className="w-4 h-4 shrink-0 text-slate-400" />
+          <span>
+            <strong className="text-slate-800 dark:text-slate-200 font-semibold">Address:</strong>{' '}
+            {post.addressDetails}
+          </span>
+        </div>
+      )}
+
+      {/* 4. Room & Mess Amenities */}
+      <AmenitiesBadges amenities={post.amenities} />
+
+      {/* 5. Description (Placed directly above the media viewer / action buttons) */}
+      {post.description && (
+        <p className="text-slate-700 dark:text-slate-200 text-sm sm:text-base leading-relaxed whitespace-pre-line">
+          {post.description}
+        </p>
+      )}
+
+      {/* 6. Media Carousel / Video Player (Placed directly below description; hidden if no media) */}
       <MediaViewer
         images={post.media?.images}
         video={post.media?.video}
         title={post.title}
       />
-
-      {/* 4. Description & Address */}
-      <div className="space-y-3">
-        <p className="text-slate-700 dark:text-slate-200 text-sm sm:text-base whitespace-pre-line leading-relaxed">
-          {post.description}
-        </p>
-
-        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 text-sm text-slate-700 dark:text-slate-200 flex items-center justify-between flex-wrap gap-2.5">
-          <div className="flex items-center gap-2">
-            <Building className="w-4 h-4 shrink-0" style={{ color: currentTheme.hex }} />
-            <span className="font-medium">
-              <span className="font-bold">Address:</span> {post.addressDetails}
-            </span>
-          </div>
-
-          <a
-            href={getMapLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: currentTheme.hex }}
-            className="font-bold hover:underline inline-flex items-center gap-1.5"
-          >
-            <span>View on Map</span>
-            <ExternalLink className="w-4 h-4" />
-          </a>
-        </div>
-      </div>
-
-      {/* 5. Amenities Badges */}
-      <div>
-        <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">
-          Room & Mess Amenities
-        </h4>
-        <AmenitiesBadges amenities={post.amenities} />
-      </div>
 
       {/* 6. Action Triggers Bar */}
       <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
@@ -285,14 +264,13 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Auto Banner Button */}
+          {/* View Details Page Link */}
           <Link
-            href={bannerLink}
-            className="h-10 px-4 bg-amber-500 hover:bg-amber-600 text-slate-950 border-none rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 shadow-xs transition"
-            title="Generate printable poster from this post"
+            href={`/posts/${post._id}`}
+            className="h-10 px-4 flex items-center justify-center gap-1.5 rounded-xl text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition"
+            title="Open dedicated page for this room"
           >
-            <Sparkles className="w-4 h-4" />
-            <span className="hidden sm:inline">Make Poster</span>
+            <span>View Details</span>
           </Link>
 
           {/* Share Button */}

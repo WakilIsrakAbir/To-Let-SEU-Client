@@ -25,6 +25,7 @@ import {
   Check,
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import LoadingState from '@/components/common/LoadingState';
 
 export default function DashboardPage() {
   const { user, loading: authLoading, updateUser } = useAuth();
@@ -146,9 +147,11 @@ export default function DashboardPage() {
 
   if (loading || authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <span className="loading loading-spinner loading-lg" style={{ color: currentTheme.hex }}></span>
-      </div>
+      <LoadingState
+        message="Loading Student Dashboard..."
+        subMessage="Fetching your profile, posts, and housing statistics..."
+        fullscreen={true}
+      />
     );
   }
 

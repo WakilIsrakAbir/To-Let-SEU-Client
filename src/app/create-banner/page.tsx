@@ -65,13 +65,13 @@ function BannerGeneratorContent() {
     setPerks((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  // High-Resolution Canvas Export (JPG / PNG)
+  // High-Resolution Canvas Export (JPG / PNG - 16:9 Landscape 1200x675)
   const handleDownload = (format: 'png' | 'jpeg') => {
     setDownloading(true);
 
     const canvas = document.createElement('canvas');
-    const width = 1080;
-    const height = 1350; // Ideal Instagram / Facebook poster ratio 4:5
+    const width = 1200;
+    const height = 675; // Standard 16:9 Landscape ratio (Fits post media card & social feeds perfectly)
     canvas.width = width;
     canvas.height = height;
     const ctx = canvas.getContext('2d');
@@ -109,16 +109,16 @@ function BannerGeneratorContent() {
       ctx.save();
       ctx.fillStyle = color;
       ctx.strokeStyle = color;
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(cx, cy - 5, 9, Math.PI * 0.75, Math.PI * 2.25, false);
-      ctx.lineTo(cx, cy + 12);
+      ctx.arc(cx, cy - 4, 7, Math.PI * 0.75, Math.PI * 2.25, false);
+      ctx.lineTo(cx, cy + 9);
       ctx.closePath();
       ctx.fill();
       // Inner dot
       ctx.beginPath();
       ctx.fillStyle = theme === 'clean-white' ? '#f1f5f9' : '#042f2e';
-      ctx.arc(cx, cy - 5, 3.5, 0, Math.PI * 2);
+      ctx.arc(cx, cy - 4, 2.5, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     };
@@ -126,26 +126,26 @@ function BannerGeneratorContent() {
     const drawCalendarIcon = (cx: number, cy: number, color: string) => {
       ctx.save();
       ctx.strokeStyle = color;
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 2;
       ctx.fillStyle = color;
       ctx.beginPath();
-      ctx.roundRect(cx - 12, cy - 10, 24, 22, 4);
+      ctx.roundRect(cx - 9, cy - 8, 18, 16, 3);
       ctx.stroke();
       // Top header bar
       ctx.beginPath();
-      ctx.moveTo(cx - 12, cy - 2);
-      ctx.lineTo(cx + 12, cy - 2);
+      ctx.moveTo(cx - 9, cy - 2);
+      ctx.lineTo(cx + 9, cy - 2);
       ctx.stroke();
       // Binder loops
       ctx.beginPath();
-      ctx.moveTo(cx - 6, cy - 14);
-      ctx.lineTo(cx - 6, cy - 9);
-      ctx.moveTo(cx + 6, cy - 14);
-      ctx.lineTo(cx + 6, cy - 9);
+      ctx.moveTo(cx - 5, cy - 11);
+      ctx.lineTo(cx - 5, cy - 7);
+      ctx.moveTo(cx + 5, cy - 11);
+      ctx.lineTo(cx + 5, cy - 7);
       ctx.stroke();
       // Inner dot
       ctx.beginPath();
-      ctx.arc(cx, cy + 4, 2.5, 0, Math.PI * 2);
+      ctx.arc(cx, cy + 3, 2, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     };
@@ -155,19 +155,19 @@ function BannerGeneratorContent() {
       ctx.fillStyle = color;
       // Main user head
       ctx.beginPath();
-      ctx.arc(cx - 5, cy - 5, 5.5, 0, Math.PI * 2);
+      ctx.arc(cx - 4, cy - 4, 4.5, 0, Math.PI * 2);
       ctx.fill();
       // Main user shoulder
       ctx.beginPath();
-      ctx.arc(cx - 5, cy + 11, 9, Math.PI * 1.15, Math.PI * 1.85);
+      ctx.arc(cx - 4, cy + 8, 7, Math.PI * 1.15, Math.PI * 1.85);
       ctx.fill();
       // Second user head
       ctx.beginPath();
-      ctx.arc(cx + 7, cy - 3, 4.5, 0, Math.PI * 2);
+      ctx.arc(cx + 5, cy - 2, 3.5, 0, Math.PI * 2);
       ctx.fill();
       // Second user shoulder
       ctx.beginPath();
-      ctx.arc(cx + 7, cy + 11, 7, Math.PI * 1.2, Math.PI * 1.8);
+      ctx.arc(cx + 5, cy + 8, 5.5, Math.PI * 1.2, Math.PI * 1.8);
       ctx.fill();
       ctx.restore();
     };
@@ -176,27 +176,27 @@ function BannerGeneratorContent() {
       ctx.save();
       ctx.strokeStyle = color;
       ctx.fillStyle = color;
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.roundRect(cx - 9, cy - 16, 18, 32, 5);
+      ctx.roundRect(cx - 7, cy - 13, 14, 26, 4);
       ctx.stroke();
       // Speaker line
       ctx.beginPath();
-      ctx.moveTo(cx - 4, cy - 11);
-      ctx.lineTo(cx + 4, cy - 11);
+      ctx.moveTo(cx - 3, cy - 9);
+      ctx.lineTo(cx + 3, cy - 9);
       ctx.stroke();
       // Home dot
       ctx.beginPath();
-      ctx.arc(cx, cy + 10, 2, 0, Math.PI * 2);
+      ctx.arc(cx, cy + 8, 1.5, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     };
 
     const renderPoster = (qrImg?: HTMLImageElement) => {
-      // 1. Poster Background & Outer Rounded Frame
+      // 1. Poster Background & Outer Rounded Frame (16:9 Landscape)
       ctx.save();
       ctx.beginPath();
-      ctx.roundRect(14, 14, width - 28, height - 28, 48);
+      ctx.roundRect(12, 12, width - 24, height - 24, 32);
       ctx.clip();
 
       if (theme === 'seu-emerald') {
@@ -218,64 +218,71 @@ function BannerGeneratorContent() {
 
       // Outer border stroke
       ctx.beginPath();
-      ctx.roundRect(14, 14, width - 28, height - 28, 48);
+      ctx.roundRect(12, 12, width - 24, height - 24, 32);
       ctx.strokeStyle =
         theme === 'clean-white'
           ? '#059669'
           : theme === 'dark-slate'
           ? '#334155'
           : 'rgba(52, 211, 153, 0.4)';
-      ctx.lineWidth = 8;
+      ctx.lineWidth = 6;
       ctx.stroke();
       ctx.restore();
 
-      const contentX = 72;
+      const contentX = 48;
       const contentW = width - 2 * contentX;
 
       // 2. Top Header Brand Bar
-      const headerY = 68;
+      const headerY = 32;
 
       // Brand Title "TO LET SEU"
-      ctx.font = '900 42px Arial, sans-serif';
+      ctx.font = '900 34px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#ffffff';
-      ctx.fillText('TO LET ', contentX, headerY + 42);
+      ctx.fillText('TO LET ', contentX, headerY + 32);
       const toLetWidth = ctx.measureText('TO LET ').width;
 
       ctx.fillStyle = theme === 'clean-white' ? '#059669' : '#34d399';
-      ctx.fillText('SEU', contentX + toLetWidth, headerY + 42);
+      ctx.fillText('SEU', contentX + toLetWidth, headerY + 32);
 
       // Subtitle
-      ctx.font = 'bold 18px Arial, sans-serif';
+      ctx.font = 'bold 13px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#047857' : '#94a3b8';
-      ctx.fillText('SOUTHEAST UNIVERSITY STUDENT MESS', contentX, headerY + 76);
+      ctx.fillText('SOUTHEAST UNIVERSITY STUDENT MESS', contentX, headerY + 54);
 
       // Gender Badge Pill
-      const badgeW = 210;
-      const badgeH = 50;
+      const badgeW = 180;
+      const badgeH = 40;
       const badgeX = contentX + contentW - badgeW;
-      const badgeY = headerY + 22;
+      const badgeY = headerY + 12;
       const badgeBg = gender === 'Male' ? '#2563eb' : '#e11d48';
-      fillRoundedRect(badgeX, badgeY, badgeW, badgeH, 16, badgeBg);
+      fillRoundedRect(badgeX, badgeY, badgeW, badgeH, 12, badgeBg);
 
-      ctx.font = '900 22px Arial, sans-serif';
+      ctx.font = '900 17px Arial, sans-serif';
       ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center';
-      ctx.fillText(`${gender.toUpperCase()} ONLY`, badgeX + badgeW / 2, badgeY + 33);
+      ctx.fillText(`${gender.toUpperCase()} ONLY`, badgeX + badgeW / 2, badgeY + 26);
       ctx.textAlign = 'left';
 
       // Header bottom divider line
-      const dividerY = headerY + 104;
+      const dividerY = headerY + 70;
       ctx.beginPath();
       ctx.moveTo(contentX, dividerY);
       ctx.lineTo(contentX + contentW, dividerY);
       ctx.strokeStyle =
         theme === 'clean-white' ? '#e2e8f0' : 'rgba(255, 255, 255, 0.12)';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      // 3. Main Headline
-      const headlineY = dividerY + 54;
-      ctx.font = '900 46px Arial, sans-serif';
+      // 3. 2-Column Split Layout
+      const leftX = contentX;
+      const leftW = 670;
+      const rightX = leftX + leftW + 36;
+      const rightW = contentX + contentW - rightX;
+
+      // ================= LEFT COLUMN =================
+      // Headline (Title)
+      const headlineY = dividerY + 38;
+      ctx.font = '900 28px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#ffffff';
 
       const words = headline.split(' ');
@@ -283,7 +290,7 @@ function BannerGeneratorContent() {
       const lines: string[] = [];
       for (let n = 0; n < words.length; n++) {
         const testLine = currentLine ? `${currentLine} ${words[n]}` : words[n];
-        if (ctx.measureText(testLine).width > contentW && currentLine) {
+        if (ctx.measureText(testLine).width > leftW && currentLine) {
           lines.push(currentLine);
           currentLine = words[n];
         } else {
@@ -292,51 +299,51 @@ function BannerGeneratorContent() {
       }
       if (currentLine) lines.push(currentLine);
 
-      const headlineLines = lines.slice(0, 3);
+      const headlineLines = lines.slice(0, 2);
       headlineLines.forEach((l, idx) => {
-        ctx.fillText(l, contentX, headlineY + idx * 56);
+        ctx.fillText(l, leftX, headlineY + idx * 36);
       });
-      const endHeadlineY = headlineY + (headlineLines.length - 1) * 56;
+      const endHeadlineY = headlineY + (headlineLines.length - 1) * 36;
 
-      // 4. Rent Highlight Card
-      const rentY = Math.max(endHeadlineY + 44, 385);
-      const rentH = 150;
+      // Rent Highlight Card
+      const rentY = Math.max(endHeadlineY + 24, 196);
+      const rentH = 104;
       const rentBg = theme === 'clean-white' ? '#047857' : '#f59e0b';
-      fillRoundedRect(contentX, rentY, contentW, rentH, 24, rentBg);
+      fillRoundedRect(leftX, rentY, leftW, rentH, 16, rentBg);
 
       // Rent Left Text
-      ctx.font = 'bold 20px Arial, sans-serif';
+      ctx.font = 'bold 14px Arial, sans-serif';
       ctx.fillStyle =
         theme === 'clean-white'
           ? 'rgba(255, 255, 255, 0.85)'
           : 'rgba(15, 23, 42, 0.75)';
-      ctx.fillText('MONTHLY RENT', contentX + 36, rentY + 50);
+      ctx.fillText('MONTHLY RENT', leftX + 24, rentY + 34);
 
-      ctx.font = '900 58px Arial, sans-serif';
+      ctx.font = '900 44px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#ffffff' : '#0f172a';
-      ctx.fillText(`BDT ${rent}`, contentX + 36, rentY + 118);
+      ctx.fillText(`BDT ${rent}`, leftX + 24, rentY + 84);
 
       // Rent Right Pill (Bills Included)
       const pillText = billsIncluded ? '⚡ Bills Included' : '+ Utility Bills';
-      ctx.font = 'bold 23px Arial, sans-serif';
-      const pillW = ctx.measureText(pillText).width + 44;
-      const pillH = 48;
-      const pillX = contentX + contentW - 36 - pillW;
+      ctx.font = 'bold 17px Arial, sans-serif';
+      const pillW = ctx.measureText(pillText).width + 32;
+      const pillH = 38;
+      const pillX = leftX + leftW - 24 - pillW;
       const pillY = rentY + (rentH - pillH) / 2;
       const pillBg =
         theme === 'clean-white'
           ? 'rgba(255, 255, 255, 0.22)'
           : 'rgba(0, 0, 0, 0.15)';
-      fillRoundedRect(pillX, pillY, pillW, pillH, 14, pillBg);
+      fillRoundedRect(pillX, pillY, pillW, pillH, 10, pillBg);
 
       ctx.fillStyle = theme === 'clean-white' ? '#ffffff' : '#0f172a';
-      ctx.fillText(pillText, pillX + 22, pillY + 33);
+      ctx.fillText(pillText, pillX + 16, pillY + 25);
 
-      // 5. Specs Grid (Area, Month, Capacity)
-      const specsY = rentY + rentH + 26;
-      const specsH = 125;
-      const gap = 18;
-      const cardW = (contentW - 2 * gap) / 3;
+      // Specs Grid (Area, Month, Seats)
+      const specsY = rentY + rentH + 16;
+      const specsH = 80;
+      const specGap = 12;
+      const specCardW = (leftW - 2 * specGap) / 3;
 
       const specCardsData = [
         { val: area, icon: drawPinIcon },
@@ -345,22 +352,22 @@ function BannerGeneratorContent() {
       ];
 
       specCardsData.forEach((spec, i) => {
-        const cardX = contentX + i * (cardW + gap);
+        const cardX = leftX + i * (specCardW + specGap);
         const cardBg =
           theme === 'clean-white' ? '#f1f5f9' : 'rgba(255, 255, 255, 0.10)';
         const cardBorder =
           theme === 'clean-white' ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)';
 
-        fillRoundedRect(cardX, specsY, cardW, specsH, 20, cardBg, cardBorder, 1.5);
+        fillRoundedRect(cardX, specsY, specCardW, specsH, 14, cardBg, cardBorder, 1);
 
         // Centered Icon
-        spec.icon(cardX + cardW / 2, specsY + 42, '#34d399');
+        spec.icon(cardX + specCardW / 2, specsY + 26, '#34d399');
 
         // Truncated value to fit neatly
         let displayVal = spec.val;
-        ctx.font = 'bold 23px Arial, sans-serif';
-        if (ctx.measureText(displayVal).width > cardW - 28) {
-          while (ctx.measureText(displayVal + '...').width > cardW - 28 && displayVal.length > 3) {
+        ctx.font = 'bold 16px Arial, sans-serif';
+        if (ctx.measureText(displayVal).width > specCardW - 20) {
+          while (ctx.measureText(displayVal + '...').width > specCardW - 20 && displayVal.length > 3) {
             displayVal = displayVal.slice(0, -1);
           }
           displayVal += '...';
@@ -368,15 +375,15 @@ function BannerGeneratorContent() {
 
         ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#ffffff';
         ctx.textAlign = 'center';
-        ctx.fillText(displayVal, cardX + cardW / 2, specsY + 98);
+        ctx.fillText(displayVal, cardX + specCardW / 2, specsY + 62);
         ctx.textAlign = 'left';
       });
 
-      // 6. Perks Included Section
-      const perksLabelY = specsY + specsH + 34;
-      ctx.font = 'bold 19px Arial, sans-serif';
+      // Perks Included Section
+      const perksLabelY = specsY + specsH + 24;
+      ctx.font = 'bold 13px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#64748b' : '#94a3b8';
-      ctx.fillText('PERKS INCLUDED:', contentX, perksLabelY);
+      ctx.fillText('PERKS INCLUDED:', leftX, perksLabelY);
 
       const activePerksList: string[] = [];
       if (perks.khalaMaid) activePerksList.push('🍳 Khala / Cook');
@@ -386,18 +393,18 @@ function BannerGeneratorContent() {
       if (perks.balcony) activePerksList.push('🌿 Balcony');
       if (perks.generator) activePerksList.push('⚡ Generator');
 
-      let perkX = contentX;
-      let perkY = perksLabelY + 16;
-      ctx.font = 'bold 21px Arial, sans-serif';
+      let perkX = leftX;
+      let perkY = perksLabelY + 10;
+      ctx.font = 'bold 14px Arial, sans-serif';
 
       activePerksList.forEach((perk) => {
         const textWidth = ctx.measureText(perk).width;
-        const pillWidth = textWidth + 36;
-        const pillHeight = 44;
+        const pillWidth = textWidth + 24;
+        const pillHeight = 32;
 
-        if (perkX + pillWidth > contentX + contentW) {
-          perkX = contentX;
-          perkY += 54;
+        if (perkX + pillWidth > leftX + leftW) {
+          perkX = leftX;
+          perkY += 38;
         }
 
         const pBg =
@@ -405,52 +412,88 @@ function BannerGeneratorContent() {
         const pBorder =
           theme === 'clean-white' ? '#a7f3d0' : 'rgba(52, 211, 153, 0.35)';
 
-        fillRoundedRect(perkX, perkY, pillWidth, pillHeight, 12, pBg, pBorder, 1.5);
+        fillRoundedRect(perkX, perkY, pillWidth, pillHeight, 8, pBg, pBorder, 1);
 
         ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#6ee7b7';
-        ctx.fillText(perk, perkX + 18, perkY + 30);
+        ctx.fillText(perk, perkX + 12, perkY + 21);
 
-        perkX += pillWidth + 12;
+        perkX += pillWidth + 8;
       });
 
-      // 7. Contact / Visiting Box (Footer)
-      const footerH = 190;
-      const footerY = height - 60 - footerH;
-      const footerBg =
-        theme === 'clean-white' ? '#0f172a' : 'rgba(0, 0, 0, 0.45)';
-      const footerBorder =
-        theme === 'clean-white' ? '#1e293b' : 'rgba(255, 255, 255, 0.12)';
+      // ================= RIGHT COLUMN =================
+      // Right Card 1: Contact / Room Visit Card
+      const contactY = dividerY + 22;
+      const contactH = 170;
+      const contactBg =
+        theme === 'clean-white' ? '#f8fafc' : 'rgba(0, 0, 0, 0.40)';
+      const contactBorder =
+        theme === 'clean-white' ? '#e2e8f0' : 'rgba(255, 255, 255, 0.12)';
 
-      fillRoundedRect(contentX, footerY, contentW, footerH, 24, footerBg, footerBorder, 1.5);
+      fillRoundedRect(rightX, contactY, rightW, contactH, 18, contactBg, contactBorder, 1.5);
 
-      // Contact texts
-      ctx.font = 'bold 18px Arial, sans-serif';
+      ctx.font = 'bold 13px Arial, sans-serif';
       ctx.fillStyle = '#34d399';
-      ctx.fillText('CONTACT / ROOM VISIT:', contentX + 36, footerY + 48);
+      ctx.fillText('CONTACT / ROOM VISIT:', rightX + 22, contactY + 34);
 
       // Phone icon and number
-      drawPhoneIcon(contentX + 50, footerY + 102, '#34d399');
+      drawPhoneIcon(rightX + 34, contactY + 76, '#34d399');
 
-      ctx.font = '900 44px Arial, sans-serif';
-      ctx.fillStyle = '#ffffff';
-      ctx.fillText(phone, contentX + 78, footerY + 114);
+      ctx.font = '900 28px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#ffffff';
+      ctx.fillText(phone, rightX + 54, contactY + 86);
 
-      ctx.font = 'bold 18px Arial, sans-serif';
-      ctx.fillStyle = '#94a3b8';
-      ctx.fillText('Scan QR code for online listing', contentX + 36, footerY + 158);
+      ctx.font = 'bold 12px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#64748b' : '#94a3b8';
+      ctx.fillText('Call or WhatsApp for room visit', rightX + 22, contactY + 122);
+
+      // Verified host pill
+      fillRoundedRect(rightX + 22, contactY + 134, 180, 24, 6, 'rgba(16, 185, 129, 0.20)', 'rgba(52, 211, 153, 0.35)', 1);
+      ctx.font = 'bold 11px Arial, sans-serif';
+      ctx.fillStyle = '#34d399';
+      ctx.fillText('✓ Direct Student Host', rightX + 32, contactY + 150);
+
+      // Right Card 2: QR Code Card
+      const qrBoxY = contactY + contactH + 16;
+      const qrBoxH = 265;
+      fillRoundedRect(rightX, qrBoxY, rightW, qrBoxH, 18, contactBg, contactBorder, 1.5);
 
       // QR Code Container
-      const qrBoxSize = 150;
-      const qrBoxX = contentX + contentW - 24 - qrBoxSize;
-      const qrBoxY = footerY + (footerH - qrBoxSize) / 2;
+      const qrSize = 130;
+      const qrInnerX = rightX + (rightW - qrSize) / 2;
+      const qrInnerY = qrBoxY + 22;
 
-      fillRoundedRect(qrBoxX, qrBoxY, qrBoxSize, qrBoxSize, 18, '#ffffff');
+      fillRoundedRect(qrInnerX, qrInnerY, qrSize, qrSize, 14, '#ffffff');
 
       if (qrImg) {
-        ctx.drawImage(qrImg, qrBoxX + 10, qrBoxY + 10, qrBoxSize - 20, qrBoxSize - 20);
+        ctx.drawImage(qrImg, qrInnerX + 8, qrInnerY + 8, qrSize - 16, qrSize - 16);
       }
 
-      // 8. Trigger Download
+      // Below QR texts
+      ctx.font = '900 13px Arial, sans-serif';
+      ctx.fillStyle = '#34d399';
+      ctx.textAlign = 'center';
+      ctx.fillText('SCAN FOR ONLINE LISTING', rightX + rightW / 2, qrBoxY + 184);
+
+      ctx.font = 'bold 11px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#64748b' : '#94a3b8';
+      ctx.fillText('Southeast University Housing Network', rightX + rightW / 2, qrBoxY + 204);
+
+      ctx.font = 'bold 12px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#047857' : '#6ee7b7';
+      ctx.fillText('toletseu.vercel.app', rightX + rightW / 2, qrBoxY + 228);
+      ctx.textAlign = 'left';
+
+      // 4. Subtle Bottom Footer
+      const footerY = height - 32;
+      ctx.font = 'bold 12px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#94a3b8' : 'rgba(255, 255, 255, 0.4)';
+      ctx.fillText('Official Student Mess Portal • Southeast University', contentX, footerY);
+
+      ctx.textAlign = 'right';
+      ctx.fillText('Verified Student Housing', contentX + contentW, footerY);
+      ctx.textAlign = 'left';
+
+      // 5. Trigger Download
       const mime = format === 'png' ? 'image/png' : 'image/jpeg';
       const fileExt = format === 'png' ? 'png' : 'jpg';
       const dataUrl = canvas.toDataURL(mime, 0.95);
@@ -740,24 +783,29 @@ function BannerGeneratorContent() {
 
         {/* Right Preview Card (7 cols) */}
         <div className="lg:col-span-7 flex flex-col items-center">
+          <div className="w-full flex items-center justify-between mb-3 px-1">
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Live Preview (16:9 Landscape)</span>
+            <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Fits Post Cards 100%</span>
+          </div>
+
           {/* Dynamic HTML Poster Preview that matches export */}
           <div
-            className={`w-full max-w-lg aspect-[4/5] rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-2xl transition-all duration-300 relative overflow-hidden border-4 ${
+            className={`w-full aspect-video rounded-3xl p-4 sm:p-6 flex flex-col justify-between shadow-2xl transition-all duration-300 relative overflow-hidden border-4 ${
               theme === 'seu-emerald'
-                ? 'bg-gradient-to-br from-emerald-900 via-emerald-800 to-slate-950 text-white border-emerald-500/40'
+                ? 'bg-gradient-to-br from-emerald-950 via-emerald-900 to-slate-950 text-white border-emerald-500/40'
                 : theme === 'dark-slate'
                 ? 'bg-gradient-to-br from-slate-900 via-slate-950 to-black text-white border-slate-700'
                 : 'bg-white text-slate-900 border-emerald-600'
             }`}
           >
             {/* Header Brand Bar */}
-            <div className="flex items-center justify-between pb-4 border-b border-white/10">
+            <div className="flex items-center justify-between pb-2.5 sm:pb-3 border-b border-white/10">
               <div>
-                <div className="flex items-center gap-1.5 font-black text-lg sm:text-xl">
+                <div className="flex items-center gap-1.5 font-black text-base sm:text-lg">
                   <span>TO LET</span>
                   <span className="text-emerald-400">SEU</span>
                 </div>
-                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                <p className="text-[9px] sm:text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
                   Southeast University Student Mess
                 </p>
               </div>
@@ -773,119 +821,143 @@ function BannerGeneratorContent() {
               </span>
             </div>
 
-            {/* Headline */}
-            <div className="my-3">
-              <h2 className="text-xl sm:text-2xl font-black leading-snug line-clamp-3">
-                {headline}
-              </h2>
-            </div>
+            {/* 2-Column Body */}
+            <div className="grid grid-cols-12 gap-3 sm:gap-4 my-auto items-center">
+              {/* Left Column (7 cols): Headline, Rent, Specs, Perks */}
+              <div className="col-span-7 space-y-2 sm:space-y-2.5">
+                <h2 className="text-xs sm:text-sm md:text-base font-black leading-snug line-clamp-2">
+                  {headline}
+                </h2>
 
-            {/* Rent Card */}
-            <div
-              className={`p-4 rounded-2xl flex items-center justify-between shadow-lg ${
-                theme === 'clean-white'
-                  ? 'bg-emerald-700 text-white'
-                  : 'bg-amber-500 text-slate-950'
-              }`}
-            >
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider block opacity-80">
-                  Monthly Rent
-                </span>
-                <span className="text-2xl sm:text-3xl font-black">
-                  BDT {rent}
-                </span>
-              </div>
-              <span className="text-xs font-bold px-3 py-1 rounded-xl bg-black/15">
-                {billsIncluded ? '⚡ Bills Included' : '+ Utility Bills'}
-              </span>
-            </div>
-
-            {/* 3 Specs Badges */}
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <div
-                className={`p-2.5 rounded-xl text-xs font-semibold ${
-                  theme === 'clean-white' ? 'bg-slate-100 text-slate-800' : 'bg-white/10 text-white'
-                }`}
-              >
-                <MapPin className="w-3.5 h-3.5 mx-auto mb-1 text-emerald-400" />
-                <span className="block font-bold truncate">{area}</span>
-              </div>
-
-              <div
-                className={`p-2.5 rounded-xl text-xs font-semibold ${
-                  theme === 'clean-white' ? 'bg-slate-100 text-slate-800' : 'bg-white/10 text-white'
-                }`}
-              >
-                <Calendar className="w-3.5 h-3.5 mx-auto mb-1 text-emerald-400" />
-                <span className="block font-bold">{month}</span>
-              </div>
-
-              <div
-                className={`p-2.5 rounded-xl text-xs font-semibold ${
-                  theme === 'clean-white' ? 'bg-slate-100 text-slate-800' : 'bg-white/10 text-white'
-                }`}
-              >
-                <Users className="w-3.5 h-3.5 mx-auto mb-1 text-emerald-400" />
-                <span className="block font-bold">{seats}</span>
-              </div>
-            </div>
-
-            {/* Amenities Grid */}
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
-                Perks Included:
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {perks.khalaMaid && (
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
-                    🍳 Khala / Cook
+                {/* Rent Card */}
+                <div
+                  className={`p-2.5 sm:p-3 rounded-xl sm:rounded-2xl flex items-center justify-between shadow-md ${
+                    theme === 'clean-white'
+                      ? 'bg-emerald-700 text-white'
+                      : 'bg-amber-500 text-slate-950'
+                  }`}
+                >
+                  <div>
+                    <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider block opacity-80 leading-none">
+                      Monthly Rent
+                    </span>
+                    <span className="text-base sm:text-xl font-black">
+                      BDT {rent}
+                    </span>
+                  </div>
+                  <span className="text-[9px] sm:text-[11px] font-bold px-2 py-0.5 rounded-lg bg-black/15">
+                    {billsIncluded ? '⚡ Bills Included' : '+ Utility'}
                   </span>
-                )}
-                {perks.wifi && (
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
-                    📶 WiFi
-                  </span>
-                )}
-                {perks.fridge && (
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
-                    🧊 Fridge
-                  </span>
-                )}
-                {perks.attachedBath && (
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
-                    🚿 Attached Bath
-                  </span>
-                )}
-                {perks.balcony && (
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
-                    🌿 Balcony
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Footer Contact + QR Code */}
-            <div className="p-3.5 rounded-2xl bg-black/40 backdrop-blur-md flex items-center justify-between border border-white/10 mt-2">
-              <div className="space-y-0.5">
-                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
-                  Contact / Room Visit:
-                </span>
-                <p className="text-lg sm:text-xl font-black tracking-tight text-white flex items-center gap-1.5">
-                  <Phone className="w-4 h-4 text-emerald-400" />
-                  <span>{phone}</span>
-                </p>
-                <p className="text-[10px] text-slate-400">
-                  Scan QR code for online listing
-                </p>
-              </div>
-
-              {qrCodeUrl && (
-                <div className="bg-white p-1 rounded-xl shadow shrink-0">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={qrCodeUrl} alt="QR" className="w-16 h-16" />
                 </div>
-              )}
+
+                {/* Specs Badges */}
+                <div className="grid grid-cols-3 gap-1.5 text-center">
+                  <div
+                    className={`p-1.5 rounded-lg text-[10px] font-semibold ${
+                      theme === 'clean-white' ? 'bg-slate-100 text-slate-800' : 'bg-white/10 text-white'
+                    }`}
+                  >
+                    <MapPin className="w-3 h-3 mx-auto mb-0.5 text-emerald-400" />
+                    <span className="block font-bold truncate">{area}</span>
+                  </div>
+
+                  <div
+                    className={`p-1.5 rounded-lg text-[10px] font-semibold ${
+                      theme === 'clean-white' ? 'bg-slate-100 text-slate-800' : 'bg-white/10 text-white'
+                    }`}
+                  >
+                    <Calendar className="w-3 h-3 mx-auto mb-0.5 text-emerald-400" />
+                    <span className="block font-bold truncate">{month}</span>
+                  </div>
+
+                  <div
+                    className={`p-1.5 rounded-lg text-[10px] font-semibold ${
+                      theme === 'clean-white' ? 'bg-slate-100 text-slate-800' : 'bg-white/10 text-white'
+                    }`}
+                  >
+                    <Users className="w-3 h-3 mx-auto mb-0.5 text-emerald-400" />
+                    <span className="block font-bold truncate">{seats}</span>
+                  </div>
+                </div>
+
+                {/* Perks Badges */}
+                <div className="flex flex-wrap gap-1">
+                  {perks.khalaMaid && (
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                      🍳 Khala
+                    </span>
+                  )}
+                  {perks.wifi && (
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                      📶 WiFi
+                    </span>
+                  )}
+                  {perks.fridge && (
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                      🧊 Fridge
+                    </span>
+                  )}
+                  {perks.attachedBath && (
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                      🚿 Bath
+                    </span>
+                  )}
+                  {perks.balcony && (
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                      🌿 Balcony
+                    </span>
+                  )}
+                  {perks.generator && (
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                      ⚡ IPS
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Right Column (5 cols): Contact & QR Code */}
+              <div className="col-span-5 space-y-2">
+                {/* Contact Card */}
+                <div className="p-2.5 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 space-y-0.5">
+                  <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-wider block">
+                    Contact Host:
+                  </span>
+                  <p className="text-xs sm:text-sm font-black tracking-tight text-white flex items-center gap-1">
+                    <Phone className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span className="truncate">{phone}</span>
+                  </p>
+                  <p className="text-[8px] text-slate-400">
+                    Call or WhatsApp for visit
+                  </p>
+                </div>
+
+                {/* QR Box */}
+                <div className="p-2 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 flex items-center gap-2.5">
+                  {qrCodeUrl && (
+                    <div className="bg-white p-0.5 rounded-lg shadow shrink-0">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={qrCodeUrl} alt="QR" className="w-12 h-12" />
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <span className="text-[9px] font-black text-emerald-400 block leading-tight">
+                      SCAN FOR POST
+                    </span>
+                    <p className="text-[8px] text-slate-300 truncate">
+                      Southeast University
+                    </p>
+                    <p className="text-[8px] font-bold text-emerald-300">
+                      toletseu.vercel.app
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer watermark */}
+            <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[8px] sm:text-[9px] text-slate-400 font-semibold">
+              <span>Official Student Mess Portal • SEU</span>
+              <span>Verified Student Housing</span>
             </div>
           </div>
         </div>

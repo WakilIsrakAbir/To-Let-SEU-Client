@@ -105,6 +105,31 @@ function PostsFeedInner() {
     fetchPosts();
   }, [fetchPosts]);
 
+  // Smooth scroll & pulse highlight when arriving with #postId or ?highlight=postId
+  useEffect(() => {
+    if (loading || posts.length === 0) return;
+
+    const targetId =
+      searchParams.get('highlight') ||
+      (typeof window !== 'undefined' ? window.location.hash.replace('#', '') : '');
+
+    if (!targetId) return;
+
+    const timer = setTimeout(() => {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.style.transition = 'all 0.4s ease';
+        el.style.boxShadow = `0 0 0 4px ${currentTheme.hex}80, 0 25px 30px -5px rgba(0, 0, 0, 0.15)`;
+        setTimeout(() => {
+          if (el) el.style.boxShadow = '';
+        }, 3500);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [loading, posts, searchParams, currentTheme.hex]);
+
   const handleFilterChange = (newFilters: FilterState) => {
     setFilters(newFilters);
     setPage(1);
