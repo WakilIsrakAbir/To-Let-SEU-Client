@@ -92,20 +92,25 @@ export default function Home() {
             </div>
           </motion.div>
 
-          {/* 2-Column Grid: Clean Text on Left, Clean High-Res Image on Right */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 min-[1680px]:gap-16 items-center">
-            {/* Left Column: Clean Typography, Single Search Capsule, and Action CTAs */}
+          {/* 2-Column Grid: Reordered on Mobile (Text -> Image -> Search/Buttons) and Balanced on Desktop */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-x-12 lg:gap-y-6 min-[1680px]:gap-x-16 items-center">
+            {/* 1. Headline & Concise Description */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.35 }}
-              className="lg:col-span-7 text-center lg:text-left space-y-5 min-[1680px]:space-y-7"
+              className="order-1 lg:col-span-7 lg:col-start-1 lg:row-start-1 text-center lg:text-left space-y-4 min-[1680px]:space-y-6"
             >
-              {/* Clean, Impactful Headline - Original on laptop, scaled only on PC displays >= 1680px */}
+              {/* Clean, Impactful Headline - Static on Mobile to prevent layout shifts, Animated on Desktop */}
               <h1 className="text-3xl sm:text-4xl lg:text-[46px] min-[1680px]:text-[56px] font-black tracking-tight leading-[1.18] min-[1680px]:leading-[1.14] text-slate-900 dark:text-white">
                 Find Your{' '}
+                {/* Fixed text on Mobile */}
+                <span className="inline-block sm:hidden" style={{ color: currentTheme.hex }}>
+                  Bachelor Seat
+                </span>
+                {/* Animated Rotating Words on Tablet/Desktop */}
                 <span
-                  className="inline-grid align-baseline relative"
+                  className="hidden sm:inline-grid align-baseline relative"
                   style={{ gridTemplateAreas: "'stack'" }}
                 >
                   <AnimatePresence mode="popLayout" initial={false}>
@@ -133,7 +138,61 @@ export default function Home() {
               <p className="text-sm sm:text-base min-[1680px]:text-lg text-slate-600 dark:text-slate-300 max-w-xl min-[1680px]:max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
                 Direct student-to-student bachelor accommodation for Southeast University. Connect with verified classmates across all departments with walking distance to Tejgaon campus and zero broker fees.
               </p>
+            </motion.div>
 
+            {/* 2. Hero Room Image - Placed 2nd on Mobile (immediately below text) and in Right Column on Desktop */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="order-2 lg:order-2 lg:col-span-5 lg:col-start-8 lg:row-start-1 lg:row-span-2 max-w-[440px] min-[1680px]:max-w-[500px] mx-auto w-full relative group lg:self-center"
+            >
+              {/* Radiant floor light bloom beneath the image */}
+              <div
+                style={{
+                  background: `radial-gradient(ellipse at 50% 0%, ${currentTheme.hex}80 0%, #f59e0b60 45%, transparent 80%)`,
+                }}
+                className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-[88%] h-14 blur-xl pointer-events-none -z-10 transition-all duration-500"
+              />
+
+              {/* Gentle ambient backlight radiating softly behind the card */}
+              <div
+                style={{
+                  background: `radial-gradient(ellipse at 50% 65%, ${currentTheme.hex}35 0%, #f59e0b20 45%, transparent 75%)`,
+                }}
+                className="absolute -inset-3 sm:-inset-4 rounded-[32px] blur-2xl pointer-events-none -z-10 transition-all duration-500 group-hover:scale-105"
+              />
+
+              <div className="relative rounded-3xl overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-2xl bg-white dark:bg-slate-900 aspect-[4/3]">
+                {/* Clean High Quality Room Image */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/hero-room.jpg"
+                  alt="Modern SEU Student Bachelor Room"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+
+                {/* Minimal Clean Tag on Image */}
+                <div className="absolute top-3.5 left-3.5 bg-black/70 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 min-[1680px]:text-sm min-[1680px]:px-4 min-[1680px]:py-2 rounded-xl flex items-center gap-1.5 shadow-md">
+                  <MapPin className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Walking Distance to Tejgaon Campus</span>
+                </div>
+
+                {/* Minimal Verified Student Tag on Bottom */}
+                <div className="absolute bottom-3.5 right-3.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md text-slate-900 dark:text-white text-xs font-bold px-3 py-1.5 min-[1680px]:text-sm min-[1680px]:px-4 min-[1680px]:py-2 rounded-xl shadow-md flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
+                  <span>Verified SEU Student Host</span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* 3. Search Capsule & Action CTAs - Placed 3rd on Mobile (under the image) and in Left Column on Desktop */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.15 }}
+              className="order-3 lg:order-3 lg:col-span-7 lg:col-start-1 lg:row-start-2 space-y-4 min-[1680px]:space-y-6 pt-1 lg:pt-0"
+            >
               {/* Clean 1-Line Search Capsule - visible on mobile & desktop */}
               <form
                 onSubmit={handleHeroSearch}
@@ -210,51 +269,6 @@ export default function Home() {
                   <span>Auto Poster</span>
                 </Link>
               </div>
-            </motion.div>            {/* Right Column: Clean, Stunning High-Res Image - Positioned in the middle aligned with headline and buttons */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-              className="lg:col-span-5 max-w-[440px] min-[1680px]:max-w-[500px] mx-auto w-full relative group lg:self-center lg:-translate-y-5 min-[1680px]:-translate-y-7"
-            >
-              {/* Radiant floor light bloom beneath the image */}
-              <div
-                style={{
-                  background: `radial-gradient(ellipse at 50% 0%, ${currentTheme.hex}80 0%, #f59e0b60 45%, transparent 80%)`,
-                }}
-                className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-[88%] h-14 blur-xl pointer-events-none -z-10 transition-all duration-500"
-              />
-
-              {/* Gentle ambient backlight radiating softly behind the card */}
-              <div
-                style={{
-                  background: `radial-gradient(ellipse at 50% 65%, ${currentTheme.hex}35 0%, #f59e0b20 45%, transparent 75%)`,
-                }}
-                className="absolute -inset-3 sm:-inset-4 rounded-[32px] blur-2xl pointer-events-none -z-10 transition-all duration-500 group-hover:scale-105"
-              />
-
-              <div className="relative rounded-3xl overflow-hidden border border-slate-200/90 dark:border-slate-800 shadow-2xl bg-white dark:bg-slate-900 aspect-[4/3]">
-                {/* Clean High Quality Room Image */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/hero-room.jpg"
-                  alt="Modern SEU Student Bachelor Room"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-
-                {/* Minimal Clean Tag on Image */}
-                <div className="absolute top-3.5 left-3.5 bg-black/70 backdrop-blur-md text-white text-xs font-bold px-3 py-1.5 min-[1680px]:text-sm min-[1680px]:px-4 min-[1680px]:py-2 rounded-xl flex items-center gap-1.5 shadow-md">
-                  <MapPin className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Walking Distance to Tejgaon Campus</span>
-                </div>
-
-                {/* Minimal Verified Student Tag on Bottom */}
-                <div className="absolute bottom-3.5 right-3.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md text-slate-900 dark:text-white text-xs font-bold px-3 py-1.5 min-[1680px]:text-sm min-[1680px]:px-4 min-[1680px]:py-2 rounded-xl shadow-md flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
-                  <span>Verified SEU Student Host</span>
-                </div>
-              </div>
-
             </motion.div>
           </div>
         </div>
