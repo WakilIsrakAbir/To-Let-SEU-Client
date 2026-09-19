@@ -88,7 +88,7 @@ export default function Home() {
                 />
               </span>
               <Sparkles className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
-              <span>Official SEU Bachelor Housing • Tejgaon Campus</span>
+              <span>SEU Bachelor Housing • Tejgaon Campus</span>
             </div>
           </motion.div>
 

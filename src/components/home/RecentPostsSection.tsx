@@ -177,10 +177,10 @@ function PostCardSkeleton() {
       {/* Content Area Skeleton */}
       <div className="p-5 flex-1 flex flex-col justify-between">
         <div>
-          {/* Location row placeholder */}
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-3.5 h-3.5 rounded-full bg-slate-300 dark:bg-slate-700 shrink-0" />
-            <div className="w-3/5 h-3.5 rounded-md bg-slate-200 dark:bg-slate-700" />
+          {/* Location & Date row placeholder */}
+          <div className="flex items-center justify-between gap-2 mb-2.5">
+            <div className="w-28 h-6 rounded-lg bg-slate-200 dark:bg-slate-700/70 border border-slate-200/50 dark:border-slate-700/50" />
+            <div className="w-24 h-6 rounded-lg bg-slate-200 dark:bg-slate-700/70 border border-slate-200/50 dark:border-slate-700/50" />
           </div>
 
           {/* Amenities placeholders */}
@@ -197,10 +197,10 @@ function PostCardSkeleton() {
           </div>
         </div>
 
-        {/* Price & Month row placeholder */}
+        {/* Price & View Details button placeholder */}
         <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <div className="w-24 h-6 rounded-md bg-slate-200 dark:bg-slate-700" />
-          <div className="w-28 h-7 rounded-xl bg-slate-200/90 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60" />
+          <div className="w-24 h-7 rounded-xl bg-slate-200/90 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60" />
         </div>
       </div>
     </div>
@@ -307,17 +307,31 @@ export default function RecentPostsSection() {
               {/* Clean Content Area */}
               <div className="p-5 flex-1 flex flex-col justify-between">
                 <div>
-                  {/* Location Only (Walking distance removed as requested) */}
+                  {/* Location (with border) & Available From Date Row */}
                   <Link
                     href={postUrl}
                     onClick={(e) => e.stopPropagation()}
-                    className="block group/link"
+                    className="block group/loc mb-2"
                   >
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mb-2">
-                      <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
-                      <span className="font-semibold text-slate-700 dark:text-slate-300 group-hover/link:underline truncate">
-                        {post.area || 'Tejgaon (Near SEU Campus)'}
-                      </span>
+                    <div className="flex items-center justify-between gap-2">
+                      {/* Location Badge with border */}
+                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-50 dark:bg-slate-800/80 border border-slate-200/90 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 shadow-2xs group-hover/loc:border-slate-300 dark:group-hover/loc:border-slate-600 transition-colors min-w-0 max-w-[54%]">
+                        <MapPin className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
+                        <span className="truncate">{post.area || 'Tejgaon (Near SEU)'}</span>
+                      </div>
+
+                      {/* Availability From Date Badge (Right of location) */}
+                      <div
+                        style={{
+                          backgroundColor: isDark ? `${currentTheme.hex}18` : currentTheme.lightHex,
+                          color: isDark ? currentTheme.hex : currentTheme.textHex,
+                          borderColor: isDark ? `${currentTheme.hex}45` : currentTheme.borderHex,
+                        }}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-extrabold border shadow-2xs transition-colors shrink-0 whitespace-nowrap"
+                      >
+                        <Calendar className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
+                        <span className="truncate">From {post.availableFromMonth || 'Immediate'}</span>
+                      </div>
                     </div>
                   </Link>
 
@@ -405,7 +419,7 @@ export default function RecentPostsSection() {
                   </div>
                 </div>
 
-                {/* Price & Action Row */}
+                {/* Price & View Details Action Row */}
                 <Link
                   href={postUrl}
                   onClick={(e) => e.stopPropagation()}
@@ -422,17 +436,15 @@ export default function RecentPostsSection() {
                       <span className="text-xs text-slate-400 font-medium whitespace-nowrap">/month</span>
                     </div>
 
-                    {/* Highlighted Availability Month Badge - Dynamically adapted to active Accent Theme */}
+                    {/* View Details Button */}
                     <div
                       style={{
-                        backgroundColor: isDark ? `${currentTheme.hex}18` : currentTheme.lightHex,
-                        color: isDark ? currentTheme.hex : currentTheme.textHex,
-                        borderColor: isDark ? `${currentTheme.hex}45` : currentTheme.borderHex,
+                        backgroundColor: currentTheme.hex,
                       }}
-                      className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-extrabold border shadow-2xs transition-colors shrink-0 whitespace-nowrap"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white shadow-xs group-hover:shadow-md transition-all group-hover:translate-x-0.5 shrink-0 whitespace-nowrap"
                     >
-                      <Calendar className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
-                      <span className="truncate max-w-[130px] sm:max-w-none">From {post.availableFromMonth || 'Immediate'}</span>
+                      <span>View Details</span>
+                      <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                     </div>
                   </div>
                 </Link>
