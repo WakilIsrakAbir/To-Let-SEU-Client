@@ -191,6 +191,7 @@ export default function Navbar() {
                 </div>
                 <ul
                   tabIndex={0}
+                  onClick={() => (document.activeElement as HTMLElement)?.blur()}
                   className="mt-3 z-[1] p-2 shadow-xl menu menu-sm dropdown-content bg-white dark:bg-slate-900 rounded-2xl w-60 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200"
                 >
                   <li className="menu-title px-4 py-2 border-b border-slate-100 dark:border-slate-800">
@@ -205,6 +206,7 @@ export default function Navbar() {
                   <li>
                     <Link
                       href="/dashboard"
+                      onClick={() => (document.activeElement as HTMLElement)?.blur()}
                       style={{
                         backgroundColor: pathname === '/dashboard' ? (isDark ? `${currentTheme.hex}22` : currentTheme.lightHex) : undefined,
                         color: pathname === '/dashboard' ? (isDark ? '#ffffff' : currentTheme.textHex) : undefined,
@@ -227,6 +229,7 @@ export default function Navbar() {
                   <li>
                     <Link
                       href="/dashboard/my-posts"
+                      onClick={() => (document.activeElement as HTMLElement)?.blur()}
                       style={{
                         backgroundColor: pathname === '/dashboard/my-posts' ? (isDark ? `${currentTheme.hex}22` : currentTheme.lightHex) : undefined,
                         color: pathname === '/dashboard/my-posts' ? (isDark ? '#ffffff' : currentTheme.textHex) : undefined,
@@ -250,6 +253,7 @@ export default function Navbar() {
                     <li>
                       <Link
                         href="/admin"
+                        onClick={() => (document.activeElement as HTMLElement)?.blur()}
                         style={{
                           backgroundColor: pathname.startsWith('/admin') ? (isDark ? `${currentTheme.hex}22` : currentTheme.lightHex) : undefined,
                           color: pathname.startsWith('/admin') ? (isDark ? '#ffffff' : currentTheme.textHex) : undefined,
@@ -273,8 +277,11 @@ export default function Navbar() {
                   <div className="divider my-1 border-slate-100 dark:border-slate-800"></div>
                   <li>
                     <button
-                      onClick={logout}
-                      className="py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-700 rounded-xl"
+                      onClick={() => {
+                        (document.activeElement as HTMLElement)?.blur();
+                        logout();
+                      }}
+                      className="py-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-700 rounded-xl w-full flex items-center gap-2"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Sign Out</span>

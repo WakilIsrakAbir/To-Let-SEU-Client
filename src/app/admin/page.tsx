@@ -14,11 +14,8 @@ import {
   Trash2,
   ShieldCheck,
   CheckCircle,
-  Eye,
   AlertTriangle,
   Search,
-  Sliders,
-  Sparkles,
   Lock,
   Clock,
   Database,
@@ -27,8 +24,8 @@ import {
   CheckCircle2,
   Calendar,
   X,
-  AlertCircle,
   Flame,
+  Check,
 } from 'lucide-react';
 import LoadingState from '@/components/common/LoadingState';
 import DailyPostsChart from '@/components/admin/DailyPostsChart';
@@ -179,13 +176,13 @@ export default function AdminPage() {
 
       setCleanupSuccessNotice(
         count > 0
-          ? `সফলভাবে ${count} টি পোস্ট এবং Cloudinary থেকে ${imgs} টি ছবি ও ${vids} টি ভিডিও চিরতরে মুছে ফেলা হয়েছে!`
-          : `ক্লিনআপ চেক সম্পন্ন হয়েছে! ডাটাবেজে ${selectedPurgeDays} দিনের চেয়ে পুরনো কোনো মেয়াদোত্তীর্ণ পোস্ট পাওয়া যায়নি।`
+          ? `Successfully purged ${count} expired listings and permanently removed ${imgs} images and ${vids} videos from Cloudinary.`
+          : `Auto-purge check completed. No listings older than ${selectedPurgeDays} days were found in the database.`
       );
       setIsAutoPurgeModalOpen(false);
       await fetchAdminData();
     } catch (err: any) {
-      alert(err.response?.data?.message || 'অটো-ক্লিনআপ চালাতে ত্রুটি হয়েছে।');
+      alert(err.response?.data?.message || 'Failed to execute auto-purge routine.');
     } finally {
       setCleanupLoading(false);
     }
@@ -239,21 +236,21 @@ export default function AdminPage() {
       {/* Admin Header */}
       <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border border-slate-800">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold mb-2 border border-indigo-500/30">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold mb-2.5 border border-indigo-500/30">
             <ShieldAlert className="w-3.5 h-3.5" />
-            <span>To Let SEU Master Admin Dashboard</span>
+            <span>Master Moderation Hub</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
             Administrator Control Suite
           </h1>
           <p className="text-slate-400 text-sm mt-1">
-            ইউজার ম্যানেজমেন্ট, প্রতিদিনের পোস্ট এনালাইটিক্স ও ৬০ দিনের অটোমেটিক মিডিয়া ক্লিনআপ
+            User governance, daily activity trends, and automated 60-day Cloudinary media cleanup
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-2xl border border-white/10 text-xs font-bold">
-            <span>অ্যাডমিন:</span>
+            <span className="text-slate-300">Admin:</span>
             <span className="text-emerald-400">{user?.name}</span>
           </div>
         </div>
@@ -266,13 +263,13 @@ export default function AdminPage() {
           <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
             <div>
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Total Users (শিক্ষার্থী)
+                Total Users
               </span>
               <p className="text-3xl font-black text-slate-900 dark:text-white mt-1">
                 {stats.totalUsers ?? 0}
               </p>
               <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-1">
-                <Database className="w-3 h-3" /> ডাটাবেজে স্থায়ীভাবে সংরক্ষিত
+                <Database className="w-3 h-3" /> Permanently preserved
               </span>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
@@ -284,13 +281,13 @@ export default function AdminPage() {
           <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
             <div>
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Total Posts (মোট বিজ্ঞাপন)
+                Total Listings
               </span>
               <p className="text-3xl font-black text-slate-900 dark:text-white mt-1">
                 {stats.totalPosts ?? 0}
               </p>
               <span className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold mt-1 block">
-                সক্রিয় ও বুকড মিলিয়ে
+                Active & Booked combined
               </span>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
@@ -298,7 +295,7 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* Card 3: Active Rooms */}
+          {/* Card 3: Active Listings */}
           <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
             <div>
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
@@ -308,7 +305,7 @@ export default function AdminPage() {
                 {stats.activePosts ?? 0}
               </p>
               <span className="text-[11px] text-amber-600 dark:text-amber-400 font-semibold mt-1 block">
-                {stats.bookedPosts ?? 0} টি বুকড / ভাড়া হয়েছে
+                {stats.bookedPosts ?? 0} Rented / Booked
               </span>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center">
@@ -322,24 +319,24 @@ export default function AdminPage() {
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5 text-indigo-400" />
-                  Auto-Purge (২ মাস)
+                  Auto-Purge (60 Days)
                 </span>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               </div>
               <p className="text-sm font-bold text-slate-200 mt-2">
-                ৬০ দিনের পুরনো পোস্ট স্বয়ংক্রিয়ভাবে ক্লিন হয়
+                Posts older than 60 days auto-deleted
               </p>
               <p className="text-[10.5px] text-slate-400 mt-0.5">
-                Cloudinary ছবি/ভিডিও সহ পার্জ হয়
+                Cloudinary images & videos purged
               </p>
             </div>
 
             <button
               onClick={() => setIsAutoPurgeModalOpen(true)}
-              className="mt-3 w-full py-1.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
+              className="mt-3 w-full py-2 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
             >
               <RotateCw className="w-3.5 h-3.5" />
-              <span>রান অটো-ক্লিনআপ</span>
+              <span>Configure & Run Auto-Purge</span>
             </button>
           </div>
         </div>
@@ -354,7 +351,7 @@ export default function AdminPage() {
           </div>
           <button
             onClick={() => setCleanupSuccessNotice(null)}
-            className="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs font-bold px-2 py-1 rounded-lg"
+            className="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs font-bold px-2 py-1 rounded-lg cursor-pointer"
           >
             ✕
           </button>
@@ -364,11 +361,11 @@ export default function AdminPage() {
       {/* Daily Posts Interactive Chart */}
       <DailyPostsChart data={stats?.dailyPostStats || []} />
 
-      {/* Permanent User Protection Note */}
+      {/* Permanent User Protection Guarantee */}
       <div className="p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 flex items-start gap-3 text-xs text-blue-900 dark:text-blue-200">
         <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-        <div>
-          <strong className="font-bold">ডাটাবেজ সুরক্ষা নীতি:</strong> সকল শিক্ষার্থীর অ্যাকাউন্ট তথ্য (নাম, ইমেইল, ভেরিফিকেশন স্ট্যাটাস ইত্যাদি) স্থায়ীভাবে ডাটাবেজে সংরক্ষিত থাকে এবং কখনোই স্বয়ংক্রিয়ভাবে মুছে ফেলা হয় না। কেবল ২ মাস (৬০ দিন) অতিক্রান্ত হওয়া পুরনো পোস্ট এবং তাদের ক্লাউডিনারি মিডিয়া ফাইল স্বয়ংক্রিয়ভাবে ডিলিট হয়।
+        <div className="leading-relaxed">
+          <strong className="font-bold">Database Safety Policy:</strong> Student account records (name, email, phone, verification badge) are permanently preserved and never deleted by auto-cleanup. Only rental listings older than 60 days (2 months) and their associated Cloudinary media files are purged.
         </div>
       </div>
 
@@ -376,9 +373,9 @@ export default function AdminPage() {
       <div className="flex items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-2">
         <button
           onClick={() => setActiveTab('users')}
-          className={`px-5 py-2.5 rounded-xl text-sm font-extrabold transition flex items-center gap-2 ${
+          className={`px-5 py-2.5 rounded-xl text-sm font-extrabold transition flex items-center gap-2 cursor-pointer ${
             activeTab === 'users'
-              ? 'bg-emerald-700 text-white shadow'
+              ? 'bg-emerald-700 text-white shadow-xs'
               : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
           }`}
         >
@@ -388,20 +385,20 @@ export default function AdminPage() {
 
         <button
           onClick={() => setActiveTab('posts')}
-          className={`px-5 py-2.5 rounded-xl text-sm font-extrabold transition flex items-center gap-2 ${
+          className={`px-5 py-2.5 rounded-xl text-sm font-extrabold transition flex items-center gap-2 cursor-pointer ${
             activeTab === 'posts'
-              ? 'bg-emerald-700 text-white shadow'
+              ? 'bg-emerald-700 text-white shadow-xs'
               : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
           }`}
         >
           <Building2 className="w-4 h-4" />
-          <span>All Rental Posts ({postsList.length})</span>
+          <span>All Rental Listings ({postsList.length})</span>
         </button>
       </div>
 
       {/* TAB 1: USERS MANAGEMENT */}
       {activeTab === 'users' && (
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 space-y-6">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs p-6 space-y-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="relative w-full sm:w-80">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -424,10 +421,10 @@ export default function AdminPage() {
               <thead>
                 <tr className="border-b border-slate-200 dark:border-slate-800 text-slate-400 text-[11px] uppercase tracking-wider">
                   <th>User</th>
-                  <th>Department / ID</th>
-                  <th>Contact Phone</th>
+                  <th>Department / Student ID</th>
+                  <th>Phone</th>
                   <th>Role</th>
-                  <th>Verification</th>
+                  <th>Student Verification</th>
                   <th className="text-right">Action</th>
                 </tr>
               </thead>
@@ -479,10 +476,10 @@ export default function AdminPage() {
                     <td>
                       <button
                         onClick={() => handleToggleVerification(u)}
-                        className={`btn btn-xs rounded-lg font-bold flex items-center gap-1 ${
+                        className={`btn btn-xs rounded-lg font-bold flex items-center gap-1 cursor-pointer ${
                           u.isVerifiedStudent
                             ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 hover:bg-emerald-100'
-                            : 'btn-ghost text-slate-400'
+                            : 'btn-ghost text-slate-400 hover:text-slate-600'
                         }`}
                         title="Click to toggle SEU student verification badge"
                       >
@@ -496,7 +493,7 @@ export default function AdminPage() {
                         onClick={() => setDeletingUser(u)}
                         disabled={u._id === user?._id}
                         className="btn btn-xs btn-ghost text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 rounded-lg disabled:opacity-30 cursor-pointer"
-                        title="Delete User and all their posts"
+                        title="Delete User and all their listings"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -511,13 +508,13 @@ export default function AdminPage() {
 
       {/* TAB 2: POSTS MODERATION */}
       {activeTab === 'posts' && (
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 space-y-6">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xs p-6 space-y-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="relative w-full sm:w-80">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search listings by title, area, phone..."
+                placeholder="Search listings by title, area, phone number..."
                 value={postSearch}
                 onChange={(e) => setPostSearch(e.target.value)}
                 className="input input-sm input-bordered pl-9 w-full rounded-xl bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white"
@@ -525,7 +522,7 @@ export default function AdminPage() {
             </div>
 
             <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
-              Showing {filteredPosts.length} of {postsList.length} posts
+              Showing {filteredPosts.length} of {postsList.length} listings
             </span>
           </div>
 
@@ -537,7 +534,7 @@ export default function AdminPage() {
                   <th>Area</th>
                   <th>Rent (BDT)</th>
                   <th>Status</th>
-                  <th>Photos / Video</th>
+                  <th>Media Assets</th>
                   <th className="text-right">Actions</th>
                 </tr>
               </thead>
@@ -580,7 +577,7 @@ export default function AdminPage() {
                       <button
                         onClick={() => setDeletingPost(p)}
                         className="btn btn-xs bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 hover:bg-red-100 border border-red-200 dark:border-red-900/50 rounded-lg font-bold flex items-center gap-1 ml-auto cursor-pointer"
-                        title="Delete post and purge Cloudinary media"
+                        title="Delete listing and purge Cloudinary media"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                         <span>Delete</span>
@@ -594,9 +591,9 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* AUTO-PURGE CUSTOM INTERACTIVE MODAL */}
+      {/* AUTO-PURGE CUSTOM MODAL */}
       {isAutoPurgeModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 max-w-md w-full space-y-5 shadow-2xl border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
             {/* Modal Header */}
             <div className="flex items-start justify-between gap-4">
@@ -606,16 +603,16 @@ export default function AdminPage() {
                 </div>
                 <div>
                   <h3 className="font-extrabold text-slate-900 dark:text-white text-lg leading-tight">
-                    অটো-ক্লিনআপ সিস্টেম (Auto-Purge)
+                    Auto-Purge Configuration
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    মেয়াদোত্তীর্ণ পোস্ট ও Cloudinary ফাইল পার্জ
+                    Purge expired posts & destroy Cloudinary assets
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setIsAutoPurgeModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-lg"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-lg cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -625,30 +622,35 @@ export default function AdminPage() {
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5 text-indigo-500" />
-                <span>কত দিনের পুরনো পোস্ট ক্লিন করবেন?</span>
+                <span>Select Age Threshold:</span>
               </label>
 
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {[
-                  { days: 60, label: '৬০ দিন (২ মাস)', badge: 'ডিফল্ট' },
-                  { days: 30, label: '৩০ দিন (১ মাস)' },
-                  { days: 7, label: '৭ দিন (১ সপ্তাহ)' },
-                  { days: 1, label: '১ দিন (টেস্ট)' },
-                  { days: 0, label: 'সব পোস্ট (টেস্ট)' },
+                  { days: 60, title: '60 Days (2 Months)', badge: 'Default Policy' },
+                  { days: 30, title: '30 Days (1 Month)' },
+                  { days: 7, title: '7 Days (1 Week)' },
+                  { days: 1, title: '1 Day (24+ Hours)' },
+                  { days: 0, title: 'All Posts (Instant Test)', colSpan: true },
                 ].map((item) => (
                   <button
                     key={item.days}
                     type="button"
                     onClick={() => setSelectedPurgeDays(item.days)}
-                    className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-all border text-center ${
+                    className={`p-2.5 rounded-xl text-xs font-bold transition-all border text-left cursor-pointer ${
+                      item.colSpan ? 'col-span-2' : ''
+                    } ${
                       selectedPurgeDays === item.days
                         ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
                         : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
                     }`}
                   >
-                    <div>{item.label}</div>
+                    <div className="flex items-center justify-between">
+                      <span>{item.title}</span>
+                      {selectedPurgeDays === item.days && <Check className="w-3.5 h-3.5 text-white" />}
+                    </div>
                     {item.badge && (
-                      <span className="text-[9px] uppercase tracking-wider opacity-80 block">
+                      <span className="text-[9.5px] uppercase tracking-wider opacity-85 block mt-0.5 font-semibold">
                         ★ {item.badge}
                       </span>
                     )}
@@ -661,21 +663,21 @@ export default function AdminPage() {
             <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/80 text-xs space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-slate-600 dark:text-slate-300">
-                  ডাটাবেজে ম্যাচিং পোস্ট:
+                  Matching Database Listings:
                 </span>
                 {loadingPreview ? (
                   <span className="text-xs text-indigo-500 animate-pulse font-bold flex items-center gap-1">
-                    <RotateCw className="w-3 h-3 animate-spin" /> গোনা হচ্ছে...
+                    <RotateCw className="w-3 h-3 animate-spin" /> Counting...
                   </span>
                 ) : (
                   <span
                     className={`font-black text-sm px-2 py-0.5 rounded-lg ${
                       (previewMatchingCount ?? 0) > 0
-                        ? 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-400 font-black'
+                        ? 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-400'
                         : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400'
                     }`}
                   >
-                    {previewMatchingCount ?? 0} টি পোস্ট
+                    {previewMatchingCount ?? 0} {previewMatchingCount === 1 ? 'Post' : 'Posts'}
                   </span>
                 )}
               </div>
@@ -683,14 +685,14 @@ export default function AdminPage() {
               {/* Contextual Notice */}
               {previewMatchingCount === 0 && !loadingPreview && (
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed pt-1">
-                  💡 বর্তমানে আপনার ডাটাবেজে {selectedPurgeDays} দিনের চেয়ে পুরনো কোনো পোস্ট নেই (সব পোস্ট সম্প্রতি তৈরি)। সিস্টেম টেস্ট করতে চাইলে উপরের <strong>&quot;১ দিন&quot;</strong> বা <strong>&quot;সব পোস্ট (টেস্ট)&quot;</strong> সিলেক্ট করে দেখতে পারেন।
+                  💡 No listings older than {selectedPurgeDays} days found in the database. (Posts created today are less than 24 hours old. To test deleting posts created today, select <strong>&quot;All Posts (Instant Test)&quot;</strong> above).
                 </p>
               )}
 
               {previewMatchingCount !== null && previewMatchingCount > 0 && !loadingPreview && (
                 <p className="text-[11px] text-red-600 dark:text-red-400 font-medium leading-relaxed pt-1 flex items-center gap-1">
                   <Flame className="w-3.5 h-3.5 flex-shrink-0" />
-                  এই {previewMatchingCount} টি পোস্ট এবং তাদের সাথে যুক্ত Cloudinary ছবি/ভিডিও স্থায়ীভাবে ডিলিট হবে।
+                  These {previewMatchingCount} listings and all attached Cloudinary images/videos will be permanently destroyed.
                 </p>
               )}
             </div>
@@ -698,8 +700,8 @@ export default function AdminPage() {
             {/* Permanent User Protection Guarantee */}
             <div className="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 text-[11px] text-emerald-800 dark:text-emerald-300 flex items-start gap-2">
               <ShieldCheck className="w-4 h-4 flex-shrink-0 text-emerald-600 mt-0.5" />
-              <span>
-                <strong>ইউজার সুরক্ষা:</strong> শিক্ষার্থীদের অ্যাকাউন্ট তথ্য (নাম, ইমেইল, ফোন ইত্যাদি) সম্পূর্ণ অক্ষত থাকবে। কেবল মেয়াদোত্তীর্ণ পোস্ট ও ক্লাউডিনারি মিডিয়া ডিলিট হবে।
+              <span className="leading-tight">
+                <strong>User Protection Guarantee:</strong> Student user accounts are permanently preserved and will NEVER be removed by auto-cleanup.
               </span>
             </div>
 
@@ -708,9 +710,9 @@ export default function AdminPage() {
               <button
                 type="button"
                 onClick={() => setIsAutoPurgeModalOpen(false)}
-                className="btn btn-sm btn-ghost flex-1 rounded-xl text-slate-700 dark:text-slate-300 font-bold"
+                className="btn btn-sm btn-ghost flex-1 rounded-xl text-slate-700 dark:text-slate-300 font-bold cursor-pointer"
               >
-                বাতিল
+                Cancel
               </button>
               <button
                 type="button"
@@ -721,12 +723,12 @@ export default function AdminPage() {
                 {cleanupLoading ? (
                   <>
                     <RotateCw className="w-3.5 h-3.5 animate-spin" />
-                    <span>ক্লিন করা হচ্ছে...</span>
+                    <span>Purging...</span>
                   </>
                 ) : (
                   <>
                     <Trash2 className="w-3.5 h-3.5" />
-                    <span>ক্লিনআপ শুরু করুন</span>
+                    <span>Execute Purge</span>
                   </>
                 )}
               </button>
@@ -737,7 +739,7 @@ export default function AdminPage() {
 
       {/* Delete User Confirmation Modal */}
       {deletingUser && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-150">
             <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400 flex items-center justify-center mx-auto">
               <AlertTriangle className="w-6 h-6" />
@@ -747,27 +749,27 @@ export default function AdminPage() {
             </h3>
             <div className="text-slate-600 dark:text-slate-400 text-xs space-y-1.5">
               <p>
-                এই অ্যাকাউন্টটি সম্পূর্ণ মুছে ফেলা হবে।
+                This student account will be permanently removed.
               </p>
               <p className="text-red-600 dark:text-red-400 font-bold bg-red-50 dark:bg-red-950/40 p-2 rounded-xl border border-red-200 dark:border-red-900/50">
-                ⚠️ এই ব্যবহারকারীর আপলোড করা সকল বিজ্ঞাপন এবং Cloudinary এর সকল ছবি ও ভিডিও স্থায়ীভাবে মুছে যাবে।
+                ⚠️ All rental listings published by this user and all associated Cloudinary images/videos will be permanently destroyed.
               </p>
             </div>
             <div className="flex gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setDeletingUser(null)}
-                className="btn btn-sm btn-ghost flex-1 rounded-xl text-slate-700 dark:text-slate-300"
+                className="btn btn-sm btn-ghost flex-1 rounded-xl text-slate-700 dark:text-slate-300 font-bold cursor-pointer"
               >
-                বাতিল
+                Cancel
               </button>
               <button
                 type="button"
                 disabled={actionInProgress}
                 onClick={handleConfirmDeleteUser}
-                className="btn btn-sm bg-red-600 hover:bg-red-700 text-white flex-1 rounded-xl font-bold"
+                className="btn btn-sm bg-red-600 hover:bg-red-700 text-white flex-1 rounded-xl font-bold cursor-pointer"
               >
-                {actionInProgress ? 'মুছে ফেলা হচ্ছে...' : 'ডিলিট করুন'}
+                {actionInProgress ? 'Deleting...' : 'Delete User'}
               </button>
             </div>
           </div>
@@ -776,35 +778,35 @@ export default function AdminPage() {
 
       {/* Delete Post Confirmation Modal */}
       {deletingPost && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-150">
             <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400 flex items-center justify-center mx-auto">
               <AlertTriangle className="w-6 h-6" />
             </div>
             <h3 className="font-bold text-slate-900 dark:text-white text-lg">
-              বিজ্ঞাপন ডিলিট করতে চান?
+              Delete Rental Listing?
             </h3>
             <p className="text-slate-600 dark:text-slate-400 text-xs line-clamp-2">
               &quot;{deletingPost.title}&quot;
             </p>
             <p className="text-red-600 dark:text-red-400 font-bold text-xs bg-red-50 dark:bg-red-950/40 p-2 rounded-xl border border-red-200 dark:border-red-900/50">
-              ⚠️ পোস্টটি ডাটাবেজ থেকে মুছে যাওয়ার সাথে সাথে Cloudinary এর ছবি ও ভিডিও চিরতরে ডিলিট হয়ে যাবে।
+              ⚠️ This listing will be removed from the database and all Cloudinary images/videos will be permanently destroyed.
             </p>
             <div className="flex gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setDeletingPost(null)}
-                className="btn btn-sm btn-ghost flex-1 rounded-xl text-slate-700 dark:text-slate-300"
+                className="btn btn-sm btn-ghost flex-1 rounded-xl text-slate-700 dark:text-slate-300 font-bold cursor-pointer"
               >
-                বাতিল
+                Cancel
               </button>
               <button
                 type="button"
                 disabled={actionInProgress}
                 onClick={handleConfirmDeletePost}
-                className="btn btn-sm bg-red-600 hover:bg-red-700 text-white flex-1 rounded-xl font-bold"
+                className="btn btn-sm bg-red-600 hover:bg-red-700 text-white flex-1 rounded-xl font-bold cursor-pointer"
               >
-                {actionInProgress ? 'মুছে ফেলা হচ্ছে...' : 'পোস্ট ডিলিট করুন'}
+                {actionInProgress ? 'Deleting...' : 'Delete Listing'}
               </button>
             </div>
           </div>

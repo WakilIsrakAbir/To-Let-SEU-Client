@@ -20,19 +20,17 @@ export default function DailyPostsChart({ data = [] }: DailyPostsChartProps) {
   const [chartType, setChartType] = useState<'bar' | 'area'>('bar');
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
-  // Fallback if data is empty
   const chartData = data && data.length > 0 ? data : [];
 
   const totalCount = chartData.reduce((acc, curr) => acc + curr.count, 0);
   const highestCount = chartData.reduce((max, curr) => Math.max(max, curr.count), 0);
-  const maxScale = Math.max(highestCount, 5); // At least 5 for clean y-axis scale
+  const maxScale = Math.max(highestCount, 5);
   const dailyAverage = chartData.length > 0 ? (totalCount / chartData.length).toFixed(1) : '0';
   const peakItem = chartData.reduce(
     (peak, curr) => (curr.count > peak.count ? curr : peak),
     chartData[0] || { date: '', count: 0, label: 'N/A', weekday: '' }
   );
 
-  // SVG Coordinates setup (Width: 640, Height: 200, Margins: left=40, right=20, top=20, bottom=30)
   const svgWidth = 640;
   const svgHeight = 200;
   const padLeft = 40;
@@ -48,7 +46,6 @@ export default function DailyPostsChart({ data = [] }: DailyPostsChartProps) {
     return { x, y, ...d };
   });
 
-  // Area path generator (Curved Beziers)
   const generateAreaPath = () => {
     if (points.length === 0) return '';
     if (points.length === 1) {
@@ -85,40 +82,40 @@ export default function DailyPostsChart({ data = [] }: DailyPostsChartProps) {
   const themeHex = currentTheme?.hex || '#10b981';
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 shadow-sm transition-colors duration-300 space-y-6">
+    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 shadow-xs transition-colors duration-300 space-y-6">
       {/* Header section with summary pills */}
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40">
             <TrendingUp className="w-3.5 h-3.5" />
-            <span>Activity Analytics (গত ১৪ দিন)</span>
+            <span>Activity Analytics (Past 14 Days)</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            প্রতিদিনের পোস্ট তৈরির গ্রাফ
+            Daily Posts Creation Trends
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-            Southeast University এর শিক্ষার্থীদের দ্বারা প্রতিদিন আপলোডকৃত নতুন বাসা ও মেস বিজ্ঞাপনের পরিসংখ্যান
+            Daily frequency and volume of bachelor room listings published by Southeast University students
           </p>
         </div>
 
         {/* View mode toggle & quick metrics */}
-        <div className="flex flex-wrap items-center gap-2 self-stretch sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2.5 self-stretch sm:self-auto">
           {/* Quick Metrics */}
           <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 px-3.5 py-1.5 rounded-2xl border border-slate-200 dark:border-slate-700 text-xs">
             <div className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-slate-500 dark:text-slate-400">১৪ দিনে মোট:</span>
+              <span className="text-slate-500 dark:text-slate-400">14-Day Total:</span>
               <span className="font-extrabold text-slate-900 dark:text-white">{totalCount}</span>
             </div>
             <div className="w-px h-3 bg-slate-200 dark:bg-slate-700" />
             <div className="flex items-center gap-1.5">
               <Award className="w-3.5 h-3.5 text-amber-500" />
-              <span className="text-slate-500 dark:text-slate-400">সর্বোচ্চ:</span>
+              <span className="text-slate-500 dark:text-slate-400">Peak:</span>
               <span className="font-extrabold text-emerald-600 dark:text-emerald-400">{highestCount}</span>
             </div>
             <div className="w-px h-3 bg-slate-200 dark:bg-slate-700 hidden sm:block" />
             <div className="hidden sm:flex items-center gap-1.5">
-              <span className="text-slate-500 dark:text-slate-400">গড়/দিন:</span>
+              <span className="text-slate-500 dark:text-slate-400">Avg/Day:</span>
               <span className="font-extrabold text-slate-900 dark:text-white">{dailyAverage}</span>
             </div>
           </div>
@@ -127,27 +124,27 @@ export default function DailyPostsChart({ data = [] }: DailyPostsChartProps) {
           <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700">
             <button
               onClick={() => setChartType('bar')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 chartType === 'bar'
                   ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
               title="Bar Chart View"
             >
               <BarChart3 className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">বার গ্রাফ</span>
+              <span>Bars</span>
             </button>
             <button
               onClick={() => setChartType('area')}
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all ${
+              className={`px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 chartType === 'area'
                   ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
               title="Area Trend View"
             >
               <LineChart className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">ট্রেন্ড লাইন</span>
+              <span>Trend</span>
             </button>
           </div>
         </div>
@@ -156,27 +153,24 @@ export default function DailyPostsChart({ data = [] }: DailyPostsChartProps) {
       {/* SVG Chart Canvas */}
       <div className="relative w-full bg-slate-50/50 dark:bg-slate-950/40 rounded-2xl p-3 sm:p-4 border border-slate-100 dark:border-slate-800/80">
         {chartData.length === 0 ? (
-          <div className="h-48 flex items-center justify-center text-xs text-slate-400">
-            কোনো ডাটা পাওয়া যায়নি
+          <div className="h-48 flex items-center justify-center text-xs text-slate-400 font-medium">
+            No activity data recorded in this period
           </div>
         ) : (
           <div className="w-full overflow-x-auto">
             <div className="min-w-[560px]">
               <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="w-full h-52 sm:h-56 select-none overflow-visible">
                 <defs>
-                  {/* Gradient for area fill */}
                   <linearGradient id="chartAreaGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={themeHex} stopOpacity="0.45" />
+                    <stop offset="0%" stopColor={themeHex} stopOpacity="0.4" />
                     <stop offset="100%" stopColor={themeHex} stopOpacity="0.0" />
                   </linearGradient>
 
-                  {/* Gradient for bars */}
                   <linearGradient id="chartBarGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={themeHex} stopOpacity="1" />
-                    <stop offset="100%" stopColor={themeHex} stopOpacity="0.7" />
+                    <stop offset="100%" stopColor={themeHex} stopOpacity="0.75" />
                   </linearGradient>
 
-                  {/* Hover glow filter */}
                   <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                     <feGaussianBlur stdDeviation="3" result="blur" />
                     <feComposite in="SourceGraphic" in2="blur" operator="over" />
@@ -316,7 +310,6 @@ export default function DailyPostsChart({ data = [] }: DailyPostsChartProps) {
                   const xCenter = padLeft + idx * slotWidth + slotWidth / 2;
                   const isHovered = hoveredIdx === idx;
 
-                  // Render fewer dates on narrow views to prevent overlapping
                   const shouldShow =
                     idx === 0 ||
                     idx === chartData.length - 1 ||
@@ -357,7 +350,7 @@ export default function DailyPostsChart({ data = [] }: DailyPostsChartProps) {
 
         {/* Dynamic Tooltip Float on Hover */}
         {hoveredIdx !== null && chartData[hoveredIdx] && (
-          <div className="mt-3 flex items-center justify-between px-4 py-2 bg-slate-900 text-white rounded-xl shadow-lg text-xs border border-slate-700">
+          <div className="mt-3 flex items-center justify-between px-4 py-2 bg-slate-900 text-white rounded-xl shadow-lg text-xs border border-slate-700 animate-in fade-in duration-150">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: themeHex }} />
               <span className="font-semibold text-slate-300">
@@ -365,8 +358,8 @@ export default function DailyPostsChart({ data = [] }: DailyPostsChartProps) {
               </span>
             </div>
             <div className="flex items-center gap-1.5 font-bold">
-              <span className="text-slate-400">নতুন পোস্ট:</span>
-              <span className="text-white font-black text-sm">{chartData[hoveredIdx].count} টি</span>
+              <span className="text-slate-400">New Posts:</span>
+              <span className="text-white font-black text-sm">{chartData[hoveredIdx].count}</span>
             </div>
           </div>
         )}
@@ -377,14 +370,14 @@ export default function DailyPostsChart({ data = [] }: DailyPostsChartProps) {
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-500" />
           <span>
-            সর্বোচ্চ সক্রিয় দিন:{' '}
+            Peak Activity:{' '}
             <strong className="text-slate-800 dark:text-slate-200">
-              {peakItem.count > 0 ? `${peakItem.label} (${peakItem.count} টি পোস্ট)` : 'এখনও নতুন পোস্ট রেকর্ড হয়নি'}
+              {peakItem.count > 0 ? `${peakItem.label} (${peakItem.count} listings created)` : 'No listings recorded in this window'}
             </strong>
           </span>
         </div>
         <span className="text-[11px] text-slate-400">
-          * অটো রিফ্রেশ ও রিয়েল-টাইম মোডারেশন পরিসংখ্যান
+          * Real-time metrics updated live
         </span>
       </div>
     </div>
