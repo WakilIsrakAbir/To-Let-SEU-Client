@@ -25,98 +25,101 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h4 className="text-slate-900 dark:text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider mb-4">
-              Quick Links
-            </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm">
-              <li>
-                <Link
-                  href="/posts"
-                  className="hover:text-slate-900 dark:hover:text-white transition"
-                  onMouseEnter={(e) => (e.currentTarget.style.color = currentTheme.hex)}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = '')}
-                >
-                  Browse All Posts
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/posts/create"
-                  className="hover:text-slate-900 dark:hover:text-white transition"
-                  onMouseEnter={(e) => (e.currentTarget.style.color = currentTheme.hex)}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = '')}
-                >
-                  Post Room / Seat Ad
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/create-banner"
-                  className="hover:text-amber-500 transition font-medium"
-                >
-                  Auto Poster Generator
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/about-us"
-                  className="hover:text-slate-900 dark:hover:text-white transition"
-                  onMouseEnter={(e) => (e.currentTarget.style.color = currentTheme.hex)}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = '')}
-                >
-                  About TO-LET SEU
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact"
-                  className="hover:text-slate-900 dark:hover:text-white transition"
-                  onMouseEnter={(e) => (e.currentTarget.style.color = currentTheme.hex)}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = '')}
-                >
-                  Contact Us
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact & Community */}
-          <div>
-            <h4 className="text-slate-900 dark:text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider mb-4">
-              SEU Community
-            </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              <li className="flex items-center gap-2">
-                <a
-                  href="https://www.facebook.com/groups/595436001496374/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:text-blue-600 dark:hover:text-blue-400 transition"
-                >
-                  <svg
-                    className="w-4 h-4 shrink-0"
-                    viewBox="0 0 24 24"
-                    style={{ fill: currentTheme.hex }}
+          {/* Quick Links & SEU Community: Side-by-side on mobile, 2 columns on desktop */}
+          <div className="grid grid-cols-2 md:col-span-2 gap-6 sm:gap-8">
+            {/* Quick Links */}
+            <div>
+              <h4 className="text-slate-900 dark:text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider mb-4">
+                Quick Links
+              </h4>
+              <ul className="space-y-2.5 text-xs sm:text-sm">
+                <li>
+                  <Link
+                    href="/posts"
+                    className="hover:text-slate-900 dark:hover:text-white transition"
+                    onMouseEnter={(e) => (e.currentTarget.style.color = currentTheme.hex)}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = '')}
                   >
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                  </svg>
-                  <span>SEU Facebook Group</span>
-                </a>
-              </li>
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 shrink-0" style={{ color: currentTheme.hex }} />
-                <span>support@toletseu.com</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 shrink-0" style={{ color: currentTheme.hex }} />
-                <span>018XXXXXXXX</span>
-              </li>
-              <li className="pt-2 text-xs text-slate-400 dark:text-slate-500">
-                Created by and for Southeast University Students.
-              </li>
-            </ul>
+                    Browse All Posts
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/posts/create"
+                    className="hover:text-slate-900 dark:hover:text-white transition"
+                    onMouseEnter={(e) => (e.currentTarget.style.color = currentTheme.hex)}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = '')}
+                  >
+                    Post Room / Seat Ad
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/create-banner"
+                    className="hover:text-amber-500 transition font-medium"
+                  >
+                    Auto Poster Generator
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/about-us"
+                    className="hover:text-slate-900 dark:hover:text-white transition"
+                    onMouseEnter={(e) => (e.currentTarget.style.color = currentTheme.hex)}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = '')}
+                  >
+                    About TO-LET SEU
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/contact"
+                    className="hover:text-slate-900 dark:hover:text-white transition"
+                    onMouseEnter={(e) => (e.currentTarget.style.color = currentTheme.hex)}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = '')}
+                  >
+                    Contact Us
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Contact & Community */}
+            <div>
+              <h4 className="text-slate-900 dark:text-white text-xs sm:text-sm font-extrabold uppercase tracking-wider mb-4">
+                SEU Community
+              </h4>
+              <ul className="space-y-2.5 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+                <li className="flex items-center gap-2">
+                  <a
+                    href="https://www.facebook.com/groups/595436001496374/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 hover:text-blue-600 dark:hover:text-blue-400 transition"
+                  >
+                    <svg
+                      className="w-4 h-4 shrink-0"
+                      viewBox="0 0 24 24"
+                      style={{ fill: currentTheme.hex }}
+                    >
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                    </svg>
+                    <span className="truncate">SEU Facebook Group</span>
+                  </a>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 shrink-0" style={{ color: currentTheme.hex }} />
+                  <span className="truncate">support@toletseu.com</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 shrink-0" style={{ color: currentTheme.hex }} />
+                  <span>018XXXXXXXX</span>
+                </li>
+                <li className="pt-2 text-xs text-slate-400 dark:text-slate-500">
+                  Created for SEU Students.
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 

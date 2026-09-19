@@ -255,7 +255,7 @@ export default function Home() {
 
                 <Link
                   href="/posts/create"
-                  className="btn btn-sm sm:btn-md min-[1680px]:btn-lg btn-outline border-slate-300 dark:border-slate-700 hover:bg-slate-900 hover:text-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl font-bold px-3.5 sm:px-4 min-[1680px]:px-6 min-[1680px]:text-base"
+                  className="hidden sm:inline-flex btn btn-sm sm:btn-md min-[1680px]:btn-lg btn-outline border-slate-300 dark:border-slate-700 hover:bg-slate-900 hover:text-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl font-bold px-3.5 sm:px-4 min-[1680px]:px-6 min-[1680px]:text-base"
                 >
                   <PlusCircle className="w-4 h-4" style={{ color: currentTheme.hex }} />
                   <span>Post a Room</span>
