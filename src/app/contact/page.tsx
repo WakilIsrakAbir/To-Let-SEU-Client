@@ -53,7 +53,7 @@ export default function ContactPage() {
 
   const getWhatsAppLink = () => {
     const text = encodeURIComponent(
-      'Salam! I am a Southeast University student and I have an inquiry regarding SEU Basa platform.'
+      'Salam! I am a Southeast University student and I have an inquiry regarding To Let SEU platform.'
     );
     return `https://wa.me/8801700000000?text=${text}`;
   };
@@ -74,7 +74,7 @@ export default function ContactPage() {
         </div>
 
         <h1 className="text-3xl sm:text-4xl min-[1680px]:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
-          Get in Touch with <span style={{ color: currentTheme.hex }}>SEU Basa Team</span>
+          Get in Touch with <span style={{ color: currentTheme.hex }}>To Let SEU Team</span>
         </h1>
 
         <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -132,10 +132,10 @@ export default function ContactPage() {
                   For formal inquiries, technical help, or feedback.
                 </p>
                 <a
-                  href="mailto:support@seubasa.org"
+                  href="mailto:support@toletseu.com"
                   className="inline-block text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 hover:text-primary mt-2 font-mono"
                 >
-                  support@seubasa.org
+                  support@toletseu.com
                 </a>
               </div>
             </div>

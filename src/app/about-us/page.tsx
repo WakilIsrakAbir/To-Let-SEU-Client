@@ -16,7 +16,7 @@ export default function AboutUsPage() {
           Connecting <span style={{ color: currentTheme.hex }}>SEU Students</span> with Safe, Affordable Bachelor Homes
         </h1>
         <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-          SEU Basa was founded to solve the messy to-let search for students studying at the Southeast University Tejgaon Campus. No more hunting through Facebook spam or tearing down paper posters in the rain.
+          To Let SEU was founded to solve the messy to-let search for students studying at the Southeast University Tejgaon Campus. No more hunting through Facebook spam or tearing down paper posters in the rain.
         </p>
       </div>
 

@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem('seu_basa_token', receivedToken);
       localStorage.setItem('seu_basa_user', JSON.stringify(registeredUser));
 
-      toast.success(`Welcome to SEU Basa, ${registeredUser.name}! Account registered successfully.`);
+      toast.success(`Welcome to To Let SEU, ${registeredUser.name}! Account registered successfully.`);
       return { success: true };
     } catch (err: any) {
       const message =

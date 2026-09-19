@@ -172,7 +172,7 @@ export default function AdminPage() {
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold mb-2 border border-indigo-500/30">
             <ShieldAlert className="w-3.5 h-3.5" />
-            <span>SEU Basa Master Moderation Hub</span>
+            <span>To Let SEU Master Moderation Hub</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black">
             Administrator Control Suite

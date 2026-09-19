@@ -6,9 +6,17 @@ import Footer from "@/components/layout/Footer";
 import TopLoadingBar from "@/components/common/TopLoadingBar";
 
 export const metadata: Metadata = {
-  title: "TO-LET SEU | Southeast University Bachelor Room & Seat Rent",
-  description: "Dedicated bachelor room, seat, and flat rental portal for Southeast University (SEU) students in Tejgaon, Mohakhali, Banani, and Dhaka.",
-  keywords: ["SEU", "Southeast University", "To Let SEU", "Bachelor Room Rent", "SEU Hostel", "Dhaka Bachelor Mess"],
+  title: {
+    default: "To Let SEU | Bachelor Housing",
+    template: "%s | To Let SEU",
+  },
+  description: "Find bachelor seats, rooms, and flats near Southeast University campus.",
+  keywords: ["SEU", "Southeast University", "To Let SEU", "Bachelor Room Rent", "Student Mess"],
+  icons: {
+    icon: "/seu-logo.png",
+    shortcut: "/seu-logo.png",
+    apple: "/seu-logo.png",
+  },
 };
 
 export default function RootLayout({

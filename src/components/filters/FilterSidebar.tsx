@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { DHAKA_AREAS, MONTHS_LIST, AMENITIES_LIST } from '@/lib/constants';
-import { Filter, RotateCcw, Sliders, MapPin, DollarSign, Users, Calendar, Sparkles } from 'lucide-react';
+import { DHAKA_AREAS, MONTHS_LIST } from '@/lib/constants';
+import { Filter, RotateCcw, Sliders, MapPin, DollarSign, Users, Calendar } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
 export interface FilterState {
@@ -49,18 +49,6 @@ export default function FilterSidebar({
     });
   };
 
-  const handleAmenityToggle = (amenityId: string) => {
-    const exists = filters.amenities.includes(amenityId);
-    const newAmenities = exists
-      ? filters.amenities.filter((a) => a !== amenityId)
-      : [...filters.amenities, amenityId];
-
-    onChange({
-      ...filters,
-      amenities: newAmenities,
-    });
-  };
-
   const filterControls = (
     <>
       {/* 1. Gender Preference */}
@@ -103,7 +91,27 @@ export default function FilterSidebar({
         </div>
       </div>
 
-      {/* 2. Top Areas near SEU */}
+      {/* 2. Available Month */}
+      <div>
+        <label className="label text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+          <Calendar className="w-4 h-4" style={{ color: currentTheme.hex }} />
+          <span>Available From</span>
+        </label>
+        <select
+          value={filters.month}
+          onChange={(e) => onChange({ ...filters, month: e.target.value })}
+          className="select select-bordered select-sm sm:select-md w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-800 dark:text-slate-200"
+        >
+          <option value="">Any Month</option>
+          {MONTHS_LIST.map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* 3. Top Areas near SEU */}
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <label className="label text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider p-0 flex items-center gap-1.5">
@@ -157,7 +165,7 @@ export default function FilterSidebar({
         </div>
       </div>
 
-      {/* 3. Rent Price Range */}
+      {/* 4. Rent Price Range */}
       <div>
         <div className="flex items-center justify-between mb-2">
           <label className="label p-0 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
@@ -198,61 +206,6 @@ export default function FilterSidebar({
             Show Negotiable Only
           </span>
         </label>
-      </div>
-
-      {/* 4. Available Month */}
-      <div>
-        <label className="label text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-          <Calendar className="w-4 h-4" style={{ color: currentTheme.hex }} />
-          <span>Available From</span>
-        </label>
-        <select
-          value={filters.month}
-          onChange={(e) => onChange({ ...filters, month: e.target.value })}
-          className="select select-bordered select-sm sm:select-md w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-800 dark:text-slate-200"
-        >
-          <option value="">Any Month</option>
-          {MONTHS_LIST.map((m) => (
-            <option key={m} value={m}>
-              {m}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* 5. Amenities Checkboxes */}
-      <div>
-        <label className="label text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-          <Sparkles className="w-4 h-4" style={{ color: currentTheme.hex }} />
-          <span>Perks & Amenities</span>
-        </label>
-        <div className="grid grid-cols-1 gap-1.5">
-          {AMENITIES_LIST.map((amenity) => {
-            const isChecked = filters.amenities.includes(amenity.id);
-            return (
-              <label
-                key={amenity.id}
-                style={{
-                  backgroundColor: isChecked ? (isDark ? `${currentTheme.hex}25` : currentTheme.lightHex) : undefined,
-                  color: isChecked ? (isDark ? currentTheme.hex : currentTheme.textHex) : undefined,
-                }}
-                className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium cursor-pointer transition ${
-                  isChecked
-                    ? 'font-bold'
-                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60'
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={isChecked}
-                  onChange={() => handleAmenityToggle(amenity.id)}
-                  className="checkbox checkbox-sm checkbox-primary rounded-md"
-                />
-                <span>{amenity.label}</span>
-              </label>
-            );
-          })}
-        </div>
       </div>
     </>
   );

@@ -75,7 +75,7 @@ function PostsFeedInner() {
     try {
       const params: any = {
         page,
-        limit: 10,
+        limit: 30,
         sort,
       };
 
@@ -152,6 +152,29 @@ function PostsFeedInner() {
     setSearchQuery('');
     setActiveSearch('');
     setPage(1);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage === page || newPage < 1 || newPage > totalPages) return;
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const count = Math.max(1, totalPages);
+    if (count <= 5) {
+      for (let i = 1; i <= count; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (page > 3) pages.push('...');
+      const start = Math.max(2, page - 1);
+      const end = Math.min(count - 1, page + 1);
+      for (let i = start; i <= end; i++) pages.push(i);
+      if (page < count - 2) pages.push('...');
+      pages.push(count);
+    }
+    return pages;
   };
 
   const hasActiveFilters =
@@ -377,30 +400,66 @@ function PostsFeedInner() {
             </div>
           )}
 
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-3 pt-6">
-              <button
-                disabled={page <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="btn btn-sm btn-outline rounded-xl border-slate-300 dark:border-slate-700 disabled:opacity-40"
-              >
-                <ChevronLeft className="w-4 h-4 mr-1" />
-                <span>Prev</span>
-              </button>
+          {/* Pagination Controls (Max 30 posts per page) */}
+          {!loading && posts.length > 0 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-slate-200/80 dark:border-slate-800">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+                Showing <span className="font-bold text-slate-800 dark:text-white">{posts.length}</span> of{' '}
+                <span className="font-bold text-slate-800 dark:text-white">{totalPosts}</span> rooms{' '}
+                <span className="text-slate-400 dark:text-slate-500">(Max 30 per page)</span>
+              </p>
 
-              <span className="text-xs font-bold text-slate-700 dark:text-slate-300 px-3 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg">
-                Page {page} of {totalPages}
-              </span>
+              <div className="inline-flex items-center gap-1.5 sm:gap-2">
+                <button
+                  disabled={page <= 1}
+                  onClick={() => handlePageChange(page - 1)}
+                  className="btn btn-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition font-bold"
+                  aria-label="Previous Page"
+                >
+                  <ChevronLeft className="w-4 h-4 mr-1" />
+                  <span>Prev</span>
+                </button>
 
-              <button
-                disabled={page >= totalPages}
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="btn btn-sm btn-outline rounded-xl border-slate-300 dark:border-slate-700 disabled:opacity-40"
-              >
-                <span>Next</span>
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </button>
+                {/* Page number buttons */}
+                {getPageNumbers().map((p, idx) =>
+                  p === '...' ? (
+                    <span key={`ellipsis-${idx}`} className="px-2 text-slate-400 font-bold select-none">
+                      ...
+                    </span>
+                  ) : (
+                    <button
+                      key={p}
+                      onClick={() => handlePageChange(Number(p))}
+                      style={
+                        page === p
+                          ? {
+                              backgroundColor: currentTheme.hex,
+                              color: '#ffffff',
+                              borderColor: currentTheme.hex,
+                            }
+                          : {}
+                      }
+                      className={`btn btn-sm rounded-xl font-bold min-w-[36px] transition ${
+                        page === p
+                          ? 'shadow-sm'
+                          : 'border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  )
+                )}
+
+                <button
+                  disabled={page >= totalPages}
+                  onClick={() => handlePageChange(page + 1)}
+                  className="btn btn-sm rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition font-bold"
+                  aria-label="Next Page"
+                >
+                  <span>Next</span>
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </button>
+              </div>
             </div>
           )}
         </div>

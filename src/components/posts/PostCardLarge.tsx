@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { IPost } from '@/types/post';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/context/ThemeContext';
@@ -39,7 +38,7 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
   };
 
   const handleShare = () => {
-    const postUrl = `${window.location.origin}/posts/${post._id}`;
+    const postUrl = `${window.location.origin}/posts#${post._id}`;
     navigator.clipboard.writeText(postUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -50,7 +49,7 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
     const digits = phoneClean.replace(/[^0-9]/g, '');
     const internationalPhone = digits.startsWith('880') ? digits : `880${digits.replace(/^0/, '')}`;
     const text = encodeURIComponent(
-      `Salam! I am a student of SEU and saw your room ad "${post.title}" on SEU Basa (${post.area}). Is it still available?`
+      `Salam! I am a student of SEU and saw your room ad "${post.title}" on To Let SEU (${post.area}). Is it still available?`
     );
     return `https://wa.me/${internationalPhone}?text=${text}`;
   };
@@ -264,25 +263,22 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* View Details Page Link */}
-          <Link
-            href={`/posts/${post._id}`}
-            className="h-10 px-4 flex items-center justify-center gap-1.5 rounded-xl text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition"
-            title="Open dedicated page for this room"
-          >
-            <span>View Details</span>
-          </Link>
-
           {/* Share Button */}
           <button
             onClick={handleShare}
-            className="h-10 w-10 flex items-center justify-center rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-            title="Copy link"
+            className="h-10 px-3.5 flex items-center justify-center gap-1.5 rounded-xl text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition"
+            title="Copy link to this post"
           >
             {copied ? (
-              <Check className="w-4 h-4" style={{ color: currentTheme.hex }} />
+              <>
+                <Check className="w-4 h-4" style={{ color: currentTheme.hex }} />
+                <span style={{ color: currentTheme.hex }}>Link Copied</span>
+              </>
             ) : (
-              <Share2 className="w-4 h-4" />
+              <>
+                <Share2 className="w-4 h-4" />
+                <span>Share</span>
+              </>
             )}
           </button>
         </div>

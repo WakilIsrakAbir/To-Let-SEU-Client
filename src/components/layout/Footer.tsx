@@ -107,7 +107,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 shrink-0" style={{ color: currentTheme.hex }} />
-                <span>support@seubasa.org</span>
+                <span>support@toletseu.com</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 shrink-0" style={{ color: currentTheme.hex }} />

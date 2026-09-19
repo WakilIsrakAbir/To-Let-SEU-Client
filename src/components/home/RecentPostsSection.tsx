@@ -53,84 +53,6 @@ const getWhatsAppLink = (post: Partial<IPost>) => {
   return `https://wa.me/${internationalPhone}?text=${text}`;
 };
 
-// Clean fallback listings so the 3 teaser cards always render gracefully with distinct photos
-const FALLBACK_POSTS: Partial<IPost>[] = [
-  {
-    _id: 'mock-1',
-    area: 'Tejgaon (Near SEU Campus)',
-    distanceFromCampus: '4 mins walk',
-    rentAmount: 3500,
-    gender: 'Male',
-    seatCount: 1,
-    roomType: '2 Person Room',
-    availableFromMonth: 'September 2026',
-    contactNumber: '01711-223344',
-    whatsappNumber: '01711-223344',
-    amenities: {
-      wifi: true,
-      attachedBath: true,
-      khalaMaid: true,
-      fridge: true,
-      balcony: true,
-      generatorIPS: false,
-      lift: true,
-      filterWater: true,
-    },
-    media: {
-      images: [{ url: '/default-room-1.jpg', publicId: 'demo-1' }],
-    },
-  },
-  {
-    _id: 'mock-2',
-    area: 'Mohakhali',
-    distanceFromCampus: '8 mins walk',
-    rentAmount: 4500,
-    gender: 'Female',
-    seatCount: 1,
-    roomType: 'Single Room',
-    availableFromMonth: 'Immediate',
-    contactNumber: '01899-887766',
-    whatsappNumber: '01899-887766',
-    amenities: {
-      wifi: true,
-      attachedBath: true,
-      khalaMaid: true,
-      fridge: true,
-      balcony: true,
-      generatorIPS: true,
-      lift: true,
-      filterWater: true,
-    },
-    media: {
-      images: [{ url: '/default-room-2.jpg', publicId: 'demo-2' }],
-    },
-  },
-  {
-    _id: 'mock-3',
-    area: 'Nakhalpara',
-    distanceFromCampus: '10 mins walk',
-    rentAmount: 3200,
-    gender: 'Male',
-    seatCount: 2,
-    roomType: 'Shared Seat',
-    availableFromMonth: 'October 2026',
-    contactNumber: '01655-443322',
-    whatsappNumber: '01655-443322',
-    amenities: {
-      wifi: true,
-      attachedBath: false,
-      khalaMaid: true,
-      fridge: true,
-      balcony: false,
-      generatorIPS: true,
-      lift: false,
-      filterWater: true,
-    },
-    media: {
-      images: [{ url: '/default-room-3.jpg', publicId: 'demo-3' }],
-    },
-  },
-];
 
 // Interactive Sliding Image Component for Cards with multiple photos
 function PostCardImageSlider({
@@ -161,10 +83,11 @@ function PostCardImageSlider({
   };
 
   const displayUrl = hasMultiple ? images[currentIdx]?.url : (images[0]?.url || fallbackImage);
+  const postTargetUrl = post._id ? `/posts#${post._id}` : '/posts';
 
   return (
     <Link
-      href={`/posts/${post._id}`}
+      href={postTargetUrl}
       className="relative aspect-[16/10] overflow-hidden bg-slate-100 dark:bg-slate-800 block group/slider"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -228,7 +151,7 @@ function PostCardImageSlider({
       {!hasMultiple && (
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/slider:opacity-100 transition-opacity duration-300 bg-black/30">
           <span className="bg-white text-slate-900 text-sm font-bold px-5 py-2 rounded-xl shadow-lg flex items-center gap-1.5">
-            <span>See Details</span>
+            <span>View Post</span>
             <ArrowUpRight className="w-4 h-4" />
           </span>
         </div>
@@ -241,31 +164,27 @@ export default function RecentPostsSection() {
   const router = useRouter();
   const { currentTheme, isDark } = useTheme();
   const [posts, setPosts] = useState<Partial<IPost>[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadRecentPosts = async () => {
+      setLoading(true);
       try {
         const res = await api.get('/posts', {
-          params: { limit: 3, sort: 'newest' },
+          params: { limit: 18, sort: 'newest' },
         });
         const serverPosts = res.data?.data?.posts || [];
-        if (serverPosts.length >= 3) {
-          setPosts(serverPosts.slice(0, 3));
-        } else if (serverPosts.length > 0) {
-          const combined = [...serverPosts, ...FALLBACK_POSTS.slice(serverPosts.length)];
-          setPosts(combined.slice(0, 3));
-        } else {
-          setPosts(FALLBACK_POSTS);
-        }
-      } catch {
-        setPosts(FALLBACK_POSTS);
+        setPosts(serverPosts);
+      } catch (err) {
+        console.error('Failed to load recent posts:', err);
+        setPosts([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     loadRecentPosts();
   }, []);
-
-  const displayList = posts.length >= 3 ? posts.slice(0, 3) : FALLBACK_POSTS;
 
   return (
     <section className="relative py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl min-[1680px]:max-w-[1450px] mx-auto w-full border-t border-slate-200/80 dark:border-slate-800/80">
@@ -279,17 +198,22 @@ export default function RecentPostsSection() {
         </p>
       </div>
 
-      {/* 3 Clean Teaser Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {displayList.map((post, idx) => {
-          const coverImage = post.media?.images?.[0]?.url || getDefaultRoomImage(post._id || idx);
-          const activeFacilities = getActiveAmenities(post.amenities);
-          const seatsCount = post.seatCount || 1;
-          const seatsText = `${seatsCount} ${seatsCount > 1 ? 'Seats' : 'Seat'}`;
-          const roomTypeText = post.roomType || 'Room';
-          // Order: Seat count FIRST, then room type (e.g. "1 Seat • 2 Person Room")
-          const roomAndSeatsLabel = `${seatsText} • ${roomTypeText}`;
-          const postUrl = `/posts/${post._id}`;
+      {/* Real Posts Grid (Up to 18) */}
+      {posts.length === 0 && !loading ? (
+        <div className="text-center py-12 bg-slate-50 dark:bg-slate-900/40 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800 p-8">
+          <p className="text-slate-500 dark:text-slate-400 font-medium">No recent room posts available right now.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {posts.map((post, idx) => {
+            const coverImage = post.media?.images?.[0]?.url || getDefaultRoomImage(post._id || idx);
+            const activeFacilities = getActiveAmenities(post.amenities);
+            const seatsCount = post.seatCount || 1;
+            const seatsText = `${seatsCount} ${seatsCount > 1 ? 'Seats' : 'Seat'}`;
+            const roomTypeText = post.roomType || 'Room';
+            // Order: Seat count FIRST, then room type (e.g. "1 Seat • 2 Person Room")
+            const roomAndSeatsLabel = `${seatsText} • ${roomTypeText}`;
+            const postUrl = post._id ? `/posts#${post._id}` : '/posts';
 
           return (
             <div
@@ -436,6 +360,7 @@ export default function RecentPostsSection() {
           );
         })}
       </div>
+    )}
 
       {/* Main Explore CTA */}
       <div className="mt-10 text-center">

@@ -44,7 +44,7 @@ export default function LoginPage() {
             <LogIn className="w-7 h-7" />
           </div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            Welcome Back to <span style={{ color: currentTheme.hex }}>SEU Basa</span>
+            Welcome Back to <span style={{ color: currentTheme.hex }}>To Let SEU</span>
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             Log in with your student account to manage posts

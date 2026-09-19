@@ -115,7 +115,7 @@ export default function SettingsDrawer() {
                         Theme & Color Settings
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Personalize SEU Basa Experience
+                        Personalize To Let SEU Experience
                       </p>
                     </div>
                   </div>
@@ -265,7 +265,7 @@ export default function SettingsDrawer() {
                     className="text-[11px] font-semibold transition-colors"
                     style={{ color: currentTheme.hex }}
                   >
-                    SEU Basa • SEU UMS Theme Engine
+                    To Let SEU • SEU UMS Theme Engine
                   </p>
                 </div>
               </motion.div>

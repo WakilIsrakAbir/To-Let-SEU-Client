@@ -26,8 +26,8 @@ import HeroBackground from '@/components/home/HeroBackground';
 
 const ROTATING_WORDS = [
   'Bachelor Seat',
-  'Best Seat',
   'Perfect Room',
+  'Best Seat',
   'Student Flat',
 ];
 
@@ -42,7 +42,7 @@ export default function Home() {
   useEffect(() => {
     const timer = setInterval(() => {
       setWordIndex((prev) => (prev + 1) % ROTATING_WORDS.length);
-    }, 3000);
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
 
