@@ -183,6 +183,44 @@ function BannerGeneratorContent() {
       ctx.restore();
     };
 
+    const drawCampusIcon = (cx: number, cy: number, color: string) => {
+      ctx.save();
+      ctx.fillStyle = color;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - 9);
+      ctx.lineTo(cx + 12, cy - 2);
+      ctx.lineTo(cx, cy + 5);
+      ctx.lineTo(cx - 12, cy - 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(cx - 8, cy + 1);
+      ctx.lineTo(cx - 8, cy + 8);
+      ctx.quadraticCurveTo(cx, cy + 13, cx + 8, cy + 8);
+      ctx.lineTo(cx + 8, cy + 1);
+      ctx.stroke();
+      ctx.restore();
+    };
+
+    const drawShieldIcon = (cx: number, cy: number, color: string) => {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - 9);
+      ctx.lineTo(cx + 8, cy - 5);
+      ctx.lineTo(cx + 8, cy + 2);
+      ctx.quadraticCurveTo(cx + 8, cy + 8, cx, cy + 11);
+      ctx.quadraticCurveTo(cx - 8, cy + 8, cx - 8, cy + 2);
+      ctx.lineTo(cx - 8, cy - 5);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.restore();
+    };
+
     const renderPoster = (qrImg?: HTMLImageElement) => {
       ctx.save();
       ctx.beginPath();
@@ -234,10 +272,10 @@ function BannerGeneratorContent() {
       ctx.restore();
 
       const contentX = 48;
-      const contentW = width - 2 * contentX;
+      const contentW = width - 2 * contentX; // 1104px
 
       // Top Header Brand Bar
-      const headerY = 32;
+      const headerY = 30;
 
       ctx.font = '900 34px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#ffffff';
@@ -266,7 +304,7 @@ function BannerGeneratorContent() {
       ctx.textAlign = 'left';
 
       // Header bottom divider line
-      const dividerY = headerY + 70;
+      const dividerY = headerY + 68;
       ctx.beginPath();
       ctx.moveTo(contentX, dividerY);
       ctx.lineTo(contentX + contentW, dividerY);
@@ -281,13 +319,13 @@ function BannerGeneratorContent() {
 
       // 2-Column Split Layout
       const leftX = contentX;
-      const leftW = 670;
-      const rightX = leftX + leftW + 36;
-      const rightW = contentX + contentW - rightX;
+      const leftW = 672;
+      const rightX = leftX + leftW + 34; // 754
+      const rightW = contentX + contentW - rightX; // 398
 
       // ================= LEFT COLUMN =================
-      const headlineY = dividerY + 38;
-      ctx.font = '900 28px Arial, sans-serif';
+      const headlineY = dividerY + 28; // 126
+      ctx.font = '900 27px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#ffffff';
 
       const words = headline.split(' ');
@@ -306,13 +344,13 @@ function BannerGeneratorContent() {
 
       const headlineLines = lines.slice(0, 2);
       headlineLines.forEach((l, idx) => {
-        ctx.fillText(l, leftX, headlineY + idx * 36);
+        ctx.fillText(l, leftX, headlineY + idx * 34);
       });
-      const endHeadlineY = headlineY + (headlineLines.length - 1) * 36;
+      const endHeadlineY = headlineY + (headlineLines.length - 1) * 34;
 
       // Rent Highlight Card
-      const rentY = Math.max(endHeadlineY + 24, 196);
-      const rentH = 104;
+      const rentY = Math.max(endHeadlineY + 18, 192);
+      const rentH = 106;
       if (theme === 'clean-white') {
         const rentGrad = ctx.createLinearGradient(leftX, rentY, leftX + leftW, rentY);
         rentGrad.addColorStop(0, '#065f46');
@@ -330,20 +368,20 @@ function BannerGeneratorContent() {
       }
 
       // Rent Left Text
-      ctx.font = 'bold 14px Arial, sans-serif';
+      ctx.font = 'bold 13px Arial, sans-serif';
       ctx.fillStyle =
         theme === 'clean-white'
           ? 'rgba(255, 255, 255, 0.88)'
           : 'rgba(15, 23, 42, 0.75)';
       ctx.fillText('MONTHLY RENT', leftX + 24, rentY + 34);
 
-      ctx.font = '900 44px Arial, sans-serif';
+      ctx.font = '900 48px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#ffffff' : '#0f172a';
       ctx.fillText(`BDT ${rent}`, leftX + 24, rentY + 84);
 
       // Rent Right Pill (Bills Included)
       const pillText = billsIncluded ? '⚡ Bills Included' : '+ Utility Bills';
-      ctx.font = 'bold 17px Arial, sans-serif';
+      ctx.font = 'bold 16px Arial, sans-serif';
       const pillW = ctx.measureText(pillText).width + 32;
       const pillH = 38;
       const pillX = leftX + leftW - 24 - pillW;
@@ -360,15 +398,27 @@ function BannerGeneratorContent() {
       ctx.fillText(pillText, pillX + 16, pillY + 25);
 
       // Specs Grid (Area, Month, Seats)
-      const specsY = rentY + rentH + 16;
-      const specsH = 80;
+      const specsY = rentY + rentH + 14; // 312
+      const specsH = 88;
       const specGap = 12;
       const specCardW = (leftW - 2 * specGap) / 3;
 
+      let areaMain = area;
+      let areaSub = '';
+      if (area.includes('(')) {
+        const p = area.split('(');
+        areaMain = p[0].trim();
+        areaSub = '(' + p.slice(1).join('(').trim();
+      } else if (area.length > 15) {
+        const w = area.split(' ');
+        areaMain = w.slice(0, Math.ceil(w.length / 2)).join(' ');
+        areaSub = w.slice(Math.ceil(w.length / 2)).join(' ');
+      }
+
       const specCardsData = [
-        { val: area, icon: drawPinIcon },
-        { val: month, icon: drawCalendarIcon },
-        { val: seats, icon: drawUsersIcon },
+        { main: areaMain, sub: areaSub || 'Campus Vicinity', icon: drawPinIcon },
+        { main: month, sub: 'Available Month', icon: drawCalendarIcon },
+        { main: seats, sub: 'Room Capacity', icon: drawUsersIcon },
       ];
 
       specCardsData.forEach((spec, i) => {
@@ -388,24 +438,20 @@ function BannerGeneratorContent() {
 
         fillRoundedRect(cardX, specsY, specCardW, specsH, 14, cardBg, cardBorder, 1);
 
-        spec.icon(cardX + specCardW / 2, specsY + 26, theme === 'clean-white' ? '#059669' : '#34d399');
+        spec.icon(cardX + specCardW / 2, specsY + 22, theme === 'clean-white' ? '#059669' : '#34d399');
 
-        let displayVal = spec.val;
-        ctx.font = 'bold 16px Arial, sans-serif';
-        if (ctx.measureText(displayVal).width > specCardW - 20) {
-          while (ctx.measureText(displayVal + '...').width > specCardW - 20 && displayVal.length > 3) {
-            displayVal = displayVal.slice(0, -1);
-          }
-          displayVal += '...';
-        }
-
+        ctx.font = 'bold 15px Arial, sans-serif';
         ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#ffffff';
         ctx.textAlign = 'center';
-        ctx.fillText(displayVal, cardX + specCardW / 2, specsY + 62);
+        ctx.fillText(spec.main, cardX + specCardW / 2, specsY + 50);
+
+        ctx.font = 'bold 11px Arial, sans-serif';
+        ctx.fillStyle = theme === 'clean-white' ? '#64748b' : '#94a3b8';
+        ctx.fillText(spec.sub, cardX + specCardW / 2, specsY + 70);
         ctx.textAlign = 'left';
       });
 
-      // Perks Badges (Exactly matching Live Preview labels!)
+      // Perks Badges
       const activePerksList: string[] = [];
       if (perks.khalaMaid) activePerksList.push('🍳 Khala');
       if (perks.wifi) activePerksList.push('📶 WiFi');
@@ -414,9 +460,14 @@ function BannerGeneratorContent() {
       if (perks.balcony) activePerksList.push('🌿 Balcony');
       if (perks.generator) activePerksList.push('⚡ IPS');
 
+      const perkY = specsY + specsH + 14; // 414
+      ctx.font = 'bold 11px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#64748b' : '#94a3b8';
+      ctx.fillText('INCLUDED AMENITIES & FACILITIES:', leftX, perkY + 10);
+
       let perkX = leftX;
-      let perkY = specsY + specsH + 16;
-      ctx.font = 'bold 14px Arial, sans-serif';
+      let perkRowY = perkY + 18;
+      ctx.font = 'bold 13px Arial, sans-serif';
 
       activePerksList.forEach((perk) => {
         const textWidth = ctx.measureText(perk).width;
@@ -425,7 +476,7 @@ function BannerGeneratorContent() {
 
         if (perkX + pillWidth > leftX + leftW) {
           perkX = leftX;
-          perkY += 38;
+          perkRowY += 36;
         }
 
         const pBg =
@@ -441,18 +492,62 @@ function BannerGeneratorContent() {
             ? 'rgba(52, 211, 153, 0.35)'
             : 'rgba(52, 211, 153, 0.35)';
 
-        fillRoundedRect(perkX, perkY, pillWidth, pillHeight, 8, pBg, pBorder, 1);
+        fillRoundedRect(perkX, perkRowY, pillWidth, pillHeight, 8, pBg, pBorder, 1);
 
         ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#6ee7b7';
-        ctx.fillText(perk, perkX + 12, perkY + 21);
+        ctx.fillText(perk, perkX + 12, perkRowY + 21);
 
         perkX += pillWidth + 8;
       });
 
+      // Left Proximity & Security Banner (Fills bottom of left column perfectly!)
+      const proxY = 502;
+      const proxH = 76;
+      const proxBg =
+        theme === 'clean-white'
+          ? '#f8fafc'
+          : theme === 'dark-slate'
+          ? '#1e293b'
+          : 'rgba(255, 255, 255, 0.08)';
+      const proxBorder =
+        theme === 'clean-white'
+          ? '#e2e8f0'
+          : theme === 'dark-slate'
+          ? '#334155'
+          : 'rgba(255, 255, 255, 0.08)';
+      fillRoundedRect(leftX, proxY, leftW, proxH, 14, proxBg, proxBorder, 1);
+
+      drawCampusIcon(leftX + 28, proxY + 38, theme === 'clean-white' ? '#059669' : '#34d399');
+
+      ctx.font = '900 15px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#ffffff';
+      ctx.fillText('Southeast University Campus Vicinity', leftX + 54, proxY + 33);
+
+      ctx.font = 'bold 12px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#64748b' : '#cbd5e1';
+      ctx.fillText('Walking distance to SEU Campus • Safe Student Residential Mess Zone', leftX + 54, proxY + 55);
+
+      const proxBadgeW = 126;
+      const proxBadgeX = leftX + leftW - 18 - proxBadgeW;
+      const proxBadgeY = proxY + 24;
+      fillRoundedRect(
+        proxBadgeX,
+        proxBadgeY,
+        proxBadgeW,
+        26,
+        8,
+        theme === 'clean-white' ? '#dcfce7' : 'rgba(16, 185, 129, 0.20)',
+        theme === 'clean-white' ? '#86efac' : 'rgba(52, 211, 153, 0.35)',
+        1
+      );
+      ctx.font = 'bold 11px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#34d399';
+      ctx.fillText('✓ Verified Mess Zone', proxBadgeX + 10, proxBadgeY + 18);
+
       // ================= RIGHT COLUMN =================
-      // Right Card 1: Contact Host Card (Matching Live Preview!)
-      const contactY = dividerY + 28;
-      const contactH = 104;
+      // Right Card 1: Contact Host Card
+      const contactY = dividerY + 28; // 126
+      const contactH = 138;
       const contactBg =
         theme === 'clean-white'
           ? '#f0fdf4'
@@ -470,42 +565,39 @@ function BannerGeneratorContent() {
 
       ctx.font = 'bold 12px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#34d399';
-      ctx.fillText('CONTACT HOST:', rightX + 20, contactY + 28);
+      ctx.fillText('CONTACT HOST DIRECTLY:', rightX + 22, contactY + 28);
 
       // Phone icon and number
-      drawPhoneIcon(rightX + 30, contactY + 54, theme === 'clean-white' ? '#059669' : '#34d399');
+      drawPhoneIcon(rightX + 34, contactY + 62, theme === 'clean-white' ? '#059669' : '#34d399');
 
-      ctx.font = '900 24px Arial, sans-serif';
+      ctx.font = '900 28px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#0f172a' : '#ffffff';
-      ctx.fillText(phone, rightX + 50, contactY + 62);
+      ctx.fillText(phone, rightX + 54, contactY + 70);
 
-      ctx.font = 'bold 11px Arial, sans-serif';
+      // Sub-bar
+      ctx.font = 'bold 12px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#64748b' : '#94a3b8';
-      ctx.fillText('Call or WhatsApp', rightX + 20, contactY + 88);
+      ctx.fillText('Call or WhatsApp Anytime', rightX + 22, contactY + 112);
 
-      // Verified host pill
-      const hostBg =
-        theme === 'clean-white'
-          ? '#dcfce7'
-          : theme === 'dark-slate'
-          ? 'rgba(6, 78, 59, 0.8)'
-          : 'rgba(16, 185, 129, 0.20)';
-      const hostBorder =
-        theme === 'clean-white'
-          ? '#86efac'
-          : theme === 'dark-slate'
-          ? 'rgba(52, 211, 153, 0.4)'
-          : 'rgba(52, 211, 153, 0.35)';
-      const hostBadgeW = 110;
+      const hostBadgeW = 136;
       const hostBadgeX = rightX + rightW - 20 - hostBadgeW;
-      fillRoundedRect(hostBadgeX, contactY + 74, hostBadgeW, 20, 6, hostBg, hostBorder, 1);
+      fillRoundedRect(
+        hostBadgeX,
+        contactY + 98,
+        hostBadgeW,
+        24,
+        6,
+        theme === 'clean-white' ? '#dcfce7' : 'rgba(16, 185, 129, 0.20)',
+        theme === 'clean-white' ? '#86efac' : 'rgba(52, 211, 153, 0.35)',
+        1
+      );
       ctx.font = 'bold 11px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#34d399';
-      ctx.fillText('✓ Direct Host', hostBadgeX + 16, contactY + 88);
+      ctx.fillText('✓ Direct Host • No Fee', hostBadgeX + 12, contactY + 115);
 
-      // Right Card 2: QR Code Card (Horizontal Layout exactly matching Live Preview!)
-      const qrBoxY = contactY + contactH + 16;
-      const qrBoxH = 100;
+      // Right Card 2: QR Code Card
+      const qrBoxY = contactY + contactH + 14; // 278
+      const qrBoxH = 172;
       const qrCardBg =
         theme === 'clean-white'
           ? '#f8fafc'
@@ -520,10 +612,14 @@ function BannerGeneratorContent() {
           : 'rgba(255, 255, 255, 0.12)';
       fillRoundedRect(rightX, qrBoxY, rightW, qrBoxH, 18, qrCardBg, qrCardBorder, 1.5);
 
+      ctx.font = '900 13px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#34d399';
+      ctx.fillText('SCAN TO VIEW FULL POST', rightX + 20, qrBoxY + 26);
+
       // QR Code Container on Left
-      const qrSize = 72;
-      const qrInnerX = rightX + 14;
-      const qrInnerY = qrBoxY + 14;
+      const qrSize = 92;
+      const qrInnerX = rightX + 20;
+      const qrInnerY = qrBoxY + 40;
 
       fillRoundedRect(qrInnerX, qrInnerY, qrSize, qrSize, 12, '#ffffff', theme === 'clean-white' ? '#e2e8f0' : undefined, 1);
 
@@ -533,27 +629,82 @@ function BannerGeneratorContent() {
 
       // Texts on Right of QR code
       const qrTextX = qrInnerX + qrSize + 16;
-      ctx.font = '900 15px Arial, sans-serif';
+      ctx.font = 'bold 14px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#34d399';
-      ctx.textAlign = 'left';
-      ctx.fillText('SCAN FOR POST', qrTextX, qrBoxY + 38);
+      ctx.fillText('View Room Photos', qrTextX, qrBoxY + 64);
 
       ctx.font = 'bold 12px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#64748b' : '#cbd5e1';
-      ctx.fillText('Southeast University', qrTextX, qrBoxY + 58);
+      ctx.fillText('Southeast University', qrTextX, qrBoxY + 86);
 
-      ctx.font = 'bold 13px Arial, sans-serif';
+      ctx.font = '900 14px Arial, sans-serif';
       ctx.fillStyle = theme === 'clean-white' ? '#047857' : '#6ee7b7';
-      ctx.fillText('toletseu.vercel.app', qrTextX, qrBoxY + 78);
+      ctx.fillText('toletseu.vercel.app', qrTextX, qrBoxY + 110);
 
-      // Subtle Bottom Footer (Matching Live Preview!)
-      const footerY = height - 32;
+      ctx.font = 'bold 11px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#94a3b8' : '#94a3b8';
+      ctx.fillText('Scan with Phone Camera', qrTextX, qrBoxY + 130);
+
+      ctx.font = 'bold 10px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#059669' : '#34d399';
+      ctx.fillText('⚡ Instant Post Access & Maps Link', rightX + 20, qrBoxY + 154);
+
+      // Right Card 3: Community Safety & Facebook Group Notice Card (Fills bottom of right column perfectly!)
+      const noticeY = qrBoxY + qrBoxH + 14; // 464
+      const noticeH = 114;
+      const noticeBg =
+        theme === 'clean-white'
+          ? '#f8fafc'
+          : theme === 'dark-slate'
+          ? '#1e293b'
+          : 'rgba(0, 0, 0, 0.40)';
+      const noticeBorder =
+        theme === 'clean-white'
+          ? '#e2e8f0'
+          : theme === 'dark-slate'
+          ? '#334155'
+          : 'rgba(255, 255, 255, 0.12)';
+      fillRoundedRect(rightX, noticeY, rightW, noticeH, 16, noticeBg, noticeBorder, 1);
+
+      drawShieldIcon(rightX + 24, noticeY + 25, theme === 'clean-white' ? '#059669' : '#34d399');
+
+      ctx.font = '900 12px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#065f46' : '#34d399';
+      ctx.fillText('SEU STUDENT ACCOMMODATION', rightX + 40, noticeY + 29);
+
       ctx.font = 'bold 12px Arial, sans-serif';
-      ctx.fillStyle = theme === 'clean-white' ? '#94a3b8' : 'rgba(255, 255, 255, 0.4)';
-      ctx.fillText('Official Student Mess Portal • SEU', contentX, footerY);
+      ctx.fillStyle = theme === 'clean-white' ? '#475569' : '#cbd5e1';
+      ctx.fillText('Verified listing on SEU Student Mess Portal.', rightX + 20, noticeY + 54);
+
+      ctx.font = 'bold 11px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#64748b' : '#94a3b8';
+      ctx.fillText('Always inspect rooms in person before booking.', rightX + 20, noticeY + 74);
+
+      ctx.font = 'bold 11px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#1d4ed8' : '#60a5fa';
+      ctx.fillText('👥 Active SEU Student Housing Facebook Group', rightX + 20, noticeY + 98);
+
+      // Bottom Footer Bar
+      const footerDividerY = 598;
+      ctx.beginPath();
+      ctx.moveTo(contentX, footerDividerY);
+      ctx.lineTo(contentX + contentW, footerDividerY);
+      ctx.strokeStyle =
+        theme === 'clean-white'
+          ? '#e2e8f0'
+          : theme === 'dark-slate'
+          ? 'rgba(148, 163, 184, 0.25)'
+          : 'rgba(255, 255, 255, 0.12)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      const footerY = 632;
+      ctx.font = 'bold 12px Arial, sans-serif';
+      ctx.fillStyle = theme === 'clean-white' ? '#94a3b8' : 'rgba(255, 255, 255, 0.45)';
+      ctx.fillText('Official Student Mess Portal • Southeast University (SEU)', contentX, footerY);
 
       ctx.textAlign = 'right';
-      ctx.fillText('Verified Student Housing', contentX + contentW, footerY);
+      ctx.fillText('Verified Student Housing • toletseu.vercel.app', contentX + contentW, footerY);
       ctx.textAlign = 'left';
 
       // Trigger Download
@@ -582,39 +733,8 @@ function BannerGeneratorContent() {
   const handleDownload = async (format: 'png' | 'jpeg') => {
     setDownloading(true);
 
-    // On mobile screens (width < 768px), always use the pixel-perfect 1200x675 canvas generator to prevent squished mobile DOM screenshots
-    if (typeof window !== 'undefined' && window.innerWidth < 768) {
-      fallbackCanvasDownload(format);
-      return;
-    }
-
-    if (!bannerRef.current) {
-      fallbackCanvasDownload(format);
-      return;
-    }
-
-    try {
-      const element = bannerRef.current;
-      const currentWidth = element.offsetWidth || 640;
-      const pixelRatio = Math.max(2, Math.min(3, Math.round(1400 / currentWidth)));
-
-      const downloadFn = format === 'png' ? toPng : toJpeg;
-      const dataUrl = await downloadFn(element, {
-        quality: 0.98,
-        pixelRatio,
-        cacheBust: true,
-      });
-
-      const fileExt = format === 'png' ? 'png' : 'jpg';
-      const a = document.createElement('a');
-      a.href = dataUrl;
-      a.download = `SEU_Rent_Banner_${area.replace(/[^a-zA-Z0-9]/g, '_')}.${fileExt}`;
-      a.click();
-      setDownloading(false);
-    } catch (err) {
-      console.warn('html-to-image failed, falling back to synchronized canvas generator:', err);
-      fallbackCanvasDownload(format);
-    }
+    // Always use the pixel-perfect, zero-gap 1200x675 canvas generator to guarantee crisp, professional, high-res posters without gaps
+    fallbackCanvasDownload(format);
   };
 
   return (
@@ -1094,6 +1214,27 @@ function BannerGeneratorContent() {
                     </span>
                   )}
                 </div>
+
+                {/* Campus Proximity Banner */}
+                <div className={`p-1 sm:p-1.5 rounded-md sm:rounded-xl flex items-center justify-between text-[7px] sm:text-[9px] border ${
+                  theme === 'clean-white'
+                    ? 'bg-slate-50 border-slate-200 text-slate-800'
+                    : theme === 'dark-slate'
+                    ? 'bg-slate-800/80 border-slate-700 text-slate-200'
+                    : 'bg-white/5 border-white/10 text-emerald-300'
+                }`}>
+                  <div className="flex items-center gap-1 min-w-0">
+                    <Building2 className={`w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 shrink-0 ${theme === 'clean-white' ? 'text-emerald-700' : 'text-emerald-400'}`} />
+                    <span className="font-bold truncate">Walking distance to SEU Campus</span>
+                  </div>
+                  <span className={`font-extrabold text-[6.5px] sm:text-[8px] px-1.5 py-0.5 rounded shrink-0 ${
+                    theme === 'clean-white'
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : 'bg-emerald-500/20 text-emerald-300'
+                  }`}>
+                    ✓ Verified Zone
+                  </span>
+                </div>
               </div>
 
               {/* Right Column (5 cols): Contact & QR Code */}
@@ -1168,6 +1309,23 @@ function BannerGeneratorContent() {
                       toletseu.vercel.app
                     </p>
                   </div>
+                </div>
+
+                {/* Student Community Safety Card */}
+                <div className={`p-1 sm:p-1.5 rounded-md sm:rounded-xl text-[7px] sm:text-[8px] border ${
+                  theme === 'clean-white'
+                    ? 'bg-slate-50 border-slate-200 text-slate-700'
+                    : theme === 'dark-slate'
+                    ? 'bg-slate-800/80 border-slate-700 text-slate-300'
+                    : 'bg-black/30 border-white/10 text-slate-300'
+                }`}>
+                  <div className="flex items-center gap-1 font-bold text-emerald-400">
+                    <Sparkles className="w-2.5 h-2.5 shrink-0" />
+                    <span className="uppercase tracking-wider">SEU Student Mess</span>
+                  </div>
+                  <p className={`truncate text-[6.5px] sm:text-[7.5px] ${theme === 'clean-white' ? 'text-blue-700' : 'text-blue-400'} font-bold mt-0.5`}>
+                    👥 SEU Housing Facebook Community
+                  </p>
                 </div>
               </div>
             </div>
