@@ -25,6 +25,10 @@ import {
   RotateCw,
   Info,
   CheckCircle2,
+  Calendar,
+  X,
+  AlertCircle,
+  Flame,
 } from 'lucide-react';
 import LoadingState from '@/components/common/LoadingState';
 import DailyPostsChart from '@/components/admin/DailyPostsChart';
@@ -49,6 +53,10 @@ export default function AdminPage() {
   const [actionInProgress, setActionInProgress] = useState(false);
 
   // Auto-purge states
+  const [isAutoPurgeModalOpen, setIsAutoPurgeModalOpen] = useState(false);
+  const [selectedPurgeDays, setSelectedPurgeDays] = useState<number>(60);
+  const [previewMatchingCount, setPreviewMatchingCount] = useState<number | null>(null);
+  const [loadingPreview, setLoadingPreview] = useState(false);
   const [cleanupLoading, setCleanupLoading] = useState(false);
   const [cleanupSuccessNotice, setCleanupSuccessNotice] = useState<string | null>(null);
 
@@ -81,6 +89,32 @@ export default function AdminPage() {
       fetchAdminData();
     }
   }, [user, isAdmin, authLoading, router, fetchAdminData]);
+
+  // Fetch live matching preview whenever modal opens or days selection changes
+  useEffect(() => {
+    if (!isAutoPurgeModalOpen) return;
+    let isCancelled = false;
+    setLoadingPreview(true);
+
+    api
+      .get(`/admin/cleanup-preview?days=${selectedPurgeDays}`)
+      .then((res) => {
+        if (!isCancelled) {
+          setPreviewMatchingCount(res.data?.data?.matchCount ?? 0);
+        }
+      })
+      .catch((err) => {
+        console.warn('Failed to fetch preview count:', err?.message);
+        if (!isCancelled) setPreviewMatchingCount(0);
+      })
+      .finally(() => {
+        if (!isCancelled) setLoadingPreview(false);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [isAutoPurgeModalOpen, selectedPurgeDays]);
 
   // Handle Role Promotion / Demotion
   const handleRoleChange = async (targetUser: IUser, newRole: string) => {
@@ -132,20 +166,12 @@ export default function AdminPage() {
     }
   };
 
-  // Trigger 60-Day Auto Purge Routine Manually
-  const handleTriggerAutoPurge = async () => {
-    if (
-      !confirm(
-        'আপনি কি নিশ্চিত যে ৬০ দিনের (২ মাস) পুরনো মেয়াদোত্তীর্ণ পোস্ট ও তাদের ক্লাউডিনারি ছবি/ভিডিও মুছে ফেলতে চান? মনে রাখবেন: শিক্ষার্থীদের ইউজার অ্যাকাউন্ট ডাটাবেজে স্থায়ীভাবে সুরক্ষিত থাকবে।'
-      )
-    ) {
-      return;
-    }
-
+  // Confirm and Execute Auto Purge
+  const handleExecutePurge = async () => {
     setCleanupLoading(true);
     setCleanupSuccessNotice(null);
     try {
-      const res = await api.post('/admin/cleanup-expired-posts', { days: 60 });
+      const res = await api.post('/admin/cleanup-expired-posts', { days: selectedPurgeDays });
       const result = res.data?.data;
       const count = result?.deletedPostsCount ?? 0;
       const imgs = result?.deletedImagesCount ?? 0;
@@ -153,9 +179,10 @@ export default function AdminPage() {
 
       setCleanupSuccessNotice(
         count > 0
-          ? `সফলভাবে ${count} টি মেয়াদোত্তীর্ণ পোস্ট, ${imgs} টি ছবি এবং ${vids} টি ভিডিও Cloudinary ও ডাটাবেজ থেকে মুছে ফেলা হয়েছে!`
-          : 'ক্লিনআপ সম্পন্ন হয়েছে! ৬০ দিনের চেয়ে পুরনো কোনো মেয়াদোত্তীর্ণ পোস্ট পাওয়া যায়নি।'
+          ? `সফলভাবে ${count} টি পোস্ট এবং Cloudinary থেকে ${imgs} টি ছবি ও ${vids} টি ভিডিও চিরতরে মুছে ফেলা হয়েছে!`
+          : `ক্লিনআপ চেক সম্পন্ন হয়েছে! ডাটাবেজে ${selectedPurgeDays} দিনের চেয়ে পুরনো কোনো মেয়াদোত্তীর্ণ পোস্ট পাওয়া যায়নি।`
       );
+      setIsAutoPurgeModalOpen(false);
       await fetchAdminData();
     } catch (err: any) {
       alert(err.response?.data?.message || 'অটো-ক্লিনআপ চালাতে ত্রুটি হয়েছে।');
@@ -308,12 +335,11 @@ export default function AdminPage() {
             </div>
 
             <button
-              onClick={handleTriggerAutoPurge}
-              disabled={cleanupLoading}
-              className="mt-3 w-full py-1.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-95 disabled:opacity-50 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm"
+              onClick={() => setIsAutoPurgeModalOpen(true)}
+              className="mt-3 w-full py-1.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
             >
-              <RotateCw className={`w-3.5 h-3.5 ${cleanupLoading ? 'animate-spin' : ''}`} />
-              <span>{cleanupLoading ? 'ক্লিন হচ্ছে...' : 'রান অটো-ক্লিনআপ'}</span>
+              <RotateCw className="w-3.5 h-3.5" />
+              <span>রান অটো-ক্লিনআপ</span>
             </button>
           </div>
         </div>
@@ -328,7 +354,7 @@ export default function AdminPage() {
           </div>
           <button
             onClick={() => setCleanupSuccessNotice(null)}
-            className="text-slate-400 hover:text-slate-600 text-xs font-bold px-2 py-1 rounded-lg"
+            className="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xs font-bold px-2 py-1 rounded-lg"
           >
             ✕
           </button>
@@ -469,7 +495,7 @@ export default function AdminPage() {
                       <button
                         onClick={() => setDeletingUser(u)}
                         disabled={u._id === user?._id}
-                        className="btn btn-xs btn-ghost text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 rounded-lg disabled:opacity-30"
+                        className="btn btn-xs btn-ghost text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50 rounded-lg disabled:opacity-30 cursor-pointer"
                         title="Delete User and all their posts"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -553,7 +579,7 @@ export default function AdminPage() {
                     <td className="text-right">
                       <button
                         onClick={() => setDeletingPost(p)}
-                        className="btn btn-xs bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 hover:bg-red-100 border border-red-200 dark:border-red-900/50 rounded-lg font-bold flex items-center gap-1 ml-auto"
+                        className="btn btn-xs bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-400 hover:bg-red-100 border border-red-200 dark:border-red-900/50 rounded-lg font-bold flex items-center gap-1 ml-auto cursor-pointer"
                         title="Delete post and purge Cloudinary media"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -568,10 +594,151 @@ export default function AdminPage() {
         </div>
       )}
 
+      {/* AUTO-PURGE CUSTOM INTERACTIVE MODAL */}
+      {isAutoPurgeModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 max-w-md w-full space-y-5 shadow-2xl border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center flex-shrink-0">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-slate-900 dark:text-white text-lg leading-tight">
+                    অটো-ক্লিনআপ সিস্টেম (Auto-Purge)
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    মেয়াদোত্তীর্ণ পোস্ট ও Cloudinary ফাইল পার্জ
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsAutoPurgeModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-lg"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Threshold Selector Tabs */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-indigo-500" />
+                <span>কত দিনের পুরনো পোস্ট ক্লিন করবেন?</span>
+              </label>
+
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { days: 60, label: '৬০ দিন (২ মাস)', badge: 'ডিফল্ট' },
+                  { days: 30, label: '৩০ দিন (১ মাস)' },
+                  { days: 7, label: '৭ দিন (১ সপ্তাহ)' },
+                  { days: 1, label: '১ দিন (টেস্ট)' },
+                  { days: 0, label: 'সব পোস্ট (টেস্ট)' },
+                ].map((item) => (
+                  <button
+                    key={item.days}
+                    type="button"
+                    onClick={() => setSelectedPurgeDays(item.days)}
+                    className={`py-2 px-2.5 rounded-xl text-xs font-bold transition-all border text-center ${
+                      selectedPurgeDays === item.days
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                        : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-400'
+                    }`}
+                  >
+                    <div>{item.label}</div>
+                    {item.badge && (
+                      <span className="text-[9px] uppercase tracking-wider opacity-80 block">
+                        ★ {item.badge}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Real-time Match Preview Banner */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700/80 text-xs space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-slate-600 dark:text-slate-300">
+                  ডাটাবেজে ম্যাচিং পোস্ট:
+                </span>
+                {loadingPreview ? (
+                  <span className="text-xs text-indigo-500 animate-pulse font-bold flex items-center gap-1">
+                    <RotateCw className="w-3 h-3 animate-spin" /> গোনা হচ্ছে...
+                  </span>
+                ) : (
+                  <span
+                    className={`font-black text-sm px-2 py-0.5 rounded-lg ${
+                      (previewMatchingCount ?? 0) > 0
+                        ? 'bg-red-100 dark:bg-red-950/60 text-red-700 dark:text-red-400 font-black'
+                        : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400'
+                    }`}
+                  >
+                    {previewMatchingCount ?? 0} টি পোস্ট
+                  </span>
+                )}
+              </div>
+
+              {/* Contextual Notice */}
+              {previewMatchingCount === 0 && !loadingPreview && (
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed pt-1">
+                  💡 বর্তমানে আপনার ডাটাবেজে {selectedPurgeDays} দিনের চেয়ে পুরনো কোনো পোস্ট নেই (সব পোস্ট সম্প্রতি তৈরি)। সিস্টেম টেস্ট করতে চাইলে উপরের <strong>&quot;১ দিন&quot;</strong> বা <strong>&quot;সব পোস্ট (টেস্ট)&quot;</strong> সিলেক্ট করে দেখতে পারেন।
+                </p>
+              )}
+
+              {previewMatchingCount !== null && previewMatchingCount > 0 && !loadingPreview && (
+                <p className="text-[11px] text-red-600 dark:text-red-400 font-medium leading-relaxed pt-1 flex items-center gap-1">
+                  <Flame className="w-3.5 h-3.5 flex-shrink-0" />
+                  এই {previewMatchingCount} টি পোস্ট এবং তাদের সাথে যুক্ত Cloudinary ছবি/ভিডিও স্থায়ীভাবে ডিলিট হবে।
+                </p>
+              )}
+            </div>
+
+            {/* Permanent User Protection Guarantee */}
+            <div className="p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 text-[11px] text-emerald-800 dark:text-emerald-300 flex items-start gap-2">
+              <ShieldCheck className="w-4 h-4 flex-shrink-0 text-emerald-600 mt-0.5" />
+              <span>
+                <strong>ইউজার সুরক্ষা:</strong> শিক্ষার্থীদের অ্যাকাউন্ট তথ্য (নাম, ইমেইল, ফোন ইত্যাদি) সম্পূর্ণ অক্ষত থাকবে। কেবল মেয়াদোত্তীর্ণ পোস্ট ও ক্লাউডিনারি মিডিয়া ডিলিট হবে।
+              </span>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-2.5 pt-1">
+              <button
+                type="button"
+                onClick={() => setIsAutoPurgeModalOpen(false)}
+                className="btn btn-sm btn-ghost flex-1 rounded-xl text-slate-700 dark:text-slate-300 font-bold"
+              >
+                বাতিল
+              </button>
+              <button
+                type="button"
+                disabled={cleanupLoading}
+                onClick={handleExecutePurge}
+                className="btn btn-sm bg-indigo-600 hover:bg-indigo-700 text-white flex-1 rounded-xl font-bold shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                {cleanupLoading ? (
+                  <>
+                    <RotateCw className="w-3.5 h-3.5 animate-spin" />
+                    <span>ক্লিন করা হচ্ছে...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>ক্লিনআপ শুরু করুন</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Delete User Confirmation Modal */}
       {deletingUser && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center border border-slate-200 dark:border-slate-800">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-150">
             <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400 flex items-center justify-center mx-auto">
               <AlertTriangle className="w-6 h-6" />
             </div>
@@ -610,7 +777,7 @@ export default function AdminPage() {
       {/* Delete Post Confirmation Modal */}
       {deletingPost && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center border border-slate-200 dark:border-slate-800">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl text-center border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-150">
             <div className="w-12 h-12 rounded-2xl bg-red-100 dark:bg-red-950/50 text-red-700 dark:text-red-400 flex items-center justify-center mx-auto">
               <AlertTriangle className="w-6 h-6" />
             </div>
