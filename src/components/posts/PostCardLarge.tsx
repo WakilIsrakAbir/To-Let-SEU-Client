@@ -289,44 +289,51 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
       />
 
       {/* 5. Rent Bar (Directly below Image) */}
-      <div className="px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-slate-50 dark:from-emerald-950/35 dark:via-slate-800/60 dark:to-slate-900 border border-emerald-500/20 dark:border-emerald-500/20 flex items-center justify-between gap-2 shadow-xs">
-        {/* Left: Rent Amount and Negotiable Pill */}
-        <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-          <span
-            style={{ color: currentTheme.hex }}
-            className="text-xl sm:text-2xl font-black tracking-tight whitespace-nowrap"
-          >
-            {formatBDT(post.rentAmount)}
-          </span>
-          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">
-            / month
-          </span>
-          {post.rentType === 'negotiable' && (
-            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800 whitespace-nowrap">
-              Negotiable
+      <div className="px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-slate-50 dark:from-emerald-950/35 dark:via-slate-800/60 dark:to-slate-900 border border-emerald-500/20 dark:border-emerald-500/20 shadow-xs">
+        {/* Main Row: Rent Amount and Utility/Bills Badge on the exact same straight row */}
+        <div className="flex items-center justify-between gap-2">
+          {/* Left: Rent Amount */}
+          <div className="flex items-baseline gap-1.5 shrink-0">
+            <span
+              style={{ color: currentTheme.hex }}
+              className="text-xl sm:text-2xl font-black tracking-tight leading-none whitespace-nowrap"
+            >
+              {formatBDT(post.rentAmount)}
             </span>
-          )}
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 leading-none whitespace-nowrap">
+              / month
+            </span>
+          </div>
+
+          {/* Right: Utility / Bills Badge directly across on the same row */}
+          <div className="shrink-0">
+            <span
+              className={`px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-bold border flex items-center gap-1 shadow-2xs whitespace-nowrap ${
+                post.serviceChargeIncluded
+                  ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border-emerald-300 dark:border-emerald-700'
+                  : 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
+              }`}
+            >
+              {post.serviceChargeIncluded ? (
+                <>
+                  <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <span>Bills Included</span>
+                </>
+              ) : (
+                <span>+ Utility / Bills</span>
+              )}
+            </span>
+          </div>
         </div>
 
-        {/* Right: Utility / Bills Badge on right side of Rent */}
-        <div className="shrink-0">
-          <span
-            className={`px-2 py-1 rounded-lg text-[11px] sm:text-xs font-bold border flex items-center gap-1 shadow-2xs whitespace-nowrap ${
-              post.serviceChargeIncluded
-                ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 border-emerald-300 dark:border-emerald-700'
-                : 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800'
-            }`}
-          >
-            {post.serviceChargeIncluded ? (
-              <>
-                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>Bills Included</span>
-              </>
-            ) : (
-              <span>+ Utility / Bills</span>
-            )}
-          </span>
-        </div>
+        {/* Sub-row: Negotiable tag underneath rent amount if applicable */}
+        {post.rentType === 'negotiable' && (
+          <div className="mt-1">
+            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800 inline-block">
+              Negotiable
+            </span>
+          </div>
+        )}
       </div>
 
       {/* 6. Action Triggers Bar (Call, WhatsApp, Share) */}
