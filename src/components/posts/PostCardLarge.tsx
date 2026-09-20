@@ -336,15 +336,16 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
       </div>
 
       {/* 6. Action Triggers Bar (Call, WhatsApp, Share) */}
-      <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
-        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-2.5 w-full sm:w-auto">
+      <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
+        {/* Call & WhatsApp: 2 Equal Columns */}
+        <div className="grid grid-cols-2 gap-2">
           {/* Call button: icon + phone number only */}
           <a
             href={`tel:${post.contactNumber}`}
             style={{ backgroundColor: currentTheme.hex }}
-            className="h-10 px-3 sm:px-4 text-white border-none rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-sm hover:opacity-90 transition shrink-0"
+            className="h-10 px-2 sm:px-3 text-white border-none rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-xs hover:opacity-90 transition min-w-0"
           >
-            <Phone className="w-4 h-4 shrink-0" />
+            <Phone className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">{post.contactNumber}</span>
           </a>
 
@@ -358,33 +359,31 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
               color: currentTheme.textHex,
               borderColor: currentTheme.borderHex,
             }}
-            className="h-10 px-3 sm:px-4 border rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 hover:opacity-90 transition shrink-0"
+            className="h-10 px-2 sm:px-3 border rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 hover:opacity-90 transition min-w-0"
           >
             <MessageCircle className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
             <span className="truncate">WhatsApp</span>
           </a>
         </div>
 
-        <div className="flex items-center justify-end gap-2">
-          {/* Share Button */}
-          <button
-            onClick={handleShare}
-            className="w-full sm:w-auto h-10 px-3 flex items-center justify-center gap-1.5 rounded-xl text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition"
-            title="Copy link to this post"
-          >
-            {copied ? (
-              <>
-                <Check className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
-                <span style={{ color: currentTheme.hex }}>Link Copied</span>
-              </>
-            ) : (
-              <>
-                <Share2 className="w-3.5 h-3.5" />
-                <span>Share</span>
-              </>
-            )}
-          </button>
-        </div>
+        {/* Share Button: Full-width cleanly centered */}
+        <button
+          onClick={handleShare}
+          className="w-full h-8 flex items-center justify-center gap-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition"
+          title="Copy link to this post"
+        >
+          {copied ? (
+            <>
+              <Check className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
+              <span style={{ color: currentTheme.hex }}>Link Copied</span>
+            </>
+          ) : (
+            <>
+              <Share2 className="w-3.5 h-3.5 text-slate-400" />
+              <span>Share</span>
+            </>
+          )}
+        </button>
       </div>
     </motion.article>
   );
