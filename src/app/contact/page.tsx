@@ -329,6 +329,37 @@ export default function ContactPage() {
         </div>
       </div>
 
+      {/* Official Facebook Student Community Card */}
+      <div className="mt-12 bg-gradient-to-br from-blue-50 via-indigo-50/40 to-slate-50 dark:from-slate-900 dark:via-blue-950/20 dark:to-slate-900 border border-blue-200/80 dark:border-blue-900/40 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+        <div className="flex items-start sm:items-center gap-4 sm:gap-5">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center shrink-0 shadow-md">
+            <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+            </svg>
+          </div>
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300 text-xs font-bold mb-1.5">
+              <span>Official Student Community</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              Join Southeast University Facebook Group
+            </h3>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1 max-w-xl">
+              Connect with fellow SEU students, explore room & roommate requests, discuss campus life, and share your generated rent banners directly with the community.
+            </p>
+          </div>
+        </div>
+        <a
+          href="https://www.facebook.com/groups/595436001496374/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn bg-[#1877F2] hover:bg-blue-700 text-white font-bold border-none rounded-xl px-6 shrink-0 shadow hover:shadow-lg transition flex items-center gap-2"
+        >
+          <span>Join SEU Group</span>
+          <ArrowRight className="w-4 h-4" />
+        </a>
+      </div>
+
       {/* Frequently Asked Questions Section */}
       <ContactFaqSection />
 

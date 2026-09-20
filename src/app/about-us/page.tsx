@@ -2,124 +2,258 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Users, ShieldCheck, HeartHandshake, ArrowRight } from 'lucide-react';
+import {
+  Sparkles,
+  ExternalLink,
+  Users,
+  BadgePercent,
+  FileSpreadsheet,
+  ArrowRight,
+} from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  image: string;
+  profileLink: string;
+}
+
+const teamMembers: TeamMember[] = [
+  {
+    id: 'abir',
+    name: 'Wakil Israk Abir',
+    role: 'Developer',
+    image: '/team/abir.svg',
+    profileLink: 'https://www.instagram.com/wakil_israk_abir/',
+  },
+  {
+    id: 'nasir',
+    name: 'Md. Nasir Uddin',
+    role: 'Advisor',
+    image: '/team/nasir.svg',
+    profileLink: 'https://www.instagram.com/nasir_ahamed_71/',
+  },
+  {
+    id: 'ovi',
+    name: 'Saiful Islam Ovi',
+    role: 'Quality Assurance',
+    image: '/team/ovi.svg',
+    profileLink: 'https://www.instagram.com/saiful_islam_ovi_001/',
+  },
+  {
+    id: 'mission',
+    name: 'Mission',
+    role: 'Admin',
+    image: '/team/mission.svg',
+    profileLink: 'https://www.facebook.com/MISON.7O9/',
+  },
+  {
+    id: 'irfan',
+    name: 'Sharier Irfan',
+    role: 'Moderator',
+    image: '/team/irfan.svg',
+    profileLink: 'https://www.instagram.com/shahreer_irfan/',
+  },
+  {
+    id: 'shihab',
+    name: 'Toriqul Islam Shihab',
+    role: 'Brand Ambassador',
+    image: '/team/shihab.svg',
+    profileLink: 'https://www.instagram.com/tariqul.shihab/',
+  },
+];
 
 export default function AboutUsPage() {
   const { currentTheme, isDark } = useTheme();
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-      {/* Header Banner */}
-      <div className="text-center max-w-2xl mx-auto mb-16">
-        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Connecting <span style={{ color: currentTheme.hex }}>SEU Students</span> with Safe, Affordable Bachelor Homes
-        </h1>
-        <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed">
-          To Let SEU was founded to solve the messy to-let search for students studying at the Southeast University Tejgaon Campus. No more hunting through Facebook spam or tearing down paper posters in the rain.
-        </p>
-      </div>
-
-      {/* Pillars */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-        <div className="bg-white dark:bg-slate-900 p-7 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition">
+    <div className="min-h-screen py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full space-y-12">
+      {/* 1. TOP SECTION: Contributors / Core Team */}
+      <section>
+        {/* Clean Header */}
+        <div className="mb-6">
           <div
             style={{
-              backgroundColor: isDark ? `${currentTheme.hex}25` : currentTheme.lightHex,
-              color: currentTheme.hex,
+              backgroundColor: isDark ? `${currentTheme.hex}18` : currentTheme.lightHex,
+              color: isDark ? currentTheme.hex : currentTheme.textHex,
             }}
-            className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
+            className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold mb-2 shadow-2xs"
           >
-            <Users className="w-6 h-6" />
+            <Sparkles className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
+            <span>Southeast University Student Contributors</span>
           </div>
-          <h3 className="font-bold text-xl text-slate-900 dark:text-white mb-2">SEU Peer Network</h3>
-          <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-            Room with classmates from your own department (CSE, BBA, EEE, Textile, Law, English) for better study groups and shared class schedules.
+
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+            The Team Behind <span style={{ color: currentTheme.hex }}>To Let SEU</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-3xl">
+            Students who designed, developed, and currently maintain the platform for SEU peers.
           </p>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-7 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition">
-          <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 flex items-center justify-center mb-5">
-            <ShieldCheck className="w-6 h-6" />
-          </div>
-          <h3 className="font-bold text-xl text-slate-900 dark:text-white mb-2">Verified Listings</h3>
-          <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-            Every ad includes optimized room photos, clear rent values or negotiable flags, and live pin locations near Tejgaon campus.
-          </p>
-        </div>
+        {/* 6 Team Cards (3 Columns x 2 Rows) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {teamMembers.map((member) => (
+            <div
+              key={member.id}
+              className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200/90 dark:border-slate-800 shadow-2xs hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition duration-200 flex items-center gap-6 sm:gap-7 group"
+            >
+              {/* Bigger Profile Avatar */}
+              <div className="relative w-24 h-28 sm:w-28 sm:h-32 rounded-2xl overflow-hidden shadow-xs border border-slate-200 dark:border-slate-700 bg-slate-950 shrink-0 group-hover:scale-105 transition-transform duration-300">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  className="w-full h-full object-cover select-none"
+                />
+              </div>
 
-        <div className="bg-white dark:bg-slate-900 p-7 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition">
-          <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 flex items-center justify-center mb-5">
-            <HeartHandshake className="w-6 h-6" />
-          </div>
-          <h3 className="font-bold text-xl text-slate-900 dark:text-white mb-2">Zero Broker Fees</h3>
-          <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-            Direct student-to-student and landlord-to-student communication via direct phone calls and WhatsApp messaging. 100% free for all students.
-          </p>
-        </div>
-      </div>
+              {/* Member Details: 3 Clear Lines (Name, Role, Profile Link) */}
+              <div className="flex-1 min-w-0 flex flex-col justify-center space-y-2 py-0.5">
+                {/* Line 1: Name */}
+                <h3
+                  className="font-black text-base sm:text-lg text-slate-900 dark:text-white truncate leading-snug"
+                  title={member.name}
+                >
+                  {member.name}
+                </h3>
 
-      {/* Facebook Community Card */}
-      <div className="bg-gradient-to-br from-blue-50 via-indigo-50/40 to-slate-50 dark:from-slate-900 dark:via-blue-950/20 dark:to-slate-900 border border-blue-200/80 dark:border-blue-900/40 rounded-3xl p-6 sm:p-8 mb-16 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
-        <div className="flex items-start sm:items-center gap-4 sm:gap-5">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#1877F2] text-white flex items-center justify-center shrink-0 shadow-md">
-            <svg className="w-8 h-8 fill-current" viewBox="0 0 24 24">
-              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-            </svg>
-          </div>
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300 text-xs font-bold mb-1.5">
-              <span>Official Student Community</span>
+                {/* Line 2: Role (Clean text, no background/border/padding) */}
+                <div
+                  style={{ color: currentTheme.hex }}
+                  className="text-xs sm:text-sm font-bold tracking-wide"
+                >
+                  {member.role}
+                </div>
+
+                {/* Line 3: Profile Link (Clean text link, no background/border/padding) */}
+                <div>
+                  <a
+                    href={member.profileLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: isDark ? `${currentTheme.hex}cc` : currentTheme.textHex,
+                    }}
+                    className="inline-flex items-center gap-1 text-xs font-semibold hover:underline opacity-80 hover:opacity-100 transition"
+                  >
+                    <span>Profile Link</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
             </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
-              Join Southeast University Facebook Group
-            </h3>
-            <p className="text-slate-600 dark:text-slate-400 text-sm mt-1 max-w-xl">
-              Connect with fellow SEU students, explore room & roommate requests, discuss campus life, and share your generated rent banners directly with the community.
+          ))}
+        </div>
+      </section>
+
+      {/* 2. BOTTOM SECTION: Our Story & Mission */}
+      <section className="w-full rounded-3xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 lg:p-10 shadow-xs">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Left Column (7 cols): Short Story */}
+          <div className="lg:col-span-7 space-y-3.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-100/60 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/60">
+              Our Story & Mission
+            </div>
+
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+              Solving Bachelor Housing for <span style={{ color: currentTheme.hex }}>SEU Students</span>
+            </h2>
+
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+              To Let SEU is a 100% non-profit, student-led initiative built to eliminate the chaos of bachelor seat hunting around the Southeast University Tejgaon Campus. We replace paper wall posters, misleading ads, and unauthorized broker commissions with a single verified peer network.
+            </p>
+
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+              Every listing connects students directly via direct phone calls or WhatsApp. It is completely free for students, made by students who faced the exact same search when they first arrived at campus.
             </p>
           </div>
-        </div>
-        <a
-          href="https://www.facebook.com/groups/595436001496374/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn bg-[#1877F2] hover:bg-blue-700 text-white font-bold border-none rounded-xl px-6 shrink-0 shadow hover:shadow-lg transition flex items-center gap-2"
-        >
-          <span>Join SEU Group</span>
-          <ArrowRight className="w-4 h-4" />
-        </a>
-      </div>
 
-      {/* CTA Box */}
-      <div
+          {/* Right Column (5 cols): 3 Compact Feature Pills */}
+          <div className="lg:col-span-5 space-y-3">
+            <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs flex items-center gap-3.5">
+              <div
+                style={{
+                  backgroundColor: isDark ? `${currentTheme.hex}20` : currentTheme.lightHex,
+                  color: currentTheme.hex,
+                }}
+                className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+              >
+                <Users className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                  Verified SEU Peer Network
+                </h4>
+                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
+                  Room directly with classmates from CSE, BBA, Law, Textile, & EEE.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                <BadgePercent className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                  Zero Broker Fees & Commissions
+                </h4>
+                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
+                  100% free direct calls & WhatsApp messaging. No middlemen fees.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-2xs flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                <FileSpreadsheet className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                  Instant Mess Poster Generator
+                </h4>
+                <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
+                  Auto-create printable social banners to paste on campus boards.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Community CTA Box */}
+      <section
         style={{
           background: `linear-gradient(135deg, ${currentTheme.hoverHex}, #0f172a)`,
         }}
-        className="text-white rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden shadow-xl"
+        className="text-white rounded-3xl p-6 sm:p-8 text-center relative overflow-hidden shadow-lg"
       >
-        <div className="relative z-10 max-w-xl mx-auto space-y-4">
-          <h2 className="text-2xl sm:text-3xl font-bold">Have a seat or room available?</h2>
-          <p className="text-white/80 text-sm sm:text-base">
-            Post your ad in 2 minutes, upload up to 5 room photos, and automatically generate a rent poster for your social media.
+        <div className="relative z-10 max-w-xl mx-auto space-y-3">
+          <h3 className="text-xl sm:text-2xl font-black tracking-tight">Have a seat or room available?</h3>
+          <p className="text-white/80 text-xs sm:text-sm leading-relaxed">
+            Help an SEU classmate find a bachelor home near campus. Post a free ad in 2 minutes or generate a printable flyer.
           </p>
-          <div className="pt-4 flex flex-wrap justify-center gap-4">
+          <div className="pt-2 flex flex-wrap justify-center gap-3">
             <Link
               href="/posts/create"
               style={{ color: currentTheme.textHex }}
-              className="btn bg-white hover:bg-slate-100 border-none font-bold rounded-xl px-6 shadow-md"
+              className="btn btn-sm bg-white hover:bg-slate-100 border-none font-bold rounded-xl px-5 shadow-sm"
             >
               Post a Free Ad
             </Link>
             <Link
               href="/create-banner"
-              className="btn bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold border-none rounded-xl px-6 flex items-center gap-2"
+              className="btn btn-sm bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold border-none rounded-xl px-5 flex items-center gap-1.5 shadow-sm"
             >
               <span>Try Poster Generator</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

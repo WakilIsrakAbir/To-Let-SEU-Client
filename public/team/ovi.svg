@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGradOvi" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="accentGradOvi" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+    <radialGradient id="glowOvi" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="480" fill="url(#bgGradOvi)"/>
+  <circle cx="200" cy="190" r="160" fill="url(#glowOvi)"/>
+  
+  <circle cx="200" cy="160" r="62" fill="#334155"/>
+  <circle cx="200" cy="155" r="58" fill="#475569"/>
+  <path d="M100 370 C100 270 140 245 200 245 C260 245 300 270 300 370 Z" fill="#1e293b"/>
+  <path d="M120 370 C120 285 150 260 200 260 C250 260 280 285 280 370 Z" fill="#334155"/>
+  <path d="M175 260 L200 310 L225 260 Z" fill="#475569"/>
+
+  <!-- QA Badge Accent -->
+  <circle cx="200" cy="155" r="46" fill="url(#accentGradOvi)" opacity="0.9"/>
+  <text x="200" y="168" font-family="system-ui, -apple-system, sans-serif" font-size="34" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="1">OV</text>
+
+  <!-- Bottom Tag Overlay -->
+  <rect x="50" y="395" width="300" height="46" rx="14" fill="#0f172a" fill-opacity="0.85" stroke="#8b5cf6" stroke-opacity="0.4" stroke-width="1.5"/>
+  <text x="200" y="424" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="700" fill="#c4b5fd" text-anchor="middle" letter-spacing="0.5">QUALITY ASSURANCE • LAW 50</text>
+</svg>
