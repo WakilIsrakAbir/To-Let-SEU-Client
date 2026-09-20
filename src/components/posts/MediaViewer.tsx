@@ -16,6 +16,8 @@ interface MediaViewerProps {
   images?: IMediaItem[];
   video?: IMediaItem; // Optional for backwards compatibility
   title: string;
+  showThumbnails?: boolean;
+  showOverlayArrows?: boolean;
 }
 
 const slideVariants = {
@@ -46,7 +48,12 @@ const slideVariants = {
   }),
 };
 
-export default function MediaViewer({ images = [], title }: MediaViewerProps) {
+export default function MediaViewer({
+  images = [],
+  title,
+  showThumbnails = false,
+  showOverlayArrows = !showThumbnails,
+}: MediaViewerProps) {
   const { currentTheme } = useTheme();
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -140,6 +147,32 @@ export default function MediaViewer({ images = [], title }: MediaViewerProps) {
           </AnimatePresence>
         </div>
 
+        {/* Overlay Left Arrow Button for Multiple Photos */}
+        {showOverlayArrows && validImages.length > 1 && (
+          <button
+            type="button"
+            onClick={(e) => paginate(-1, e)}
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-black/60 hover:bg-black/85 active:scale-95 text-white p-1.5 sm:p-2 rounded-full backdrop-blur-md border border-white/20 transition-all hover:scale-110 shadow-lg flex items-center justify-center cursor-pointer opacity-90 hover:opacity-100"
+            aria-label="Previous image"
+            title="Previous image"
+          >
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+          </button>
+        )}
+
+        {/* Overlay Right Arrow Button for Multiple Photos */}
+        {showOverlayArrows && validImages.length > 1 && (
+          <button
+            type="button"
+            onClick={(e) => paginate(1, e)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-black/60 hover:bg-black/85 active:scale-95 text-white p-1.5 sm:p-2 rounded-full backdrop-blur-md border border-white/20 transition-all hover:scale-110 shadow-lg flex items-center justify-center cursor-pointer opacity-90 hover:opacity-100"
+            aria-label="Next image"
+            title="Next image"
+          >
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+          </button>
+        )}
+
         {/* Photo Counter Pill */}
         <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-xs font-bold border border-white/10 flex items-center gap-1.5 z-10 pointer-events-none">
           <ImageIcon className="w-3.5 h-3.5" />
@@ -159,8 +192,8 @@ export default function MediaViewer({ images = [], title }: MediaViewerProps) {
         </button>
       </div>
 
-      {/* Thumbnail Bar (if multiple photos) */}
-      {validImages.length > 1 && (
+      {/* Optional Thumbnail Bar (only if explicitly enabled, e.g. details page) */}
+      {showThumbnails && validImages.length > 1 && (
         <div className="flex items-center gap-2 p-2.5 bg-slate-900/90 overflow-x-auto border-t border-slate-800">
           {validImages.map((img, idx) => (
             <button

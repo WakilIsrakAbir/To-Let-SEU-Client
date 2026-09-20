@@ -278,6 +278,7 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
       <MediaViewer
         images={post.media?.images}
         title={post.title}
+        showThumbnails={true}
       />
 
       {/* 5. Rent Bar (Directly below Image) */}

@@ -284,6 +284,7 @@ export default function HomePostCard({ post }: HomePostCardProps) {
         <MediaViewer
           images={post.media?.images}
           title={post.title}
+          showThumbnails={false}
         />
 
         {/* 4. Rent Bar (Directly below Image) */}
