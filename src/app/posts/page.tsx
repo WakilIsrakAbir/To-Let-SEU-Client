@@ -25,7 +25,6 @@ const initialFilters: FilterState = {
   gender: '',
   minRent: 0,
   maxRent: 20000,
-  isNegotiable: false,
   month: '',
   roomType: '',
   amenities: [],
@@ -82,7 +81,6 @@ function PostsFeedInner() {
       if (filters.area) params.area = filters.area;
       if (filters.gender) params.gender = filters.gender;
       if (filters.maxRent && filters.maxRent < 20000) params.maxRent = filters.maxRent;
-      if (filters.isNegotiable) params.isNegotiable = true;
       if (filters.month) params.month = filters.month;
       if (filters.roomType) params.roomType = filters.roomType;
       if (filters.amenities.length > 0) params.amenities = filters.amenities.join(',');
@@ -181,7 +179,6 @@ function PostsFeedInner() {
     Boolean(activeSearch) ||
     Boolean(filters.area) ||
     Boolean(filters.gender) ||
-    filters.isNegotiable ||
     Boolean(filters.month) ||
     Boolean(filters.roomType) ||
     filters.amenities.length > 0 ||
@@ -326,14 +323,7 @@ function PostsFeedInner() {
                 </span>
               )}
 
-              {filters.isNegotiable && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold border border-slate-200 dark:border-slate-700">
-                  <span>Negotiable</span>
-                  <button onClick={() => handleFilterChange({ ...filters, isNegotiable: false })} className="hover:text-red-500">
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
+
 
               <button
                 onClick={handleResetFilters}

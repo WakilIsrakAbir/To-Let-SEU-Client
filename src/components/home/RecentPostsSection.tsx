@@ -6,37 +6,37 @@ import { api } from '@/lib/api';
 import { IPost } from '@/types/post';
 import { useTheme } from '@/context/ThemeContext';
 import { ArrowRight } from 'lucide-react';
-import PostCardLarge from '@/components/posts/PostCardLarge';
+import HomePostCard from './HomePostCard';
 
 // Global in-memory cache for instant subsequent mounts (SWR pattern, 6 posts)
 let cachedRecentPosts: IPost[] | null = null;
 
-// Clean Skeleton matching exact PostCardLarge structure
-function PostCardLargeSkeleton() {
+// Clean Skeleton matching exact HomePostCard structure
+function HomePostCardSkeleton() {
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-4 sm:p-6 space-y-3.5 animate-pulse select-none">
+    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-4 sm:p-5 space-y-3 animate-pulse select-none">
       {/* Header skeleton */}
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800 shrink-0" />
         <div className="flex-1 space-y-1.5">
           <div className="flex items-center justify-between gap-2">
-            <div className="w-28 h-4 rounded-md bg-slate-200 dark:bg-slate-800" />
+            <div className="w-24 h-4 rounded-md bg-slate-200 dark:bg-slate-800" />
             <div className="w-16 h-4 rounded-md bg-slate-200 dark:bg-slate-800" />
           </div>
-          <div className="w-36 h-3 rounded-md bg-slate-200 dark:bg-slate-800" />
+          <div className="w-32 h-3 rounded-md bg-slate-200 dark:bg-slate-800" />
         </div>
       </div>
 
-      {/* Room & Date row skeleton */}
-      <div className="flex items-center gap-2">
+      {/* Specs row 1: Room & Available Date */}
+      <div className="flex items-center gap-1.5">
         <div className="flex-1 h-7 rounded-xl bg-slate-200 dark:bg-slate-800" />
-        <div className="w-24 h-7 rounded-xl bg-slate-200 dark:bg-slate-800" />
+        <div className="w-24 h-7 rounded-xl bg-slate-200 dark:bg-slate-800 shrink-0" />
       </div>
 
-      {/* Location & See more row skeleton */}
+      {/* Specs row 2: Location & See More */}
       <div className="flex items-center justify-between gap-2">
-        <div className="w-24 h-7 rounded-xl bg-slate-200 dark:bg-slate-800" />
-        <div className="w-20 h-7 rounded-xl bg-slate-200 dark:bg-slate-800" />
+        <div className="w-20 h-6 rounded-xl bg-slate-200 dark:bg-slate-800" />
+        <div className="w-20 h-6 rounded-xl bg-slate-200 dark:bg-slate-800" />
       </div>
 
       {/* Photo carousel skeleton */}
@@ -45,10 +45,11 @@ function PostCardLargeSkeleton() {
       {/* Rent bar skeleton */}
       <div className="h-10 rounded-xl bg-slate-200 dark:bg-slate-800 w-full" />
 
-      {/* Action buttons skeleton */}
-      <div className="grid grid-cols-2 gap-2 pt-1">
-        <div className="h-10 rounded-xl bg-slate-200 dark:bg-slate-800" />
-        <div className="h-10 rounded-xl bg-slate-200 dark:bg-slate-800" />
+      {/* Action buttons skeleton: 3 in 1 line */}
+      <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-1.5">
+        <div className="flex-1 h-9 rounded-xl bg-slate-200 dark:bg-slate-800" />
+        <div className="w-20 h-9 rounded-xl bg-slate-200 dark:bg-slate-800 shrink-0" />
+        <div className="w-16 h-9 rounded-xl bg-slate-200 dark:bg-slate-800 shrink-0" />
       </div>
     </div>
   );
@@ -109,7 +110,7 @@ export default function RecentPostsSection() {
       {loading && posts.length === 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, idx) => (
-            <PostCardLargeSkeleton key={idx} />
+            <HomePostCardSkeleton key={idx} />
           ))}
         </div>
       ) : posts.length === 0 ? (
@@ -119,7 +120,7 @@ export default function RecentPostsSection() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.slice(0, 6).map((post) => (
-            <PostCardLarge key={post._id} post={post} />
+            <HomePostCard key={post._id} post={post} />
           ))}
         </div>
       )}

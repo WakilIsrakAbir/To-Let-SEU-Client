@@ -10,7 +10,6 @@ export interface FilterState {
   gender: string;
   minRent: number;
   maxRent: number;
-  isNegotiable: boolean;
   month: string;
   roomType: string;
   amenities: string[];
@@ -191,21 +190,6 @@ export default function FilterSidebar({
           <span>BDT 10,000</span>
           <span>BDT 20,000</span>
         </div>
-
-        {/* Negotiable Only Toggle */}
-        <label className="label cursor-pointer justify-start gap-2.5 mt-2.5 p-0">
-          <input
-            type="checkbox"
-            checked={filters.isNegotiable}
-            onChange={(e) =>
-              onChange({ ...filters, isNegotiable: e.target.checked })
-            }
-            className="toggle toggle-sm toggle-primary"
-          />
-          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-            Show Negotiable Only
-          </span>
-        </label>
       </div>
     </>
   );

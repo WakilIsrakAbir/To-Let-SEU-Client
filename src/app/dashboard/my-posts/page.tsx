@@ -603,7 +603,7 @@ export default function MyPostsPage() {
                   <span>2. Rent, Pricing & Status</span>
                 </h4>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                       Rent Amount (BDT)
@@ -616,21 +616,6 @@ export default function MyPostsPage() {
                       onChange={handleEditInputChange}
                       className="input input-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-bold"
                     />
-                  </div>
-
-                  <div>
-                    <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                      Price Policy
-                    </label>
-                    <select
-                      name="rentType"
-                      value={editForm.rentType}
-                      onChange={handleEditInputChange}
-                      className="select select-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100"
-                    >
-                      <option value="fixed">Fixed Price</option>
-                      <option value="negotiable">Negotiable</option>
-                    </select>
                   </div>
 
                   <div>

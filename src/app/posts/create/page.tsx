@@ -320,7 +320,7 @@ export default function CreatePostPage() {
               <span>2. Rent & Cost Details</span>
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Rent Amount */}
               <div>
                 <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
@@ -335,22 +335,6 @@ export default function CreatePostPage() {
                   onChange={handleInputChange}
                   className="input input-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900 font-bold"
                 />
-              </div>
-
-              {/* Rent Type */}
-              <div>
-                <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Price Policy
-                </label>
-                <select
-                  name="rentType"
-                  value={formData.rentType}
-                  onChange={handleInputChange}
-                  className="select select-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900"
-                >
-                  <option value="fixed">Fixed Price</option>
-                  <option value="negotiable">Negotiable</option>
-                </select>
               </div>
 
               {/* Gender */}

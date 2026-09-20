@@ -121,7 +121,7 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.35, ease: 'easeOut' }}
-      className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-md transition-all overflow-hidden p-4 sm:p-6 space-y-3.5 scroll-mt-28"
+      className="bg-white dark:bg-slate-900/90 rounded-3xl border border-slate-200/90 dark:border-slate-800 shadow-sm hover:shadow-md transition-all overflow-hidden p-4 sm:p-5 space-y-3.5 scroll-mt-28"
     >
       {/* 1. Header: Avatar + (Name & Gender badge on same horizontal line, Dept & Time right underneath) */}
       <div className="flex items-center gap-3">
@@ -170,58 +170,51 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
         </div>
       </div>
 
-      {/* 2. Room & Available Date: Expanded Room Part for full text, compact Date */}
-      <div className="flex items-center gap-1.5 sm:gap-2">
-        {/* Seat Count & Full Room Type (Expanded with flex-1 to fit full name) */}
+      {/* 2. Specs Row: Spans full width across 4 equal columns on large screen; 2 items per line on small devices */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        {/* 1. Room Info */}
         <div
           style={{
             backgroundColor: isDark ? `${currentTheme.hex}20` : currentTheme.lightHex,
             color: isDark ? currentTheme.hex : currentTheme.textHex,
             borderColor: isDark ? `${currentTheme.hex}35` : `${currentTheme.hex}30`,
           }}
-          className="flex-1 min-w-0 px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold border flex items-center gap-1.5 shadow-2xs"
+          className="px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold border flex items-center justify-center gap-1.5 shadow-2xs min-w-0"
         >
           <Users className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
-          <span className="truncate">
-            {formatRoomLabel(post.seatCount, post.roomType)}
-          </span>
+          <span className="truncate">{formatRoomLabel(post.seatCount, post.roomType)}</span>
         </div>
 
-        {/* Availability Month (Compact shrink-0: 'Nov 2026' on mobile, 'From Nov 2026' on desktop) */}
+        {/* 2. Available Date */}
         <div
           style={{
             backgroundColor: isDark ? `${currentTheme.hex}20` : currentTheme.lightHex,
             color: isDark ? currentTheme.hex : currentTheme.textHex,
             borderColor: isDark ? `${currentTheme.hex}35` : `${currentTheme.hex}30`,
           }}
-          className="shrink-0 px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold border flex items-center gap-1 shadow-2xs whitespace-nowrap"
+          className="px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold border flex items-center justify-center gap-1 shadow-2xs whitespace-nowrap min-w-0"
         >
           <Calendar className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
-          <span className="whitespace-nowrap">
-            From {formatShortMonth(post.availableFromMonth)}
-          </span>
+          <span className="truncate">From {formatShortMonth(post.availableFromMonth)}</span>
         </div>
-      </div>
 
-      {/* 3. Location & "See More" Side-by-Side in the Same Row */}
-      <div className="flex items-center justify-between gap-2">
-        {/* Location Badge (Left) */}
-        <span className="px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 shrink-0 shadow-2xs">
+        {/* 3. Location */}
+        <div className="px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 shadow-2xs min-w-0">
           <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
-          <span>{post.area}</span>
-        </span>
+          <span className="truncate">{post.area}</span>
+        </div>
 
-        {/* See More Toggle Button (Right, in same row) */}
+        {/* 4. See More Button */}
         <button
           type="button"
           onClick={() => setShowDetails(!showDetails)}
-          className="px-3 py-1.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 shrink-0 transition"
+          className="px-2 sm:px-2.5 py-1.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-center gap-1.5 transition shadow-2xs min-w-0"
         >
           <span>{showDetails ? 'Hide Info' : 'See More'}</span>
           {showDetails ? (
-            <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
+            <ChevronUp className="w-3.5 h-3.5 text-slate-400 shrink-0" />
           ) : (
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+            <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0" />
           )}
         </button>
       </div>
@@ -324,26 +317,17 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
             </span>
           </div>
         </div>
-
-        {/* Sub-row: Negotiable tag underneath rent amount if applicable */}
-        {post.rentType === 'negotiable' && (
-          <div className="mt-1">
-            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800 inline-block">
-              Negotiable
-            </span>
-          </div>
-        )}
       </div>
 
       {/* 6. Action Triggers Bar (Call, WhatsApp, Share) */}
-      <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
-        {/* Call & WhatsApp: 2 Equal Columns */}
-        <div className="grid grid-cols-2 gap-2">
+      <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+        {/* Large Screen View (sm: and above): Phone, WhatsApp, and Share in the EXACT SAME ROW */}
+        <div className="hidden sm:flex items-center gap-1.5 sm:gap-2">
           {/* Call button: icon + phone number only */}
           <a
             href={`tel:${post.contactNumber}`}
             style={{ backgroundColor: currentTheme.hex }}
-            className="h-10 px-2 sm:px-3 text-white border-none rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 shadow-xs hover:opacity-90 transition min-w-0"
+            className="flex-1 min-w-0 h-9 sm:h-10 px-2 sm:px-2.5 xl:px-3 text-white border-none rounded-xl text-[11px] sm:text-xs xl:text-sm font-bold flex items-center justify-center gap-1 sm:gap-1.5 shadow-xs hover:opacity-90 transition"
           >
             <Phone className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate">{post.contactNumber}</span>
@@ -359,31 +343,78 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
               color: currentTheme.textHex,
               borderColor: currentTheme.borderHex,
             }}
-            className="h-10 px-2 sm:px-3 border rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 hover:opacity-90 transition min-w-0"
+            className="flex-1 min-w-0 h-9 sm:h-10 px-2 sm:px-2.5 xl:px-3 border rounded-xl text-[11px] sm:text-xs xl:text-sm font-bold flex items-center justify-center gap-1 sm:gap-1.5 hover:opacity-90 transition"
           >
             <MessageCircle className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
             <span className="truncate">WhatsApp</span>
           </a>
+
+          {/* Share Button (Same Row on large screens) */}
+          <button
+            onClick={handleShare}
+            className="shrink-0 h-9 sm:h-10 px-2.5 sm:px-3 xl:px-3.5 flex items-center justify-center gap-1 sm:gap-1.5 rounded-xl text-[11px] sm:text-xs xl:text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition"
+            title="Copy link to this post"
+          >
+            {copied ? (
+              <>
+                <Check className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
+                <span style={{ color: currentTheme.hex }}>Copied</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="w-3.5 h-3.5 text-slate-400" />
+                <span>Share</span>
+              </>
+            )}
+          </button>
         </div>
 
-        {/* Share Button: Full-width cleanly centered */}
-        <button
-          onClick={handleShare}
-          className="w-full h-8 flex items-center justify-center gap-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition"
-          title="Copy link to this post"
-        >
-          {copied ? (
-            <>
-              <Check className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
-              <span style={{ color: currentTheme.hex }}>Link Copied</span>
-            </>
-          ) : (
-            <>
-              <Share2 className="w-3.5 h-3.5 text-slate-400" />
-              <span>Share</span>
-            </>
-          )}
-        </button>
+        {/* Mobile View (sm:hidden): Call & WhatsApp in Row 1, Full-width Share in Row 2 */}
+        <div className="sm:hidden space-y-2">
+          <div className="grid grid-cols-2 gap-2">
+            <a
+              href={`tel:${post.contactNumber}`}
+              style={{ backgroundColor: currentTheme.hex }}
+              className="h-10 px-2 text-white border-none rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs hover:opacity-90 transition min-w-0"
+            >
+              <Phone className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">{post.contactNumber}</span>
+            </a>
+
+            <a
+              href={getWhatsAppLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                backgroundColor: currentTheme.lightHex,
+                color: currentTheme.textHex,
+                borderColor: currentTheme.borderHex,
+              }}
+              className="h-10 px-2 border rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 hover:opacity-90 transition min-w-0"
+            >
+              <MessageCircle className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
+              <span className="truncate">WhatsApp</span>
+            </a>
+          </div>
+
+          <button
+            onClick={handleShare}
+            className="w-full h-8 flex items-center justify-center gap-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition"
+            title="Copy link to this post"
+          >
+            {copied ? (
+              <>
+                <Check className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
+                <span style={{ color: currentTheme.hex }}>Link Copied</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="w-3.5 h-3.5 text-slate-400" />
+                <span>Share</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </motion.article>
   );

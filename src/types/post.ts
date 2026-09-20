@@ -51,7 +51,7 @@ export interface IPost {
   addressDetails: string;
   distanceFromCampus?: string;
   
-  rentType: RentType;
+  rentType?: RentType;
   rentAmount: number;
   serviceChargeIncluded?: boolean;
   
@@ -81,7 +81,6 @@ export interface IPostFilterQuery {
   gender?: string;
   minRent?: number;
   maxRent?: number;
-  isNegotiable?: boolean;
   month?: string;
   roomType?: string;
   amenities?: string[];
