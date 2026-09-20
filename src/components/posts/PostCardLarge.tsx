@@ -170,8 +170,65 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
         </div>
       </div>
 
-      {/* 2. Specs Row: Spans full width across 4 equal columns on large screen; 2 items per line on small devices */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+      {/* 2. Specs: 2-line flexible layout on mobile (< md) to show full room info without truncation; 4 equal columns on desktop (md:) */}
+      
+      {/* Mobile View (< md): Matches Homepage card layout */}
+      <div className="md:hidden space-y-2">
+        {/* Line 1: Seat count & Full Room Type + Date */}
+        <div className="flex items-center gap-1.5">
+          {/* Seat Count & Full Room Type (flex-1 to fit full name) */}
+          <div
+            style={{
+              backgroundColor: isDark ? `${currentTheme.hex}20` : currentTheme.lightHex,
+              color: isDark ? currentTheme.hex : currentTheme.textHex,
+              borderColor: isDark ? `${currentTheme.hex}35` : `${currentTheme.hex}30`,
+            }}
+            className="flex-1 min-w-0 px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold border flex items-center gap-1.5 shadow-2xs"
+          >
+            <Users className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
+            <span className="truncate">{formatRoomLabel(post.seatCount, post.roomType)}</span>
+          </div>
+
+          {/* Availability Month */}
+          <div
+            style={{
+              backgroundColor: isDark ? `${currentTheme.hex}20` : currentTheme.lightHex,
+              color: isDark ? currentTheme.hex : currentTheme.textHex,
+              borderColor: isDark ? `${currentTheme.hex}35` : `${currentTheme.hex}30`,
+            }}
+            className="shrink-0 px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold border flex items-center gap-1 shadow-2xs whitespace-nowrap"
+          >
+            <Calendar className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
+            <span className="whitespace-nowrap">From {formatShortMonth(post.availableFromMonth)}</span>
+          </div>
+        </div>
+
+        {/* Line 2: Location + See More */}
+        <div className="flex items-center justify-between gap-2">
+          {/* Location Badge */}
+          <span className="px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 shrink-0 shadow-2xs">
+            <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
+            <span>{post.area}</span>
+          </span>
+
+          {/* See More Toggle Button */}
+          <button
+            type="button"
+            onClick={() => setShowDetails(!showDetails)}
+            className="px-2.5 py-1 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 shrink-0 transition shadow-2xs"
+          >
+            <span>{showDetails ? 'Hide Info' : 'See More'}</span>
+            {showDetails ? (
+              <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
+            ) : (
+              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop View (md:): Spans full width across 4 equal columns */}
+      <div className="hidden md:grid md:grid-cols-4 gap-2">
         {/* 1. Room Info */}
         <div
           style={{
@@ -179,7 +236,7 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
             color: isDark ? currentTheme.hex : currentTheme.textHex,
             borderColor: isDark ? `${currentTheme.hex}35` : `${currentTheme.hex}30`,
           }}
-          className="px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold border flex items-center justify-center gap-1.5 shadow-2xs min-w-0"
+          className="px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-bold border flex items-center justify-center gap-1.5 shadow-2xs min-w-0"
         >
           <Users className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
           <span className="truncate">{formatRoomLabel(post.seatCount, post.roomType)}</span>
@@ -192,14 +249,14 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
             color: isDark ? currentTheme.hex : currentTheme.textHex,
             borderColor: isDark ? `${currentTheme.hex}35` : `${currentTheme.hex}30`,
           }}
-          className="px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold border flex items-center justify-center gap-1 shadow-2xs whitespace-nowrap min-w-0"
+          className="px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-bold border flex items-center justify-center gap-1 shadow-2xs whitespace-nowrap min-w-0"
         >
           <Calendar className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
           <span className="truncate">From {formatShortMonth(post.availableFromMonth)}</span>
         </div>
 
         {/* 3. Location */}
-        <div className="px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 shadow-2xs min-w-0">
+        <div className="px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 flex items-center justify-center gap-1.5 shadow-2xs min-w-0">
           <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
           <span className="truncate">{post.area}</span>
         </div>
@@ -208,7 +265,7 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
         <button
           type="button"
           onClick={() => setShowDetails(!showDetails)}
-          className="px-2 sm:px-2.5 py-1.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-[11px] sm:text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-center gap-1.5 transition shadow-2xs min-w-0"
+          className="px-2 sm:px-2.5 py-1.5 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-center gap-1.5 transition shadow-2xs min-w-0"
         >
           <span>{showDetails ? 'Hide Info' : 'See More'}</span>
           {showDetails ? (
@@ -320,18 +377,18 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
         </div>
       </div>
 
-      {/* 6. Action Triggers Bar (Call, WhatsApp, Share) */}
+      {/* 6. Action Triggers Bar (Call, WhatsApp, Share) in 1 single row */}
       <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-        {/* Large Screen View (sm: and above): Phone, WhatsApp, and Share in the EXACT SAME ROW */}
-        <div className="hidden sm:flex items-center gap-1.5 sm:gap-2">
-          {/* Call button: icon + phone number only */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Call button: icon + full phone number, guaranteed no truncation */}
           <a
             href={`tel:${post.contactNumber}`}
             style={{ backgroundColor: currentTheme.hex }}
-            className="flex-1 min-w-0 h-9 sm:h-10 px-2 sm:px-2.5 xl:px-3 text-white border-none rounded-xl text-[11px] sm:text-xs xl:text-sm font-bold flex items-center justify-center gap-1 sm:gap-1.5 shadow-xs hover:opacity-90 transition"
+            className="flex-1 min-w-0 h-9 sm:h-10 px-2 sm:px-2.5 text-white border-none rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1 sm:gap-1.5 shadow-xs hover:opacity-90 transition whitespace-nowrap"
+            title={`Call ${post.contactNumber}`}
           >
             <Phone className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">{post.contactNumber}</span>
+            <span className="font-bold tracking-tight whitespace-nowrap">{post.contactNumber}</span>
           </a>
 
           {/* WhatsApp Button */}
@@ -344,69 +401,23 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
               color: currentTheme.textHex,
               borderColor: currentTheme.borderHex,
             }}
-            className="flex-1 min-w-0 h-9 sm:h-10 px-2 sm:px-2.5 xl:px-3 border rounded-xl text-[11px] sm:text-xs xl:text-sm font-bold flex items-center justify-center gap-1 sm:gap-1.5 hover:opacity-90 transition"
+            className="shrink-0 h-9 sm:h-10 px-2 sm:px-2.5 border rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1 sm:gap-1.5 hover:opacity-90 transition whitespace-nowrap"
+            title="Chat on WhatsApp"
           >
             <MessageCircle className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
-            <span className="truncate">WhatsApp</span>
+            <span>WhatsApp</span>
           </a>
 
-          {/* Share Button (Same Row on large screens) */}
+          {/* Compact Share Button: shrink-0 with compact padding */}
           <button
             onClick={handleShare}
-            className="shrink-0 h-9 sm:h-10 px-2.5 sm:px-3 xl:px-3.5 flex items-center justify-center gap-1 sm:gap-1.5 rounded-xl text-[11px] sm:text-xs xl:text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition"
+            className="shrink-0 h-9 sm:h-10 px-2 sm:px-2.5 flex items-center justify-center gap-1 sm:gap-1.5 rounded-xl text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition whitespace-nowrap"
             title="Copy link to this post"
           >
             {copied ? (
               <>
                 <Check className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
                 <span style={{ color: currentTheme.hex }}>Copied</span>
-              </>
-            ) : (
-              <>
-                <Share2 className="w-3.5 h-3.5 text-slate-400" />
-                <span>Share</span>
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* Mobile View (sm:hidden): Call & WhatsApp in Row 1, Full-width Share in Row 2 */}
-        <div className="sm:hidden space-y-2">
-          <div className="grid grid-cols-2 gap-2">
-            <a
-              href={`tel:${post.contactNumber}`}
-              style={{ backgroundColor: currentTheme.hex }}
-              className="h-10 px-2 text-white border-none rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs hover:opacity-90 transition min-w-0"
-            >
-              <Phone className="w-3.5 h-3.5 shrink-0" />
-              <span className="truncate">{post.contactNumber}</span>
-            </a>
-
-            <a
-              href={getWhatsAppLink()}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                backgroundColor: currentTheme.lightHex,
-                color: currentTheme.textHex,
-                borderColor: currentTheme.borderHex,
-              }}
-              className="h-10 px-2 border rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 hover:opacity-90 transition min-w-0"
-            >
-              <MessageCircle className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
-              <span className="truncate">WhatsApp</span>
-            </a>
-          </div>
-
-          <button
-            onClick={handleShare}
-            className="w-full h-8 flex items-center justify-center gap-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-2xs transition"
-            title="Copy link to this post"
-          >
-            {copied ? (
-              <>
-                <Check className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
-                <span style={{ color: currentTheme.hex }}>Link Copied</span>
               </>
             ) : (
               <>
