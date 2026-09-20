@@ -20,8 +20,8 @@ export default function ForgotPasswordPage() {
     setError('');
 
     const normalizedEmail = email.toLowerCase().trim();
-    if (!normalizedEmail.endsWith('@gmail.com')) {
-      setError('Please enter a valid @gmail.com address associated with your account.');
+    if (!normalizedEmail.endsWith('@gmail.com') && !normalizedEmail.endsWith('@seu.edu.bd')) {
+      setError('Please enter a valid @gmail.com or @seu.edu.bd address associated with your account.');
       return;
     }
 
@@ -51,7 +51,7 @@ export default function ForgotPasswordPage() {
             Reset Your Password
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-            Enter your registered Gmail address to receive a secure recovery link
+            Enter your registered Gmail or SEU student email address to receive a secure recovery link
           </p>
         </div>
 
@@ -63,15 +63,15 @@ export default function ForgotPasswordPage() {
         )}
 
         {success ? (
-          <div className="space-y-6 text-center">
-            <div className="bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-2xl p-5 text-left space-y-2">
-              <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold text-sm">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Reset Email Dispatched!</span>
+          <div className="space-y-6">
+            <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 rounded-2xl text-sm flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-base mb-1">Password reset email sent!</p>
+                <p>
+                  Check your inbox for <strong>{email}</strong> for instructions to reset your password. The link expires in 1 hour.
+                </p>
               </div>
-              <p className="text-slate-600 dark:text-slate-300 text-xs leading-relaxed">
-                We have sent a password reset link to <strong className="text-slate-900 dark:text-white">{email}</strong>. Please check your Gmail inbox (and Spam/Promotions folder) to set your new password.
-              </p>
             </div>
 
             <Link
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Gmail Address
+                Email Address
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
@@ -96,14 +96,14 @@ export default function ForgotPasswordPage() {
                 <input
                   type="email"
                   required
-                  placeholder="yourname@gmail.com"
+                  placeholder="yourname@gmail.com or @seu.edu.bd"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="input input-bordered w-full pl-11 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 rounded-xl text-slate-800 dark:text-slate-200 text-sm"
                 />
               </div>
               <span className="text-[11px] text-slate-500 mt-1 block">
-                Must be an active @gmail.com address
+                Must be an active @seu.edu.bd or @gmail.com address
               </span>
             </div>
 

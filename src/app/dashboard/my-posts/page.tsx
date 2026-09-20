@@ -141,7 +141,7 @@ export default function MyPostsPage() {
       gender: post.gender || 'Male',
       availableFromMonth: post.availableFromMonth || MONTHS_LIST[0],
       seatCount: post.seatCount || 1,
-      roomType: post.roomType || 'Shared Seat',
+      roomType: post.roomType || 'Single Room',
       description: post.description || '',
       status: post.status || 'active',
     });

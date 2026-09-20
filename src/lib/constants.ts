@@ -89,12 +89,9 @@ export const AMENITIES_LIST = [
 ] as const;
 
 export const ROOM_TYPES = [
+  'Single Room',
   '2 Person Room',
   '3 Person Room',
-  'Single Room',
-  'Shared Seat',
-  'Master Bed',
-  'Sublet',
 ] as const;
 
 export type RoomType = (typeof ROOM_TYPES)[number];

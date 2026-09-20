@@ -23,8 +23,8 @@ export default function LoginPage() {
     setError('');
 
     const normalizedEmail = email.toLowerCase().trim();
-    if (!normalizedEmail.endsWith('@gmail.com')) {
-      setError('Only valid @gmail.com accounts are permitted.');
+    if (!normalizedEmail.endsWith('@gmail.com') && !normalizedEmail.endsWith('@seu.edu.bd')) {
+      setError('Only valid @gmail.com or @seu.edu.bd accounts are permitted.');
       return;
     }
 
@@ -54,7 +54,7 @@ export default function LoginPage() {
             Welcome Back to <span style={{ color: currentTheme.hex }}>To Let SEU</span>
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-            Log in with your Gmail account to manage posts
+            Log in with your Gmail or SEU student email account
           </p>
         </div>
 
