@@ -18,6 +18,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
+import GoogleAuthButton from '@/components/auth/GoogleAuthButton';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -50,6 +51,12 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
 
+    const normalizedEmail = formData.email.toLowerCase().trim();
+    if (!normalizedEmail.endsWith('@gmail.com')) {
+      setError('Only valid @gmail.com accounts are permitted to register.');
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -63,7 +70,7 @@ export default function RegisterPage() {
     setLoading(true);
     const res = await register({
       name: formData.name,
-      email: formData.email,
+      email: normalizedEmail,
       phone: formData.phone,
       department: formData.department,
       studentId: formData.studentId,
@@ -104,6 +111,15 @@ export default function RegisterPage() {
           </div>
         )}
 
+        {/* 1-Click Google Sign Up */}
+        <div className="mb-4">
+          <GoogleAuthButton label="Sign Up with Google" />
+        </div>
+
+        <div className="divider text-[11px] font-bold text-slate-400 uppercase tracking-wider my-4">
+          or register with Gmail & password
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name */}
           <div>
@@ -130,7 +146,7 @@ export default function RegisterPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
-                Email Address
+                Gmail Address
               </label>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
@@ -140,12 +156,15 @@ export default function RegisterPage() {
                   type="email"
                   name="email"
                   required
-                  placeholder="student@seu.edu.bd"
+                  placeholder="yourname@gmail.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className="input input-bordered w-full pl-11 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 rounded-xl text-slate-800 dark:text-slate-200"
+                  className="input input-bordered w-full pl-11 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 rounded-xl text-slate-800 dark:text-slate-200 text-sm"
                 />
               </div>
+              <span className="text-[10px] text-slate-500 mt-1 block">
+                Must be @gmail.com
+              </span>
             </div>
 
             <div>

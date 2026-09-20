@@ -4,6 +4,13 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { api } from '@/lib/api';
 import { IUser, SEUDepartment } from '@/types/user';
 import { useToast } from '@/context/ToastContext';
+import {
+  auth,
+  googleProvider,
+  signInWithPopup,
+  sendPasswordResetEmail,
+  isFirebaseConfigured,
+} from '@/lib/firebase';
 
 interface RegisterData {
   name: string;
@@ -22,6 +29,8 @@ interface AuthContextType {
   isModerator: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
   register: (data: RegisterData) => Promise<{ success: boolean; message?: string }>;
+  loginWithGoogle: () => Promise<{ success: boolean; message?: string }>;
+  resetPassword: (email: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   refreshUser: () => Promise<void>;
   updateUser: (updatedUser: IUser) => void;
@@ -116,9 +125,89 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const loginWithGoogle = async () => {
+    if (!isFirebaseConfigured() || !auth || !googleProvider) {
+      const msg = 'Firebase is not configured yet. Please add NEXT_PUBLIC_FIREBASE_* credentials to .env.local.';
+      toast.error(msg);
+      return { success: false, message: msg };
+    }
+
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const googleUser = result.user;
+      const email = (googleUser.email || '').toLowerCase().trim();
+
+      if (!email.endsWith('@gmail.com')) {
+        await auth.signOut();
+        const msg = 'Only valid @gmail.com accounts are permitted to sign in.';
+        toast.error(msg);
+        return { success: false, message: msg };
+      }
+
+      // Sync with Express backend to create/login MongoDB user
+      const res = await api.post('/auth/google', {
+        email,
+        name: googleUser.displayName || email.split('@')[0],
+        avatarUrl: googleUser.photoURL || undefined,
+        googleId: googleUser.uid,
+      });
+
+      const { user: loggedInUser, token: receivedToken } = res.data.data;
+
+      setUser(loggedInUser);
+      setToken(receivedToken);
+      localStorage.setItem('seu_basa_token', receivedToken);
+      localStorage.setItem('seu_basa_user', JSON.stringify(loggedInUser));
+
+      toast.success(`Welcome, ${loggedInUser.name}! Signed in with Google.`);
+      return { success: true };
+    } catch (err: any) {
+      if (err.code === 'auth/popup-closed-by-user') {
+        return { success: false, message: 'Google sign-in popup was closed.' };
+      }
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        'Google sign-in failed. Please try again.';
+      toast.error(message);
+      return { success: false, message };
+    }
+  };
+
+  const resetPassword = async (email: string) => {
+    const normalizedEmail = email.toLowerCase().trim();
+    if (!normalizedEmail.endsWith('@gmail.com')) {
+      const msg = 'Please enter a valid @gmail.com address.';
+      toast.error(msg);
+      return { success: false, message: msg };
+    }
+
+    if (!isFirebaseConfigured() || !auth) {
+      const msg = 'Firebase is not configured yet. Please add NEXT_PUBLIC_FIREBASE_* credentials to .env.local.';
+      toast.error(msg);
+      return { success: false, message: msg };
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, normalizedEmail);
+      toast.success('Password reset link sent! Check your Gmail inbox.');
+      return { success: true };
+    } catch (err: any) {
+      const message =
+        err.code === 'auth/user-not-found'
+          ? 'No account found with this Gmail address in Firebase.'
+          : err.message || 'Failed to send password reset email.';
+      toast.error(message);
+      return { success: false, message };
+    }
+  };
+
   const logout = () => {
     try {
       api.post('/auth/logout').catch(() => {});
+      if (auth) {
+        auth.signOut().catch(() => {});
+      }
       setUser(null);
       setToken(null);
       localStorage.removeItem('seu_basa_token');
@@ -157,6 +246,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isModerator,
         login,
         register,
+        loginWithGoogle,
+        resetPassword,
         logout,
         refreshUser,
         updateUser,
