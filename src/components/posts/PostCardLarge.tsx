@@ -107,12 +107,11 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
     return `${shortMonth}${year}`;
   };
 
-  // Compact room & seat label so it never cuts off on mobile
+  // Full room & seat label (e.g. 2 Seats (3 Person Room) or 1 Seat (Single Room))
   const formatRoomLabel = (seatCount: number, roomType?: string): string => {
     const s = seatCount > 1 ? `${seatCount} Seats` : `${seatCount} Seat`;
     if (!roomType) return s;
-    const cleanRoom = roomType.replace(/\s+Room$/i, '');
-    return `${s} (${cleanRoom})`;
+    return `${s} (${roomType})`;
   };
 
   return (
@@ -171,34 +170,34 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
         </div>
       </div>
 
-      {/* 2. Room & Available Date: Side-by-Side (Compact & No Ellipsis) */}
-      <div className="grid grid-cols-2 gap-2">
-        {/* Seat Count & Room Type */}
+      {/* 2. Room & Available Date: Expanded Room Part for full text, compact Date */}
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        {/* Seat Count & Full Room Type (Expanded with flex-1 to fit full name) */}
         <div
           style={{
             backgroundColor: isDark ? `${currentTheme.hex}20` : currentTheme.lightHex,
             color: isDark ? currentTheme.hex : currentTheme.textHex,
             borderColor: isDark ? `${currentTheme.hex}35` : `${currentTheme.hex}30`,
           }}
-          className="px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold border flex items-center gap-1.5 shadow-2xs min-w-0"
+          className="flex-1 min-w-0 px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold border flex items-center gap-1.5 shadow-2xs"
         >
-          <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" style={{ color: currentTheme.hex }} />
+          <Users className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
           <span className="truncate">
             {formatRoomLabel(post.seatCount, post.roomType)}
           </span>
         </div>
 
-        {/* Availability Month (abbreviated month for mobile fit) */}
+        {/* Availability Month (Compact shrink-0: 'Nov 2026' on mobile, 'From Nov 2026' on desktop) */}
         <div
           style={{
             backgroundColor: isDark ? `${currentTheme.hex}20` : currentTheme.lightHex,
             color: isDark ? currentTheme.hex : currentTheme.textHex,
             borderColor: isDark ? `${currentTheme.hex}35` : `${currentTheme.hex}30`,
           }}
-          className="px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold border flex items-center gap-1.5 shadow-2xs min-w-0"
+          className="shrink-0 px-2 sm:px-2.5 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold border flex items-center gap-1 shadow-2xs whitespace-nowrap"
         >
-          <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" style={{ color: currentTheme.hex }} />
-          <span className="truncate">
+          <Calendar className="w-3.5 h-3.5 shrink-0" style={{ color: currentTheme.hex }} />
+          <span className="whitespace-nowrap">
             From {formatShortMonth(post.availableFromMonth)}
           </span>
         </div>
