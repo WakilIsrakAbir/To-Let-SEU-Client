@@ -96,14 +96,32 @@ export default function RecentPostsSection() {
 
   return (
     <section className="relative py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl min-[1680px]:max-w-[1450px] mx-auto w-full border-t border-slate-200/80 dark:border-slate-800/80">
-      {/* Clean Header */}
-      <div className="mb-8">
-        <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-          Recent Available Rooms near <span style={{ color: currentTheme.hex }}>SEU Campus</span>
-        </h2>
-        <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-          Handpicked latest bachelor seats and flats posted by Southeast University students.
-        </p>
+      {/* Clean Header with Live Loading Feedback */}
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+            Recent Available Rooms near <span style={{ color: currentTheme.hex }}>SEU Campus</span>
+          </h2>
+          <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            Handpicked latest bachelor seats and flats posted by Southeast University students.
+          </p>
+        </div>
+
+        {loading && (
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 text-xs text-slate-600 dark:text-slate-300 animate-in fade-in duration-200 self-start sm:self-auto">
+            <span className="relative flex h-2 w-2">
+              <span
+                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                style={{ backgroundColor: currentTheme.hex }}
+              />
+              <span
+                className="relative inline-flex rounded-full h-2 w-2"
+                style={{ backgroundColor: currentTheme.hex }}
+              />
+            </span>
+            <span className="font-semibold text-xs">Checking live listings...</span>
+          </div>
+        )}
       </div>
 
       {/* Loading Skeleton Grid (6 cards) or Empty State or Real Posts 3-Column Grid */}

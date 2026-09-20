@@ -11,7 +11,6 @@ import {
   AlertCircle,
   CheckCircle,
   Loader2,
-  Sparkles,
 } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 
@@ -141,17 +140,14 @@ export default function CloudinaryUploader({
 
       {/* Room Photos Section */}
       <div>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between gap-2 mb-2">
           <label className="label p-0 text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
             <ImageIcon className="w-4 h-4" style={{ color: currentTheme.hex }} />
-            <span>Room Photos (Max 5, auto-compressed)</span>
+            <span>Room Photos (Max 5)</span>
           </label>
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-            <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-              <Sparkles className="w-3 h-3" /> Auto-WebP
-            </span>
-            <span>{images.length}/5 uploaded</span>
-          </div>
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0">
+            {images.length}/5 uploaded
+          </span>
         </div>
 
         {/* Thumbnail Preview Grid */}
@@ -205,7 +201,7 @@ export default function CloudinaryUploader({
                   Click or drag room photos here
                 </span>
                 <span className="text-[11px] text-slate-500 mt-0.5">
-                  PNG, JPG, WebP (Automatically optimized for faster load & saved to Cloudinary)
+                  PNG, JPG, WebP up to 10MB (Saved to Cloudinary)
                 </span>
               </>
             )}

@@ -58,6 +58,7 @@ export default function MediaViewer({
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
 
   // Filter out any stale/temporary local blob URLs from legacy posts
   const validImages = (images || []).filter(
@@ -117,6 +118,16 @@ export default function MediaViewer({
       <div className="relative aspect-video w-full bg-slate-900 flex items-center justify-center group overflow-hidden">
         {/* Animated Sliding Image Container */}
         <div className="w-full h-full relative overflow-hidden flex items-center justify-center">
+          {/* Loading skeleton placeholder while photo is downloading */}
+          {validImages[currentImgIndex]?.url && !loadedImages[validImages[currentImgIndex].url] && (
+            <div className="absolute inset-0 z-10 bg-slate-900 flex flex-col items-center justify-center gap-2 select-none animate-pulse">
+              <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center">
+                <span className="loading loading-spinner loading-sm" style={{ color: currentTheme.hex }}></span>
+              </div>
+              <span className="text-[11px] text-slate-400 font-medium">Loading room photo...</span>
+            </div>
+          )}
+
           <AnimatePresence initial={false} custom={direction} mode="popLayout">
             <motion.img
               key={currentImgIndex}
@@ -138,7 +149,15 @@ export default function MediaViewer({
                   paginate(-1);
                 }
               }}
-              className="w-full h-full object-cover cursor-pointer select-none"
+              onLoad={() => {
+                const url = validImages[currentImgIndex]?.url;
+                if (url) {
+                  setLoadedImages((prev) => ({ ...prev, [url]: true }));
+                }
+              }}
+              className={`w-full h-full object-cover cursor-pointer select-none transition-opacity duration-300 ${
+                loadedImages[validImages[currentImgIndex]?.url] ? 'opacity-100' : 'opacity-0'
+              }`}
               onClick={() => setLightboxOpen(true)}
               onError={(e) => {
                 (e.target as HTMLElement).style.display = 'none';
@@ -276,6 +295,12 @@ export default function MediaViewer({
                     paginate(1);
                   } else if (offset.x > 60 || swipe > 10000) {
                     paginate(-1);
+                  }
+                }}
+                onLoad={() => {
+                  const url = validImages[currentImgIndex]?.url;
+                  if (url) {
+                    setLoadedImages((prev) => ({ ...prev, [url]: true }));
                   }
                 }}
                 className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl select-none cursor-grab active:cursor-grabbing"

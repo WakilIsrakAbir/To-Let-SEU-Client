@@ -215,7 +215,7 @@ export default function CreatePostPage() {
         )}
       </AnimatePresence>
 
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 sm:p-10 space-y-8">
+      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl p-4 sm:p-8 sm:p-10 space-y-8 overflow-hidden">
         {/* Header */}
         <div className="border-b border-slate-100 dark:border-slate-800 pb-6">
           <div
@@ -233,7 +233,7 @@ export default function CreatePostPage() {
             Publish a Bachelor Room or Seat
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-            Fill in the details below. You can upload up to 5 room photos (automatically optimized for fast loading).
+            Fill in the details below. You can upload up to 5 room photos.
           </p>
         </div>
 

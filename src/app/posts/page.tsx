@@ -5,7 +5,9 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { IPost } from '@/types/post';
 import PostCardLarge from '@/components/posts/PostCardLarge';
+import PostCardSkeleton from '@/components/posts/PostCardSkeleton';
 import FilterSidebar, { FilterState } from '@/components/filters/FilterSidebar';
+import { motion } from 'framer-motion';
 import {
   SlidersHorizontal,
   ArrowUpDown,
@@ -274,10 +276,12 @@ function PostsFeedInner() {
               )}
               <button
                 type="submit"
+                disabled={loading}
                 style={{ backgroundColor: currentTheme.hex }}
-                className="px-4 py-2 rounded-xl text-white font-bold text-xs shadow-xs hover:opacity-95 transition shrink-0"
+                className="px-4 py-2 rounded-xl text-white font-bold text-xs shadow-xs hover:opacity-95 disabled:opacity-85 transition shrink-0 flex items-center gap-1.5"
               >
-                Search
+                {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                <span>{loading ? 'Searching...' : 'Search'}</span>
               </button>
             </div>
           </form>
@@ -323,8 +327,6 @@ function PostsFeedInner() {
                 </span>
               )}
 
-
-
               <button
                 onClick={handleResetFilters}
                 className="text-xs font-bold text-red-500 hover:text-red-600 underline ml-auto"
@@ -334,24 +336,62 @@ function PostsFeedInner() {
             </div>
           )}
 
-          {loading ? (
-            /* Loading State */
-            <div className="space-y-6">
-              {[1, 2].map((n) => (
-                <div
-                  key={n}
-                  className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 space-y-4 animate-pulse"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-slate-200 dark:bg-slate-800 rounded-full"></div>
-                    <div className="space-y-2">
-                      <div className="w-40 h-4 bg-slate-200 dark:bg-slate-800 rounded"></div>
-                      <div className="w-24 h-3 bg-slate-200 dark:bg-slate-800 rounded"></div>
-                    </div>
-                  </div>
-                  <div className="w-full h-64 bg-slate-200 dark:bg-slate-800 rounded-2xl"></div>
+          {/* Top Animated Progress Bar & Live Status Badge */}
+          {loading && (
+            <div className="space-y-2 animate-in fade-in duration-200">
+              <div className="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden relative shadow-2xs">
+                <motion.div
+                  className="absolute top-0 bottom-0 rounded-full"
+                  style={{
+                    background: `linear-gradient(90deg, transparent, ${currentTheme.hex}, #f59e0b, transparent)`,
+                  }}
+                  animate={{
+                    left: ['-40%', '100%'],
+                    width: ['30%', '45%'],
+                  }}
+                  transition={{
+                    duration: 1.2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                />
+              </div>
+
+              <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span
+                      className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                      style={{ backgroundColor: currentTheme.hex }}
+                    />
+                    <span
+                      className="relative inline-flex rounded-full h-2.5 w-2.5"
+                      style={{ backgroundColor: currentTheme.hex }}
+                    />
+                  </span>
+                  <span className="font-semibold text-xs text-slate-800 dark:text-slate-200">
+                    {activeSearch
+                      ? `Searching available rooms matching "${activeSearch}"...`
+                      : hasActiveFilters
+                      ? 'Applying selected filters to find available rooms...'
+                      : page > 1
+                      ? `Loading page ${page} of available rooms...`
+                      : 'Loading available SEU bachelor rooms & seats...'}
+                  </span>
                 </div>
-              ))}
+                <span className="text-[11px] text-slate-400 font-medium hidden sm:inline">
+                  Live SEU Feed
+                </span>
+              </div>
+            </div>
+          )}
+
+          {loading ? (
+            /* Loading State with 3 Realistic PostCardSkeletons */
+            <div className="space-y-8">
+              <PostCardSkeleton />
+              <PostCardSkeleton />
+              <PostCardSkeleton />
             </div>
           ) : posts.length === 0 ? (
             /* Empty State */
