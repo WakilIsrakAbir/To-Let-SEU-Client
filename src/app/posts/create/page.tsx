@@ -63,7 +63,6 @@ export default function CreatePostPage() {
   });
 
   const [images, setImages] = useState<IMediaItem[]>([]);
-  const [video, setVideo] = useState<IMediaItem | undefined>(undefined);
 
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -124,7 +123,6 @@ export default function CreatePostPage() {
         },
         media: {
           images,
-          video,
         },
       };
 
@@ -235,7 +233,7 @@ export default function CreatePostPage() {
             Publish a Bachelor Room or Seat
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
-            Fill in the details below. You can upload up to 5 photos and 1 video walkthrough.
+            Fill in the details below. You can upload up to 5 room photos (automatically optimized for fast loading).
           </p>
         </div>
 
@@ -557,9 +555,7 @@ export default function CreatePostPage() {
           <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
             <CloudinaryUploader
               images={images}
-              video={video}
               onImagesChange={setImages}
-              onVideoChange={setVideo}
             />
           </div>
 

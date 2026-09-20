@@ -65,8 +65,8 @@ export interface IPost {
   location: ILocation;
   
   media: {
-    images: IMediaItem[]; // max 5, <=10MB each
-    video?: IMediaItem; // max 1, <=100MB
+    images: IMediaItem[]; // max 5, auto-compressed WebP (<450KB each)
+    video?: IMediaItem; // Optional / legacy backwards compatibility
   };
   
   status: 'active' | 'booked' | 'archived';

@@ -44,7 +44,7 @@ export default function AboutUsPage() {
           </div>
           <h3 className="font-bold text-xl text-slate-900 dark:text-white mb-2">Verified Listings</h3>
           <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-            Every ad includes photos, video walkthroughs, clear rent values or negotiable flags, and live pin locations near Tejgaon campus.
+            Every ad includes optimized room photos, clear rent values or negotiable flags, and live pin locations near Tejgaon campus.
           </p>
         </div>
 
@@ -100,7 +100,7 @@ export default function AboutUsPage() {
         <div className="relative z-10 max-w-xl mx-auto space-y-4">
           <h2 className="text-2xl sm:text-3xl font-bold">Have a seat or room available?</h2>
           <p className="text-white/80 text-sm sm:text-base">
-            Post your ad in 2 minutes, upload up to 5 photos and a room video walkthrough, and automatically generate a rent poster for your social media.
+            Post your ad in 2 minutes, upload up to 5 room photos, and automatically generate a rent poster for your social media.
           </p>
           <div className="pt-4 flex flex-wrap justify-center gap-4">
             <Link

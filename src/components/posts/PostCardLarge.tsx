@@ -247,10 +247,9 @@ export default function PostCardLarge({ post }: PostCardLargeProps) {
         </p>
       )}
 
-      {/* 6. Media Carousel / Video Player (Placed directly below description; hidden if no media) */}
+      {/* 6. Media Carousel (Placed directly below description; hidden if no images) */}
       <MediaViewer
         images={post.media?.images}
-        video={post.media?.video}
         title={post.title}
       />
 

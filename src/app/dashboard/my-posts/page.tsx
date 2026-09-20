@@ -74,7 +74,6 @@ export default function MyPostsPage() {
     filterWater: false,
   });
   const [editImages, setEditImages] = useState<IMediaItem[]>([]);
-  const [editVideo, setEditVideo] = useState<IMediaItem | undefined>(undefined);
   const [toastError, setToastError] = useState<string | null>(null);
   const [toastSuccess, setToastSuccess] = useState<string | null>(null);
   const [savingEdit, setSavingEdit] = useState(false);
@@ -157,7 +156,6 @@ export default function MyPostsPage() {
       filterWater: post.amenities?.filterWater || false,
     });
     setEditImages(post.media?.images || []);
-    setEditVideo(post.media?.video || undefined);
   };
 
   const handleEditInputChange = (
@@ -196,7 +194,6 @@ export default function MyPostsPage() {
         amenities: editAmenities,
         media: {
           images: editImages || [],
-          video: editVideo || undefined,
         },
       });
       setEditingPost(null);
@@ -839,17 +836,15 @@ export default function MyPostsPage() {
                 </div>
               </div>
 
-              {/* 7. Media (Photos & Video Walkthrough) */}
+              {/* 7. Media (Room Photos) */}
               <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                   <ImageIcon className="w-3.5 h-3.5" style={{ color: currentTheme.hex }} />
-                  <span>7. Photos & Video Walkthrough</span>
+                  <span>7. Room Photos</span>
                 </h4>
                 <CloudinaryUploader
                   images={editImages}
-                  video={editVideo}
                   onImagesChange={setEditImages}
-                  onVideoChange={setEditVideo}
                 />
               </div>
 
@@ -885,7 +880,7 @@ export default function MyPostsPage() {
             </div>
             <h3 className="font-bold text-slate-900 text-lg">Delete this Post?</h3>
             <p className="text-slate-500 text-xs">
-              This action cannot be undone. All linked photos and video walkthrough will be permanently purged from Cloudinary.
+              This action cannot be undone. All linked room photos will be permanently purged from Cloudinary.
             </p>
             <div className="flex gap-2 pt-2">
               <button

@@ -5,7 +5,6 @@ import { IMediaItem } from '@/types/post';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Image as ImageIcon,
-  Video as VideoIcon,
   ChevronLeft,
   ChevronRight,
   Maximize2,
@@ -15,7 +14,7 @@ import { useTheme } from '@/context/ThemeContext';
 
 interface MediaViewerProps {
   images?: IMediaItem[];
-  video?: IMediaItem;
+  video?: IMediaItem; // Optional for backwards compatibility
   title: string;
 }
 
@@ -47,9 +46,8 @@ const slideVariants = {
   }),
 };
 
-export default function MediaViewer({ images = [], video, title }: MediaViewerProps) {
+export default function MediaViewer({ images = [], title }: MediaViewerProps) {
   const { currentTheme } = useTheme();
-  const [activeTab, setActiveTab] = useState<'photos' | 'video'>('photos');
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -59,7 +57,6 @@ export default function MediaViewer({ images = [], video, title }: MediaViewerPr
     (img) => img && img.url && !img.url.startsWith('blob:')
   );
   const hasImages = validImages.length > 0;
-  const hasVideo = !!video && !!video.url && !video.url.startsWith('blob:');
 
   const paginate = (newDirection: number, e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -102,124 +99,68 @@ export default function MediaViewer({ images = [], video, title }: MediaViewerPr
     };
   }, [lightboxOpen, validImages.length]);
 
-  // If the post has neither images nor video, do not render the media section at all
-  if (!hasImages && !hasVideo) {
+  // If there are no images, do not render the media section
+  if (!hasImages) {
     return null;
   }
 
   return (
     <div className="w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-950 text-white">
-      {/* Media Type Tabs (if both photos and video exist) */}
-      {hasImages && hasVideo && (
-        <div className="flex items-center justify-center gap-2 p-2 bg-slate-900 border-b border-slate-800">
-          <button
-            onClick={() => setActiveTab('photos')}
-            style={{
-              backgroundColor: activeTab === 'photos' ? currentTheme.hex : undefined,
-            }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-              activeTab === 'photos'
-                ? 'text-white shadow'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <ImageIcon className="w-4 h-4" />
-            <span>Photos ({validImages.length})</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('video')}
-            style={{
-              backgroundColor: activeTab === 'video' ? currentTheme.hex : undefined,
-            }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-              activeTab === 'video'
-                ? 'text-white shadow'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <VideoIcon className="w-4 h-4" />
-            <span>Room Walkthrough Video</span>
-          </button>
-        </div>
-      )}
-
       {/* Main Display Area (Standard 16:9 Aspect Ratio) */}
       <div className="relative aspect-video w-full bg-slate-900 flex items-center justify-center group overflow-hidden">
-        {activeTab === 'photos' && hasImages ? (
-          <>
-            {/* Animated Sliding Image Container */}
-            <div className="w-full h-full relative overflow-hidden flex items-center justify-center">
-              <AnimatePresence initial={false} custom={direction} mode="popLayout">
-                <motion.img
-                  key={currentImgIndex}
-                  src={validImages[currentImgIndex]?.url}
-                  alt={`${title} - Photo ${currentImgIndex + 1}`}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  drag={validImages.length > 1 ? 'x' : false}
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.8}
-                  onDragEnd={(e, { offset, velocity }) => {
-                    const swipe = Math.abs(offset.x) * velocity.x;
-                    if (offset.x < -50 || swipe < -8000) {
-                      paginate(1);
-                    } else if (offset.x > 50 || swipe > 8000) {
-                      paginate(-1);
-                    }
-                  }}
-                  className="w-full h-full object-cover cursor-pointer select-none"
-                  onClick={() => setLightboxOpen(true)}
-                  onError={(e) => {
-                    (e.target as HTMLElement).style.display = 'none';
-                  }}
-                />
-              </AnimatePresence>
-            </div>
-
-            {/* Photo Counter Pill */}
-            <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-xs font-bold border border-white/10 flex items-center gap-1.5 z-10 pointer-events-none">
-              <ImageIcon className="w-3.5 h-3.5" />
-              <span>
-                {currentImgIndex + 1} / {validImages.length}
-              </span>
-            </div>
-
-            {/* Lightbox Zoom Button */}
-            <button
-              type="button"
+        {/* Animated Sliding Image Container */}
+        <div className="w-full h-full relative overflow-hidden flex items-center justify-center">
+          <AnimatePresence initial={false} custom={direction} mode="popLayout">
+            <motion.img
+              key={currentImgIndex}
+              src={validImages[currentImgIndex]?.url}
+              alt={`${title} - Photo ${currentImgIndex + 1}`}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              drag={validImages.length > 1 ? 'x' : false}
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.8}
+              onDragEnd={(e, { offset, velocity }) => {
+                const swipe = Math.abs(offset.x) * velocity.x;
+                if (offset.x < -50 || swipe < -8000) {
+                  paginate(1);
+                } else if (offset.x > 50 || swipe > 8000) {
+                  paginate(-1);
+                }
+              }}
+              className="w-full h-full object-cover cursor-pointer select-none"
               onClick={() => setLightboxOpen(true)}
-              className="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white p-2 rounded-xl backdrop-blur-md transition opacity-0 group-hover:opacity-100 z-10 hover:scale-105"
-              title="Expand photo lightbox"
-            >
-              <Maximize2 className="w-4 h-4" />
-            </button>
-          </>
-        ) : (
-          /* Video Player */
-          <div className="w-full h-full flex flex-col items-center justify-center bg-black">
-            {video?.url ? (
-              <video
-                src={video.url}
-                controls
-                className="w-full h-full max-h-[480px] object-contain"
-                playsInline
-                preload="metadata"
-              />
-            ) : (
-              <div className="text-slate-500 flex flex-col items-center">
-                <VideoIcon className="w-10 h-10 mb-2" />
-                <span>No video available</span>
-              </div>
-            )}
-          </div>
-        )}
+              onError={(e) => {
+                (e.target as HTMLElement).style.display = 'none';
+              }}
+            />
+          </AnimatePresence>
+        </div>
+
+        {/* Photo Counter Pill */}
+        <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md text-white px-2.5 py-1 rounded-full text-xs font-bold border border-white/10 flex items-center gap-1.5 z-10 pointer-events-none">
+          <ImageIcon className="w-3.5 h-3.5" />
+          <span>
+            {currentImgIndex + 1} / {validImages.length}
+          </span>
+        </div>
+
+        {/* Lightbox Zoom Button */}
+        <button
+          type="button"
+          onClick={() => setLightboxOpen(true)}
+          className="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white p-2 rounded-xl backdrop-blur-md transition opacity-0 group-hover:opacity-100 z-10 hover:scale-105"
+          title="Expand photo lightbox"
+        >
+          <Maximize2 className="w-4 h-4" />
+        </button>
       </div>
 
       {/* Thumbnail Bar (if multiple photos) */}
-      {activeTab === 'photos' && validImages.length > 1 && (
+      {validImages.length > 1 && (
         <div className="flex items-center gap-2 p-2.5 bg-slate-900/90 overflow-x-auto border-t border-slate-800">
           {validImages.map((img, idx) => (
             <button
