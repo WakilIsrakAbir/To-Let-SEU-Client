@@ -33,19 +33,19 @@ export default function CreatePostPage() {
 
   const [formData, setFormData] = useState({
     title: '',
-    department: user?.department || 'CSE',
+    department: '',
     contactNumber: user?.phone || '',
     whatsappNumber: user?.phone || '',
-    area: DHAKA_AREAS[0] as string,
+    area: '',
     addressDetails: '',
     distanceFromCampus: '',
     rentType: 'fixed' as 'fixed' | 'negotiable',
-    rentAmount: 3500,
+    rentAmount: '' as unknown as number,
     serviceChargeIncluded: false,
-    gender: 'Male' as 'Male' | 'Female',
-    availableFromMonth: MONTHS_LIST[0],
-    seatCount: 1,
-    roomType: ROOM_TYPES[0] as string,
+    gender: '' as 'Male' | 'Female',
+    availableFromMonth: '',
+    seatCount: '' as unknown as number,
+    roomType: '',
     description: '',
   });
 
@@ -99,6 +99,43 @@ export default function CreatePostPage() {
 
     if (!user) {
       setErrorMessage('Please log in first before submitting a post.');
+      return;
+    }
+
+    if (!formData.area) {
+      setErrorMessage('Please select an Area / Location.');
+      return;
+    }
+    if (!formData.rentAmount || Number(formData.rentAmount) <= 0) {
+      setErrorMessage('Please enter a valid Rent Amount (BDT).');
+      return;
+    }
+    if (!formData.gender) {
+      setErrorMessage('Please select Rent For (Gender).');
+      return;
+    }
+    if (!formData.availableFromMonth) {
+      setErrorMessage('Please select Available From Month.');
+      return;
+    }
+    if (!formData.seatCount || Number(formData.seatCount) < 1) {
+      setErrorMessage('Please enter Seats Available (at least 1 seat).');
+      return;
+    }
+    if (!formData.roomType) {
+      setErrorMessage('Please select a Room Type.');
+      return;
+    }
+    if (!formData.contactNumber?.trim()) {
+      setErrorMessage('Contact Phone is required.');
+      return;
+    }
+    if (!formData.whatsappNumber?.trim()) {
+      setErrorMessage('WhatsApp Number is strictly required.');
+      return;
+    }
+    if (!formData.department) {
+      setErrorMessage('Please select your SEU Department.');
       return;
     }
 
@@ -248,39 +285,25 @@ export default function CreatePostPage() {
             {/* Area & Address */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Area
+                <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  Area *
                 </label>
                 <select
                   name="area"
+                  required
                   value={formData.area}
                   onChange={handleInputChange}
-                  className="select select-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900"
+                  className="select select-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                 >
+                  <option value="" disabled>
+                    -- Select Area / Location * --
+                  </option>
                   {DHAKA_AREAS.map((a) => (
                     <option key={a} value={a}>
                       {a}
                     </option>
                   ))}
                 </select>
-
-                {formData.area === 'Other' && (
-                  <div className="mt-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
-                    <label className="label text-[11px] font-bold text-slate-600 uppercase tracking-wider py-0.5">
-                      Specify Area Name
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Badda, Rampura, Dhanmondi, Uttara"
-                      value={customArea}
-                      onChange={(e) => setCustomArea(e.target.value)}
-                      className="input input-bordered input-sm w-full rounded-xl bg-white border-slate-300 text-slate-900 font-medium"
-                    />
-                    <span className="text-[10px] text-slate-500 mt-1 block">
-                      Will be saved and displayed as &ldquo;Other ({customArea.trim() || 'Custom Area'})&rdquo;
-                    </span>
-                  </div>
-                )}
               </div>
 
               <div>
@@ -323,31 +346,36 @@ export default function CreatePostPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Rent Amount */}
               <div>
-                <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                   Rent Amount (BDT) *
                 </label>
                 <input
                   type="number"
                   name="rentAmount"
                   required
-                  min={0}
+                  min={1}
+                  placeholder="e.g. 3500"
                   value={formData.rentAmount}
                   onChange={handleInputChange}
-                  className="input input-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900 font-bold"
+                  className="input input-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold"
                 />
               </div>
 
               {/* Gender */}
               <div>
-                <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                   Rent For (Gender) *
                 </label>
                 <select
                   name="gender"
+                  required
                   value={formData.gender}
                   onChange={handleInputChange}
-                  className="select select-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900 font-bold"
+                  className="select select-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold"
                 >
+                  <option value="" disabled>
+                    -- Select Gender * --
+                  </option>
                   <option value="Male">Male Students Only</option>
                   <option value="Female">Female Students Only</option>
                 </select>
@@ -357,15 +385,20 @@ export default function CreatePostPage() {
             {/* Service Charge & Available Month */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
               <div>
-                <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                   Available From Month *
                 </label>
                 <select
                   name="availableFromMonth"
+                  required
                   value={formData.availableFromMonth}
                   onChange={handleInputChange}
-                  className="select select-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900"
+                  className="select select-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                 >
+                  <option value="" disabled>
+                    -- Select Month * --
+                  </option>
+                  <option value="Immediate">Immediate</option>
                   {MONTHS_LIST.map((m) => (
                     <option key={m} value={m}>
                       {m}
@@ -375,30 +408,36 @@ export default function CreatePostPage() {
               </div>
 
               <div>
-                <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                   Seats Available *
                 </label>
                 <input
                   type="number"
                   name="seatCount"
+                  required
                   min={1}
                   max={10}
+                  placeholder="e.g. 1"
                   value={formData.seatCount}
                   onChange={handleInputChange}
-                  className="input input-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900"
+                  className="input input-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                 />
               </div>
 
               <div>
-                <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Room Type
+                <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  Room Type *
                 </label>
                 <select
                   name="roomType"
+                  required
                   value={formData.roomType}
                   onChange={handleInputChange}
-                  className="select select-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900"
+                  className="select select-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                 >
+                  <option value="" disabled>
+                    -- Select Room Type * --
+                  </option>
                   {ROOM_TYPES.map((rt) => (
                     <option key={rt} value={rt}>
                       {rt}
@@ -432,7 +471,7 @@ export default function CreatePostPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                   Contact Phone *
                 </label>
                 <input
@@ -442,34 +481,39 @@ export default function CreatePostPage() {
                   placeholder="017XXXXXXXX"
                   value={formData.contactNumber}
                   onChange={handleInputChange}
-                  className="input input-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900"
+                  className="input input-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                 />
               </div>
 
               <div>
-                <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  WhatsApp Number
+                <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  WhatsApp Number *
                 </label>
                 <input
                   type="tel"
                   name="whatsappNumber"
+                  required
                   placeholder="017XXXXXXXX"
                   value={formData.whatsappNumber}
                   onChange={handleInputChange}
-                  className="input input-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900"
+                  className="input input-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-medium"
                 />
               </div>
 
               <div>
-                <label className="label text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  SEU Department
+                <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                  SEU Department *
                 </label>
                 <select
                   name="department"
+                  required
                   value={formData.department}
                   onChange={handleInputChange}
-                  className="select select-bordered w-full rounded-xl bg-slate-50 border-slate-200 text-slate-900"
+                  className="select select-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"
                 >
+                  <option value="" disabled>
+                    -- Select Department * --
+                  </option>
                   {SEU_DEPARTMENTS.map((d) => (
                     <option key={d} value={d}>
                       {d}

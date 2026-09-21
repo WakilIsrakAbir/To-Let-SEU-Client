@@ -11,24 +11,31 @@ export const SEU_DEPARTMENTS = [
 ] as const;
 
 export const PREDEFINED_DHAKA_AREAS = [
-  'Tejgaon (Near SEU Campus)',
+  'East Nakhalpara',
+  'West Nakhalpara',
   'Mohakhali',
   'Banani',
-  'Nakhalpara',
+  'Begunbari',
+  'Kunipara',
+  'Modhubag',
+  'Mogbazar',
+  'Niketon',
+  'Niketon Bazar Gate',
   'Farmgate',
   'Bijoy Sarani',
-  'Monipuripara',
   'Panthapath',
-  'Mirpur 10/11',
+  'Rampura',
+  'Badda',
+  'Mirpur',
+  'Uttara',
+  'Khilkhet',
+  'Nikunja',
 ] as const;
 
-export const DHAKA_AREAS = [
-  ...PREDEFINED_DHAKA_AREAS,
-  'Other',
-] as const;
+export const DHAKA_AREAS = PREDEFINED_DHAKA_AREAS;
 
 export const parseAreaValue = (area: string | undefined | null) => {
-  if (!area) return { baseArea: 'Tejgaon (Near SEU Campus)', customArea: '' };
+  if (!area) return { baseArea: '', customArea: '' };
 
   const trimmed = area.trim();
   const matchedPredefined = PREDEFINED_DHAKA_AREAS.find(
@@ -38,25 +45,13 @@ export const parseAreaValue = (area: string | undefined | null) => {
     return { baseArea: matchedPredefined, customArea: '' };
   }
 
-  // Check if format is "Other (Custom Area)" or "Other - Custom Area" or "Other: Custom Area"
-  const otherWithCustom = trimmed.match(/^Other\s*[\(-:\s]+\s*([^\)]+)[\)]?$/i);
-  if (otherWithCustom && otherWithCustom[1]) {
-    return { baseArea: 'Other', customArea: otherWithCustom[1].trim() };
-  }
-
-  if (trimmed.toLowerCase() === 'other') {
-    return { baseArea: 'Other', customArea: '' };
-  }
-
-  // If it's a custom area name (e.g. "Badda", "Uttara", "Dhanmondi")
-  return { baseArea: 'Other', customArea: trimmed };
+  return { baseArea: trimmed, customArea: '' };
 };
 
 export const formatAreaValue = (baseArea: string, customArea?: string) => {
-  if (baseArea !== 'Other') return baseArea;
-  const trimmedCustom = customArea?.trim();
-  if (!trimmedCustom) return 'Other';
-  return `Other (${trimmedCustom})`;
+  if (baseArea && baseArea !== 'Other') return baseArea.trim();
+  if (customArea && customArea.trim()) return customArea.trim();
+  return baseArea?.trim() || '';
 };
 
 export const getAvailableMonths = (count = 4): string[] => {

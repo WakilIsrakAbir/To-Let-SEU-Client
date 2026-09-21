@@ -32,6 +32,16 @@ const initialFilters: FilterState = {
   amenities: [],
 };
 
+// Module-level in-memory cache for instant SWR feed transitions (0ms wait)
+interface CachedFeed {
+  posts: IPost[];
+  totalPages: number;
+  totalPosts: number;
+  savedAt: number;
+}
+const feedMemoryCache = new Map<string, CachedFeed>();
+const PAGE_SIZE = 12;
+
 function PostsFeedInner() {
   const { currentTheme, isDark } = useTheme();
   const searchParams = useSearchParams();
@@ -41,8 +51,11 @@ function PostsFeedInner() {
   const urlGender = searchParams.get('gender') || '';
   const urlSearch = searchParams.get('search') || '';
 
-  const [posts, setPosts] = useState<IPost[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<IPost[]>(() => {
+    const cached = feedMemoryCache.get('default');
+    return cached ? cached.posts : [];
+  });
+  const [loading, setLoading] = useState(() => !feedMemoryCache.has('default'));
   const [filters, setFilters] = useState<FilterState>({
     ...initialFilters,
     area: urlArea,
@@ -52,9 +65,25 @@ function PostsFeedInner() {
   const [activeSearch, setActiveSearch] = useState(urlSearch);
   const [sort, setSort] = useState<'newest' | 'rent_asc' | 'rent_desc' | 'views'>('newest');
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalPosts, setTotalPosts] = useState(0);
+  const [totalPages, setTotalPages] = useState(() => {
+    const cached = feedMemoryCache.get('default');
+    return cached ? cached.totalPages : 1;
+  });
+  const [totalPosts, setTotalPosts] = useState(() => {
+    const cached = feedMemoryCache.get('default');
+    return cached ? cached.totalPosts : 0;
+  });
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+
+  // Active filters helper
+  const hasActiveFilters =
+    Boolean(activeSearch) ||
+    Boolean(filters.area) ||
+    Boolean(filters.gender) ||
+    Boolean(filters.month) ||
+    Boolean(filters.roomType) ||
+    filters.amenities.length > 0 ||
+    filters.maxRent < 20000;
 
   // Sync initial URL search params on mount or param change
   useEffect(() => {
@@ -72,34 +101,68 @@ function PostsFeedInner() {
   }, [urlArea, urlGender, urlSearch]);
 
   const fetchPosts = useCallback(async () => {
-    setLoading(true);
+    const params: any = {
+      page,
+      limit: PAGE_SIZE,
+      sort,
+    };
+
+    if (filters.area) params.area = filters.area;
+    if (filters.gender) params.gender = filters.gender;
+    if (filters.maxRent && filters.maxRent < 20000) params.maxRent = filters.maxRent;
+    if (filters.month) params.month = filters.month;
+    if (filters.roomType) params.roomType = filters.roomType;
+    if (filters.amenities.length > 0) params.amenities = filters.amenities.join(',');
+    if (activeSearch.trim()) params.search = activeSearch.trim();
+
+    const cacheKey = JSON.stringify(params);
+    const cached = feedMemoryCache.get(cacheKey);
+
+    // Instant SWR Display: If cached data exists, render immediately (0ms wait)
+    if (cached) {
+      setPosts(cached.posts);
+      setTotalPages(cached.totalPages);
+      setTotalPosts(cached.totalPosts);
+      setLoading(false);
+
+      // Skip extra network request if cached less than 30s ago
+      if (Date.now() - cached.savedAt < 30 * 1000) {
+        return;
+      }
+    } else {
+      setLoading(true);
+    }
+
     try {
-      const params: any = {
-        page,
-        limit: 30,
-        sort,
-      };
-
-      if (filters.area) params.area = filters.area;
-      if (filters.gender) params.gender = filters.gender;
-      if (filters.maxRent && filters.maxRent < 20000) params.maxRent = filters.maxRent;
-      if (filters.month) params.month = filters.month;
-      if (filters.roomType) params.roomType = filters.roomType;
-      if (filters.amenities.length > 0) params.amenities = filters.amenities.join(',');
-      if (activeSearch.trim()) params.search = activeSearch.trim();
-
       const res = await api.get('/posts', { params });
       if (res.data?.data) {
-        setPosts(res.data.data.posts);
-        setTotalPages(res.data.data.pagination.totalPages || 1);
-        setTotalPosts(res.data.data.pagination.totalPosts || 0);
+        const fetchedPosts: IPost[] = res.data.data.posts || [];
+        const fetchedTotalPages = res.data.data.pagination?.totalPages || 1;
+        const fetchedTotalPosts = res.data.data.pagination?.totalPosts || 0;
+
+        setPosts(fetchedPosts);
+        setTotalPages(fetchedTotalPages);
+        setTotalPosts(fetchedTotalPosts);
+
+        const cacheEntry: CachedFeed = {
+          posts: fetchedPosts,
+          totalPages: fetchedTotalPages,
+          totalPosts: fetchedTotalPosts,
+          savedAt: Date.now(),
+        };
+
+        feedMemoryCache.set(cacheKey, cacheEntry);
+
+        if (page === 1 && !hasActiveFilters && sort === 'newest') {
+          feedMemoryCache.set('default', cacheEntry);
+        }
       }
     } catch (error) {
       console.error('Failed to load posts:', error);
     } finally {
       setLoading(false);
     }
-  }, [filters, sort, page, activeSearch]);
+  }, [filters, sort, page, activeSearch, hasActiveFilters]);
 
   useEffect(() => {
     fetchPosts();
@@ -176,15 +239,6 @@ function PostsFeedInner() {
     }
     return pages;
   };
-
-  const hasActiveFilters =
-    Boolean(activeSearch) ||
-    Boolean(filters.area) ||
-    Boolean(filters.gender) ||
-    Boolean(filters.month) ||
-    Boolean(filters.roomType) ||
-    filters.amenities.length > 0 ||
-    filters.maxRent < 20000;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
@@ -430,14 +484,14 @@ function PostsFeedInner() {
             </div>
           )}
 
-          {/* Pagination Controls (Max 30 posts per page) */}
-          {!loading && posts.length > 0 && (
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-slate-200/80 dark:border-slate-800">
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
-                Showing <span className="font-bold text-slate-800 dark:text-white">{posts.length}</span> of{' '}
-                <span className="font-bold text-slate-800 dark:text-white">{totalPosts}</span> rooms{' '}
-                <span className="text-slate-400 dark:text-slate-500">(Max 30 per page)</span>
-              </p>
+              {/* Pagination Controls (12 posts per page) */}
+              {!loading && posts.length > 0 && (
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-slate-200/80 dark:border-slate-800">
+                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+                    Showing <span className="font-bold text-slate-800 dark:text-white">{posts.length}</span> of{' '}
+                    <span className="font-bold text-slate-800 dark:text-white">{totalPosts}</span> rooms{' '}
+                    <span className="text-slate-400 dark:text-slate-500">(12 per page)</span>
+                  </p>
 
               <div className="inline-flex items-center gap-1.5 sm:gap-2">
                 <button

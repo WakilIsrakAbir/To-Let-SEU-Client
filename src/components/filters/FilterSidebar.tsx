@@ -129,7 +129,6 @@ export default function FilterSidebar({
         <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1 custom-scrollbar">
           {DHAKA_AREAS.map((area) => {
             const isChecked = selectedAreas.includes(area);
-            const isOther = area === 'Other';
             return (
               <label
                 key={area}
@@ -152,11 +151,6 @@ export default function FilterSidebar({
                 />
                 <div className="flex flex-col min-w-0">
                   <span className="truncate">{area}</span>
-                  {isOther && (
-                    <span className="text-xs opacity-75 font-normal">
-                      Areas outside top 9 (Badda, Uttara, etc.)
-                    </span>
-                  )}
                 </div>
               </label>
             );

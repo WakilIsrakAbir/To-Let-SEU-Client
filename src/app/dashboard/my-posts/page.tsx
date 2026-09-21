@@ -177,8 +177,10 @@ export default function MyPostsPage() {
   // Submit Edit with all updated fields
   const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingPost) return;
-    setToastError(null);
+    if (!editForm.whatsappNumber?.trim()) {
+      setToastError('WhatsApp Number is strictly required.');
+      return;
+    }
 
     setSavingEdit(true);
     try {
@@ -545,24 +547,38 @@ export default function MyPostsPage() {
                         </option>
                       ))}
                     </select>
+                  </div>
+                </div>
 
-                    {editForm.area === 'Other' && (
-                      <div className="mt-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
-                        <label className="label text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider py-0.5">
-                          Specify Area Name
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="e.g. Badda, Rampura, Dhanmondi, Uttara"
-                          value={editCustomArea}
-                          onChange={(e) => setEditCustomArea(e.target.value)}
-                          className="input input-bordered input-sm w-full rounded-xl bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-medium"
-                        />
-                        <span className="text-[10px] text-slate-500 mt-1 block">
-                          Will be saved as &ldquo;Other ({editCustomArea.trim() || 'Custom Area'})&rdquo;
-                        </span>
-                      </div>
-                    )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Contact Phone *
+                    </label>
+                    <input
+                      type="tel"
+                      name="contactNumber"
+                      required
+                      placeholder="017XXXXXXXX"
+                      value={editForm.contactNumber}
+                      onChange={handleEditInputChange}
+                      className="input input-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="label text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      WhatsApp Number *
+                    </label>
+                    <input
+                      type="tel"
+                      name="whatsappNumber"
+                      required
+                      placeholder="017XXXXXXXX"
+                      value={editForm.whatsappNumber}
+                      onChange={handleEditInputChange}
+                      className="input input-bordered w-full rounded-xl bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-medium"
+                    />
                   </div>
                 </div>
 
