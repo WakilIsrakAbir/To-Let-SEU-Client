@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { useTheme } from '@/context/ThemeContext';
 import {
   Mail,
@@ -13,11 +12,7 @@ import {
   ExternalLink,
   ShieldAlert,
   ArrowRight,
-  HelpCircle,
-  FileText,
-  PlusCircle,
 } from 'lucide-react';
-import ContactFaqSection from '@/components/contact/ContactFaqSection';
 
 export default function ContactPage() {
   const { currentTheme, isDark } = useTheme();
@@ -358,78 +353,6 @@ export default function ContactPage() {
           <span>Join SEU Group</span>
           <ArrowRight className="w-4 h-4" />
         </a>
-      </div>
-
-      {/* Frequently Asked Questions Section */}
-      <ContactFaqSection />
-
-      {/* Helpful Quick Links Footer Cards */}
-      <div className="mt-16 pt-10 border-t border-slate-200/80 dark:border-slate-800">
-        <h3 className="text-center font-bold text-slate-900 dark:text-white text-base sm:text-lg mb-6">
-          Looking for Something Else?
-        </h3>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-          <Link
-            href="/posts"
-            className="group p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 shadow-xs hover:shadow-md transition flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                style={{
-                  backgroundColor: isDark ? `${currentTheme.hex}20` : currentTheme.lightHex,
-                  color: currentTheme.hex,
-                }}
-              >
-                <HelpCircle className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-primary transition">
-                  Browse Rent Posts
-                </h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Explore 50+ bachelor seats</p>
-              </div>
-            </div>
-            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-          </Link>
-
-          <Link
-            href="/posts/create"
-            className="group p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 shadow-xs hover:shadow-md transition flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                <PlusCircle className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-primary transition">
-                  Post an Empty Room
-                </h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Find student roommates fast</p>
-              </div>
-            </div>
-            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-          </Link>
-
-          <Link
-            href="/create-banner"
-            className="group p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700 shadow-xs hover:shadow-md transition flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                <FileText className="w-5 h-5" />
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-primary transition">
-                  Printable Mess Poster
-                </h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Generate 1-click flyers</p>
-              </div>
-            </div>
-            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
       </div>
     </div>
   );
