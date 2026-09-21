@@ -4,12 +4,10 @@ import React, { useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 import {
   Mail,
-  MapPin,
   MessageCircle,
   Send,
   CheckCircle2,
   Sparkles,
-  ExternalLink,
   ShieldAlert,
   ArrowRight,
 } from 'lucide-react';
@@ -78,46 +76,13 @@ export default function ContactPage() {
         </p>
       </div>
 
-      {/* Main Content Grid: Contact Details Left & Form Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-        {/* Left Column (5 cols): Direct Channels & Campus Info */}
-        <div className="lg:col-span-5 space-y-5">
-          {/* Campus Location Card */}
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/90 dark:border-slate-800 shadow-xs">
-            <div className="flex items-start gap-4">
-              <div
-                className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
-                style={{
-                  backgroundColor: isDark ? `${currentTheme.hex}20` : currentTheme.lightHex,
-                  color: currentTheme.hex,
-                }}
-              >
-                <MapPin className="w-5 h-5" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-base text-slate-900 dark:text-white">Campus Location</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                  Southeast University Permanent Campus
-                  <br />
-                  251/A & 252, Tejgaon I/A, Dhaka-1208
-                </p>
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=Southeast+University+Permanent+Campus+Tejgaon"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: currentTheme.hex }}
-                  className="inline-flex items-center gap-1 text-xs font-bold mt-2.5 hover:underline"
-                >
-                  <span>Open in Google Maps</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </div>
-            </div>
-          </div>
-
+      {/* Main Content Grid: Equal 2 Columns with Matching Height */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-stretch">
+        {/* Left Column: Direct Channels & Safety Alert (3 Equal Height Cards) */}
+        <div className="flex flex-col justify-between gap-4 sm:gap-5 h-full">
           {/* Direct Email Card */}
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/90 dark:border-slate-800 shadow-xs">
-            <div className="flex items-start gap-4">
+          <div className="flex-1 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/90 dark:border-slate-800 shadow-xs flex items-center">
+            <div className="flex items-start gap-4 w-full">
               <div className="w-11 h-11 rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
                 <Mail className="w-5 h-5" />
               </div>
@@ -137,8 +102,8 @@ export default function ContactPage() {
           </div>
 
           {/* WhatsApp Direct Chat */}
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/90 dark:border-slate-800 shadow-xs">
-            <div className="flex items-start gap-4">
+          <div className="flex-1 bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/90 dark:border-slate-800 shadow-xs flex items-center">
+            <div className="flex items-start gap-4 w-full">
               <div className="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
                 <MessageCircle className="w-5 h-5" />
               </div>
@@ -161,20 +126,22 @@ export default function ContactPage() {
           </div>
 
           {/* Anti-Fraud / Safety Help Alert */}
-          <div className="rounded-3xl p-5 border border-amber-500/30 bg-amber-500/10 dark:bg-amber-950/20 text-xs text-slate-700 dark:text-slate-300">
-            <div className="flex items-center gap-2 font-bold text-amber-800 dark:text-amber-400 mb-1">
-              <ShieldAlert className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-              <span>Reporting a Fake Post or Advance Money Scam?</span>
+          <div className="flex-1 rounded-3xl p-5 sm:p-6 border border-amber-500/30 bg-amber-500/10 dark:bg-amber-950/20 text-xs text-slate-700 dark:text-slate-300 flex items-center">
+            <div className="w-full">
+              <div className="flex items-center gap-2 font-bold text-amber-800 dark:text-amber-400 mb-1">
+                <ShieldAlert className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+                <span className="font-bold text-xs sm:text-sm">Reporting a Fake Post or Advance Money Scam?</span>
+              </div>
+              <p className="leading-relaxed text-slate-600 dark:text-slate-400 mt-1">
+                If anyone asks for advance money on bKash/Nagad before showing the room, immediately report the post ID
+                or phone number using this form with category <strong>Report Fake / Scam Ad</strong>.
+              </p>
             </div>
-            <p className="leading-relaxed text-slate-600 dark:text-slate-400">
-              If anyone asks for advance money on bKash/Nagad before showing the room, immediately report the post ID
-              or phone number using this form with category <strong>Report Fake / Scam Ad</strong>.
-            </p>
           </div>
         </div>
 
-        {/* Right Column (7 cols): Clean Contact & Feedback Form */}
-        <div className="lg:col-span-7 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 lg:p-10 shadow-sm">
+        {/* Right Column: Clean Contact & Feedback Form */}
+        <div className="h-full bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 lg:p-10 shadow-sm flex flex-col justify-between">
           {submitted ? (
             <div className="text-center py-12 space-y-4">
               <div
